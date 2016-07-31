@@ -1,0 +1,16 @@
+[
+{
+  "modid": "playerraiders",
+  "name": "Player Raiders",
+  "description": "Creates Fake Players, That are all trying to kill you",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://minecraft.curseforge.com/members/GenDeathrow/projects",
+  "updateUrl": "",
+  "authorList": ["GenDeathrow"],
+  "credits": "Custom mod originally for Darkosto",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
