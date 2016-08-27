@@ -1,13 +1,17 @@
 package com.gendeathrow.pmobs.client.renderer;
 
+
+
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.entity.Render;
@@ -15,24 +19,25 @@ import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
-import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.gendeathrow.pmobs.client.model.renderer.LayerFeatureRenderer;
 import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
-import com.gendeathrow.pmobs.entity.New.EntityPlayerBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
 
-public class PlayerRenderer extends RenderBiped<EntityPlayerBase> 
+public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase> 
 {
 		public static final Factory FACTORY = new Factory();
 		 
@@ -41,29 +46,28 @@ public class PlayerRenderer extends RenderBiped<EntityPlayerBase>
 	    private final ModelBiped defaultModel;
 	    
 	    private static ResourceLocation DEFAULT = new ResourceLocation("textures/entity/steve.png");
-	    
+		protected static final ResourceLocation dirtOVerlay1 = new ResourceLocation(RaidersCore.MODID ,"textures/entity/dirtySkin.png");
+
 	    private static HashMap<String, ResourceLocation> SkinsCache = new HashMap<String, ResourceLocation>();
-	    private final List<LayerRenderer<EntityPlayerBase>> defaultLayers;  
+	    //private final List<LayerRenderer<EntityPlayerBase>> defaultLayers;  
 	    
 	    private boolean flag = false;
 	    
-	    public PlayerRenderer(RenderManager renderManager)
+	    public EntityRaiderRenderer(RenderManager renderManager)
 	    {
-	        //super(renderManager, new ModelPlayer(.75F, true), 0.5F); 
-	    	super(renderManager, new RaiderModel(.75F, true), 0.5F);
+	    	super(renderManager, new RaiderModel(.0F, true), 0.5F);
 	        
 	        this.defaultModel = this.modelBipedMain;
 	        
+	        this.addLayer(new LayerBipedArmor(this));
 	        this.addLayer(new LayerHeldItem(this));
-	        
 	        this.addLayer(new LayerArrow(this));
 	        
-	        this.addLayer(new LayerCustomHead(this.getMainModel().bipedHead));
-	        
-	        LayerBipedArmor layerbipedarmor = new LayerBipedArmor(this);
-	        
-	        this.addLayer(layerbipedarmor);
-	        this.defaultLayers = Lists.newArrayList(this.layerRenderers);
+	        if(PMSettings.renderOverlays)
+	        	{
+	        		System.out.println("rebder iverkats");
+	        		this.addLayer(new LayerFeatureRenderer(this));
+	        	}
 	        
 	        if(!PMSettings.renderNameTags) 
 	        {
@@ -72,13 +76,6 @@ public class PlayerRenderer extends RenderBiped<EntityPlayerBase>
 	        {
 	        	this.NAME_TAG_RANGE = 64.0f;
 	        }
-
-	        //this.removeLayer(layerbipedarmor);
-	    }
-	    
-	    public void registerSkins()
-	    {
-	    	
 	    }
 	    
 	    /**
@@ -86,29 +83,37 @@ public class PlayerRenderer extends RenderBiped<EntityPlayerBase>
 	     */
 	    public void doRender(EntityPlayerRaider entity, double x, double y, double z, float entityYaw, float partialTicks)
 	    {
-	        this.swapArmor(entity);
-	        super.doRender(entity, x, y, z, entityYaw, partialTicks);
+	    	super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	    }
 	    
+
 
 	    private void swapArmor(EntityPlayerRaider zombie)
 	    {
 
             this.mainModel = this.defaultModel;
-            this.layerRenderers = this.defaultLayers;
+            //this.layerRenderers = this.defaultLayers;
 
             this.modelBipedMain = (ModelBiped)this.mainModel;
 	    }
+	    
 	    //
-	    public ModelPlayer getMainModel()
+	    public RaiderModel getMainModel()
 	    {
-	        return (ModelPlayer)super.getMainModel();
+	        return (RaiderModel)super.getMainModel();
 	    }
+	    
+//	    @Override
+//	    public void bindTexture(ResourceLocation location)
+//	    {
+//	        this.renderManager.renderEngine.bindTexture(location);
+//	    }
 
 		@Override
-		protected ResourceLocation getEntityTexture(EntityPlayerBase entity) 
+		protected ResourceLocation getEntityTexture(EntityRaiderBase entity) 
 		{
 
+			
 			return entity.getLocationSkin();
 		}
 		
@@ -118,12 +123,12 @@ public class PlayerRenderer extends RenderBiped<EntityPlayerBase>
 	    	
 	    }
 		
-		public static class Factory implements IRenderFactory<EntityPlayerBase> 
+		public static class Factory implements IRenderFactory<EntityRaiderBase> 
 	  	{
 		    @Override
-		    public Render<? super EntityPlayerBase> createRenderFor(RenderManager manager) 
+		    public Render<? super EntityRaiderBase> createRenderFor(RenderManager manager) 
 		    {
-		      return new PlayerRenderer(manager);
+		      return new EntityRaiderRenderer(manager);
 		    }
 	  	}
 		
@@ -145,6 +150,7 @@ public class PlayerRenderer extends RenderBiped<EntityPlayerBase>
 	    {
 	        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(Charsets.UTF_8));
 	    }
+
 
 
 }

@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -529,6 +530,42 @@ public class RenderAssist {
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
+	
+	
+	/** 
+	 * Blend and Bind two texutres
+	 * @param texture1 (base)
+	 * @param texture2 (overlay)
+	 */
+    public static void blendTextures(Render renderer, ResourceLocation texture1, ResourceLocation texture2)
+    {
+    	float partOf1 = 0.5f;
+    	 
+    	GlStateManager.enableBlend();
+    	
+    	GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    	
+    	renderer.getRenderManager().renderEngine.bindTexture(texture1);
+//    	GlStateManager.enableTexture2D();
+    	GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f); //glColor4f(1.0f, 1.0f, 1.0f, partOf1 );
+//    	GlStateManager.glBegin(GL11.GL_QUADS);
+//    	GlStateManager.glTexCoord2f(0.0f, 0.0f); GlStateManager.glVertex3f( -1.0f, -1.0f, 0.0f);
+//    	GlStateManager.glTexCoord2f(1.0f, 0.0f); GlStateManager.glVertex3f( 1.0f, -1.0f, 0.0f);
+//    	GlStateManager.glTexCoord2f(1.0f, 1.0f); GlStateManager.glVertex3f( 1.0f, 1.0f, 0.0f);
+//    	GlStateManager.glTexCoord2f(0.0f, 1.0f); GlStateManager.glVertex3f( -1.0f, 1.0f, 0.0f);
+//    	GlStateManager.glEnd();
+    	 
+    	renderer.getRenderManager().renderEngine.bindTexture(texture2);
+//    	GlStateManager.enableTexture2D();
+    	GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f - partOf1);
+//    	GlStateManager.glBegin(GL11.GL_QUADS);
+//    	GlStateManager.glTexCoord2f(0.0f, 0.0f); GlStateManager.glVertex3f( -1.0f, -1.0f, 0.0f);
+//    	GlStateManager.glTexCoord2f(1.0f, 0.0f); GlStateManager.glVertex3f( 1.0f, -1.0f, 0.0f);
+//    	GlStateManager.glTexCoord2f(1.0f, 1.0f); GlStateManager.glVertex3f( 1.0f, 1.0f, 0.0f);
+//    	GlStateManager.glTexCoord2f(0.0f, 1.0f); GlStateManager.glVertex3f( -1.0f, 1.0f, 0.0f);
+    	//GlStateManager.glEnd();	    
+    	
+    }
 	
 	/**
 	 * Draws a textured rectangle at the stored z-value. Args: x, y, u, v, width, height, scale(Size) 

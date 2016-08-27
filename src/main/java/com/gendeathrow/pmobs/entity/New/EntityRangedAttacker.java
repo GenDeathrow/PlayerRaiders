@@ -8,7 +8,6 @@ import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIAttackRanged;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -29,16 +28,18 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRangedAttack;
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
 
-public class EntityRangedAttacker extends EntityPlayerBase implements IRangedAttackMob
+public class EntityRangedAttacker extends EntityHeroBrine implements IRangedAttackMob
 {
 	
 	public boolean isRangedAttacker = false;
 	
     private static final DataParameter<Boolean> SWINGING_ARMS = EntityDataManager.<Boolean>createKey(EntityRangedAttacker.class, DataSerializers.BOOLEAN);
 	
-    private final EntityAIRangedAttack aiArrowAttack = new EntityAIRangedAttack(this, 1.0D, 20, 15.0F);
+    public final EntityAIRangedAttack aiArrowAttack = new EntityAIRangedAttack(this, 1.0D, 20, 15.0F);
     private final EntityAIAttackMelee aiAttackOnCollide = new EntityAIAttackMelee(this, 1.2D, false)
     {
         /**
@@ -64,7 +65,6 @@ public class EntityRangedAttacker extends EntityPlayerBase implements IRangedAtt
 		super(worldIn);
 		
 	        this.setCombatTask();
-		
 	}
 	
 	
@@ -160,29 +160,39 @@ public class EntityRangedAttacker extends EntityPlayerBase implements IRangedAtt
      */
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
     {
-        super.setEquipmentBasedOnDifficulty(difficulty);
-        
 		if(isRangedAttacker)
 		{
-			this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+			//this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
 		}
+		
+        super.setEquipmentBasedOnDifficulty(difficulty);
     }
 
 	
     @Nullable
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
     {
+    	
+         
     	if(this.rand.nextDouble() < .1d)
     	{
     		this.isRangedAttacker = true;
     		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-    		
+    		if(this.rand.nextDouble() < .25) 
+    		{
+    			try
+    			{
+    				ItemStack tippedArrow = EquipmentManager.getRandomArrows().getCopy();
+    				if(tippedArrow != null)	this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, tippedArrow);
+    			}catch(Exception e){ RaidersCore.logger.error(e); }
+    		}
             Biome biome = this.worldObj.getBiomeGenForCoords(new BlockPos(this));
-
             this.tasks.addTask(1, this.aiArrowAttack);
+            
     	}
-    	
+       	
         livingdata = super.onInitialSpawn(difficulty, livingdata);
+     
 		
 		return livingdata;
     }

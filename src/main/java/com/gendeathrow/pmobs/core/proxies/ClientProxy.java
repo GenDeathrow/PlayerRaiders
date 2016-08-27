@@ -2,16 +2,20 @@ package com.gendeathrow.pmobs.core.proxies;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelBiped.ArmPose;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
-import com.gendeathrow.pmobs.client.renderer.PlayerRenderer;
-import com.gendeathrow.pmobs.entity.New.EntityPlayerBase;
+import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class ClientProxy extends CommonProxy
 {
+	
 
 	@Override
 	public boolean isClient()
@@ -44,6 +48,7 @@ public class ClientProxy extends CommonProxy
 	public void postInit(FMLPostInitializationEvent event) 
 	{
 		super.postInit(event);
+	
 	}
 	
 	@Override
@@ -64,7 +69,7 @@ public class ClientProxy extends CommonProxy
 	public void registerRenderers()
 	{
 		
-		RenderingRegistry.registerEntityRenderingHandler(EntityPlayerBase.class, PlayerRenderer.FACTORY);
+		RenderingRegistry.registerEntityRenderingHandler(EntityRaiderBase.class, EntityRaiderRenderer.FACTORY);
 
 //		
 //			RenderingRegistry.registerEntityRenderingHandler(EntityRider.class, RenderEntityRider.FACTORY);

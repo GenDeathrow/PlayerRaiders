@@ -10,7 +10,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.New.EntityPlayerBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -32,8 +32,8 @@ public class WorldLoader
                 MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice.createMinecraftSessionService();
                 GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
                 PlayerProfileCache playerprofilecache = new PlayerProfileCache(gameprofilerepository, new File(Minecraft.getMinecraft().mcDataDir, MinecraftServer.USER_CACHE_FILE.getName()));
-                EntityPlayerBase.setProfileCache(playerprofilecache);
-                EntityPlayerBase.setSessionService(minecraftsessionservice);
+                EntityRaiderBase.setProfileCache(playerprofilecache);
+                EntityRaiderBase.setSessionService(minecraftsessionservice);
                 PlayerProfileCache.setOnlineMode(true);
                 
                 this.isLoaded =true;

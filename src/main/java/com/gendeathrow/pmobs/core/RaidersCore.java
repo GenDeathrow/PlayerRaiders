@@ -26,7 +26,7 @@ public class RaidersCore
 {
     public static final String MODID = "playerraiders";
     public static final String NAME = "Player Raiders";
-    public static final String VERSION = "1.2.7";
+    public static final String VERSION = "1.2.12";
     
 	@Instance(MODID)
 	public static RaidersCore instance;
@@ -38,7 +38,21 @@ public class RaidersCore
 	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".CommonProxy")
 	public static CommonProxy proxy;
 
-	
+
+    @EventHandler
+    public void preinit(FMLPreInitializationEvent event)
+    {
+		logger = event.getModLog();
+		
+    	EntityRegistry.registerModEntity(EntityPlayerRaider.class, "Raiders", 1, this, 80, 3, true);
+    	
+     	EntityRegistry.registerEgg(EntityPlayerRaider.class, -3971048, -6191748);
+     	
+     	ConfigHandler.preInit();
+    	
+    	proxy.preInit(event);
+     }
+    
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
@@ -50,24 +64,15 @@ public class RaidersCore
     }
     
     @EventHandler
-    public void preinit(FMLPreInitializationEvent event)
-    {
-		logger = event.getModLog();
-		
-    	EntityRegistry.registerModEntity(EntityPlayerRaider.class, "Raiders", 1, this, 80, 3, true);
-    	
-     	EntityRegistry.registerEgg(EntityPlayerRaider.class, -3971048, -6191748);
-    	
-    	proxy.preInit(event);
-     }
-    
-    @EventHandler
     public void postinit(FMLPostInitializationEvent event)
     {
     	proxy.postInit(event);
     	
-    	Biome[] biomes = new Biome[0];
     	
+    	ConfigHandler.PostLoad();
+
+    	
+    	Biome[] biomes = new Biome[0];
 
     	biomes = ArrayUtils.add(biomes, Biomes.BEACH);
     	biomes = ArrayUtils.add(biomes, Biomes.PLAINS);

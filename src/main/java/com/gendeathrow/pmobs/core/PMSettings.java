@@ -22,6 +22,8 @@ public class PMSettings
 	public static boolean sprintersOnlyNight = false; 
 	
 	public static boolean safeForaDay = false;
+
+	public static boolean renderOverlays = true;
 	
 
 }

@@ -28,6 +28,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.monster.EntityIronGolem;
 import net.minecraft.entity.monster.EntityMob;
@@ -36,10 +37,8 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -49,7 +48,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.StringUtils;
@@ -59,9 +57,14 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.gendeathrow.pmobs.client.LayerFeatures;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
+import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -69,7 +72,7 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.properties.Property;
 
-public class EntityPlayerBase extends EntityMob 
+public class EntityRaiderBase extends EntityMob 
 {
 
 	private NetworkPlayerInfo playerInfo;
@@ -78,9 +81,17 @@ public class EntityPlayerBase extends EntityMob
 	
 	private static PlayerProfileCache profileCache;
 	private static MinecraftSessionService sessionService;
-	    
-	private static final DataParameter<String> SKIN_VARIANT = EntityDataManager.<String>createKey(EntityPlayerBase.class, DataSerializers.STRING);
-	       
+	
+    private static final UUID BABY_SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
+    private static final UUID SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D837");
+    
+	private static final DataParameter<String> SKIN_VARIANT = EntityDataManager.<String>createKey(EntityRaiderBase.class, DataSerializers.STRING);
+	private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(EntityRaiderBase.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> RAIDER_VARIANT = EntityDataManager.<Integer>createKey(EntityRaiderBase.class, DataSerializers.VARINT);
+    
+	private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID, "Baby speed boost", 0.5D, 1);
+	private float raiderWidth = -1.0F;
+	 private float raiderHeight;
 	// AI Additions
 	private boolean isBreakDoorsTaskSet = false;
     private final EntityAIBreakDoor breakDoor = new EntityAIBreakDoor(this);
@@ -95,10 +106,15 @@ public class EntityPlayerBase extends EntityMob
 	private boolean skinErrored = false;
 	private long skinTimeOut = 0;
 	
-	public EntityPlayerBase(World worldIn) 
+	public LayerFeatures features = LayerFeatures.NONE;
+	
+	public EntityRaiderBase(World worldIn) 
 	{
 		super(worldIn);
 		this.playerName = "Steve";
+		
+		this.setSize(0.6F, 1.95F);
+
 	}
 	
 	protected void initEntityAI()
@@ -136,6 +152,8 @@ public class EntityPlayerBase extends EntityMob
 	{
 		super.entityInit();
 		this.dataManager.register(SKIN_VARIANT, this.playerName);
+        this.dataManager.register(IS_CHILD, Boolean.valueOf(false));
+        this.dataManager.register(RAIDER_VARIANT,Integer.valueOf(0));
 	}
 	    
 	public void setLeapAttack(boolean enabled)
@@ -155,6 +173,95 @@ public class EntityPlayerBase extends EntityMob
 		}
 	}
 	
+    /**
+     * If Animal, checks if the age timer is negative
+     */
+    public boolean isChild()
+    {
+        return ((Boolean)this.getDataManager().get(IS_CHILD)).booleanValue();
+    }
+    
+    public void setChild(boolean childZombie)
+    {
+        this.getDataManager().set(IS_CHILD, Boolean.valueOf(childZombie));
+
+        if (this.worldObj != null && !this.worldObj.isRemote)
+        {
+        	
+            IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+            iattributeinstance.removeModifier(BABY_SPEED_BOOST);
+            iattributeinstance.removeModifier(SPEED_BOOST_ID);
+
+            if (childZombie)
+            {
+                iattributeinstance.applyModifier(BABY_SPEED_BOOST);
+            }
+        }
+
+        this.setChildSize(childZombie);
+    }
+    
+    public void notifyDataManagerChange(DataParameter<?> key)
+    {
+        if (IS_CHILD.equals(key))
+        {
+            this.setChildSize(this.isChild());
+        }
+        
+        super.notifyDataManagerChange(key);
+    }
+    
+    protected int getExperiencePoints(EntityPlayer player)
+    {
+        if (this.isChild())
+        {
+            this.experienceValue = (int)((float)this.experienceValue * 2.5F);
+        }
+
+        return super.getExperiencePoints(player);
+    }
+    
+    public void setChildSize(boolean isChild)
+    {
+        this.multiplySize(isChild ? 0.5F : 1.0F);
+    }
+    
+    protected final void multiplySize(float size)
+    {
+        super.setSize(this.raiderWidth * size, this.raiderHeight * size);
+    }
+    
+    protected final void setSize(float width, float height)
+    {
+        boolean flag = this.raiderWidth > 0.0F && this.raiderHeight > 0.0F;
+        this.raiderWidth = width;
+        this.raiderHeight = height;
+
+        if (!flag)
+        {
+            this.multiplySize(1.0F);
+        }
+    }
+	
+    @Override
+    public float getEyeHeight()
+    {
+        float f = 1.74F;
+
+        if (this.isChild())
+        {
+            f = (float)((double)f - 0.81D);
+        }
+
+        return f;
+    }
+    
+    public double getYOffset()
+    {
+        return this.isChild() ? 0.0D : -0.35D;
+    }
+
+    
 	@Override
 	public void onLivingUpdate()
 	{
@@ -165,13 +272,13 @@ public class EntityPlayerBase extends EntityMob
 
 		}
 	        
-		if (this.worldObj.isRemote && this.getOwner().toLowerCase().equals("herobrine"))
-		{
-			for (int i = 0; i < 2; ++i)
-			{
-				this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D, new int[0]);
-			}
-		}
+//		if (this.worldObj.isRemote && this.getOwner().toLowerCase().equals("herobrine"))
+//		{
+//			for (int i = 0; i < 2; ++i)
+//			{
+//				this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D, new int[0]);
+//			}
+//		}
 
 		super.onLivingUpdate();
 	}
@@ -269,9 +376,16 @@ public class EntityPlayerBase extends EntityMob
 	@Nullable
 	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
 	{
-
 	        livingdata = super.onInitialSpawn(difficulty, livingdata);
 	        float f = difficulty.getClampedAdditionalDifficulty();
+	        
+	        
+	        if(this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance) this.setChild(true); 
+	        	
+	        //if(this.worldObj.rand.nextFloat() < .5)	this.setChild(true);
+	        
+	        this.setRandomFeatures(); 
+	        
 	        this.setCanPickUpLoot(true);
 	        
 	        this.playerProfile = RaiderManager.getRandomRaider().getProfile();
@@ -284,8 +398,6 @@ public class EntityPlayerBase extends EntityMob
 	        ((PathNavigateGround)this.getNavigator()).setEnterDoors(true);
 	        
 	        this.setAlwaysRenderNameTag(false);
-	        
-	       // this.setTeleportFindPlayers(this.getOwner().toLowerCase().equals("herobrine"));
 	        
 	        this.setEquipmentBasedOnDifficulty(difficulty);
 	        
@@ -302,8 +414,6 @@ public class EntityPlayerBase extends EntityMob
 	            }
 	        }
 	        
-	        //this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.SHIELD));
-
 	        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).applyModifier(new AttributeModifier("Random spawn bonus", this.rand.nextDouble() * 0.05000000074505806D, 0));
 	        double d0 = this.rand.nextDouble() * 1.5D * (double)f;
 
@@ -311,29 +421,33 @@ public class EntityPlayerBase extends EntityMob
 	        { 
 	            this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(new AttributeModifier("Random zombie-spawn bonus", d0, 2));
 	        }
-
+	    	
+	        int day = (int)(this.worldObj.getWorldTime()/24000);
+	    	
+	    	double healthChance = getProgressionDifficulty(.05);
+	    	
 	        if (this.rand.nextFloat() < f * 0.05F)
 	        {
-	            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Leader zombie bonus", this.rand.nextDouble() * 3.0D + 1.0D, 2));
+	            this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Leader bonus", this.rand.nextDouble() * 4.0D + 1.0D, 2));
+	            
 	        }
-	        else
+	        else if(this.rand.nextFloat() < healthChance)
 	        {
-	        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health zombie bonus", this.rand.nextDouble() * 2.0D, 2));
+	        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 2.0D + 1.0D, 2));
 	        }
+	        
+	        this.setHealth(this.getMaxHealth());
 	        
 	        boolean spawnAtNight = (PMSettings.sprintersOnlyNight && !this.worldObj.isDaytime() ) || !PMSettings.sprintersOnlyNight;
 	        
-	    	int day = (int)(this.worldObj.getWorldTime()/24000);
+	    	double speedChance = getProgressionDifficulty(.05);
 	    	
-	    	double speedChance = .05 * ((int)(day / PMSettings.dayDifficultyProgression));
-	    	
-	        if (this.rand.nextDouble() < (speedChance < .5 ? speedChance : .5) && spawnAtNight)
+	        if (this.rand.nextDouble() < (speedChance < .5 ? speedChance : .5) && spawnAtNight && !((EntityRangedAttacker)this).isRangedAttacker && !this.isChild())
 	        {
-	        	double speed = -0.01 + (.23 - (-0.01)) * rand.nextDouble();
-	            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier("Speed Bonus bonus", speed , 0));
+	        	double speed = -0.01 + (.20 - (-0.01)) * rand.nextDouble();
+	            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(SPEED_BOOST_ID, "Speed Bonus", speed , 0));
 	           // this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).applyModifier(new AttributeModifier("Damage Speed Bonus bonus", this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() < this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getBaseValue() ? 2d : -1d , 0));
 	        }
-	        
 	        
 	        if(rand.nextDouble() < .05 &&  spawnAtNight)
 	        {
@@ -346,48 +460,37 @@ public class EntityPlayerBase extends EntityMob
 	    @Override
 	    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
 	    {
-	        if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + .1f)
+
+	    	if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + getProgressionDifficulty(.035))
 	        {
 	            int i = this.rand.nextInt(2);
 	            float f = this.worldObj.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
 
-	            if (this.rand.nextFloat() < 0.95F)
-	            {
-	                ++i;
-	            }
+	            boolean armorflag = true;
+	            boolean handflag = true;
 
-	            if (this.rand.nextFloat() < 0.65F)
-	            {
-	                ++i;
-	            }
-
-	            if (this.rand.nextFloat() < 0.45F)
-	            {
-	                ++i;
-	            }
-
-	            boolean flag = true;
-
+	            ArmorSetWeigthedItem ArmorSet = EquipmentManager.getRandomArmor();
+	            
 	            for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
 	            {
 	                if (entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.ARMOR)
 	                {
 	                    ItemStack itemstack = this.getItemStackFromSlot(entityequipmentslot);
 
-	                    if (!flag && this.rand.nextFloat() < f)
+	                    if (!armorflag && this.rand.nextFloat() > f + getProgressionDifficulty(.035))
 	                    {
 	                        break;
 	                    }
 
-	                    flag = false;
+	                    armorflag = false;
 
-	                    if (itemstack == null)
+	                    if (itemstack == null & ArmorSet != null)
 	                    {
-	                        Item item = getArmorByChance(entityequipmentslot, i);
-
-	                        if (item != null)
+	                   		ItemStack stack = ArmorSet.getArmorbyEquipmentSlot(entityequipmentslot);
+	                   		
+	                        if (stack != null && stack.getItem() != null)
 	                        {
-	                            this.setItemStackToSlot(entityequipmentslot, new ItemStack(item));
+	                        	this.setItemStackToSlot(entityequipmentslot, stack.copy());
 	                        }
 	                    }
 	                }
@@ -395,187 +498,57 @@ public class EntityPlayerBase extends EntityMob
 	                {
 	                    ItemStack itemstack = this.getItemStackFromSlot(entityequipmentslot);
 
-	                    if (!flag && this.rand.nextFloat() < f)
+	                    if (!handflag && this.rand.nextFloat() > f + getProgressionDifficulty(.035))
 	                    {
 	                        break;
 	                    }
 
-	                    flag = false;
+	                    handflag = false;
 
 	                    if (itemstack == null)
 	                    {
-	                        Item item = getWeaponeByChance(entityequipmentslot, i);
-
-	                        if (item != null)
+	                    	ItemStack stack = null;
+	                    	
+	                    	if(entityequipmentslot == EntityEquipmentSlot.MAINHAND)
+	                    	{
+	                    		stack = EquipmentManager.getRandomWeapons().getCopy();
+	                    	}
+	                    	else if(entityequipmentslot == EntityEquipmentSlot.OFFHAND)
+	                    	{
+	                    		stack = EquipmentManager.getRandomOffHand().getCopy();
+	                    	}
+	                        if (stack != null && stack.getItem() != null)
 	                        {
-	                            this.setItemStackToSlot(entityequipmentslot, new ItemStack(item));
+//	                            System.out.println("Slot: "+ entityequipmentslot.toString());
+//	                            System.out.println("| stack: "+ stack.getDisplayName());
+//	                            System.out.println( "| meta: "+ stack.getMetadata());
+//	                            System.out.println(" | nbt:"+ (stack.hasTagCompound() ? stack.getTagCompound().toString() : "null"));
+
+	                            
+	                            this.setItemStackToSlot(entityequipmentslot, stack);
+	                            
 	                        }
 	                    }
 	                }
+	                
 	            }
 	        } 
 	    }
 	    
 	    
-	    public static Item getWeaponeByChance(EntityEquipmentSlot slotIn, int chance)
+	    /**
+	     * gets the difficulty progression count, basically if you have progression set to 5 days than every 
+	     * 5 days it it multiply the value by the eachIncrease so 10 days = (2 * eachIncrease)
+	     * 
+	     * @param eachIncrease
+	     * @return
+	     */
+	    private double getProgressionDifficulty(double eachIncrease)
 	    {
-	        switch (slotIn)
-	        {
-	            case MAINHAND:
-
-	                if (chance == 0)
-	                {
-	                    return Items.WOODEN_SWORD;
-	                }
-	                else if (chance == 1)
-	                {
-	                    return Items.STONE_SWORD;
-	                }
-	                else if (chance == 2)
-	                {
-	                    return Items.IRON_SWORD;
-	                }
-	                else if (chance == 3)
-	                {
-	                    return Items.GOLDEN_SWORD;
-	                }
-	                else if (chance == 4)
-	                {
-	                    return Items.DIAMOND_SWORD;
-	                }
-
-	            case OFFHAND:
-
-	                if (chance == 0)
-	                {
-	                    return Items.SKULL;
-	                }
-	                else if (chance == 1)
-	                {
-	                    return Items.FEATHER;
-	                }
-	                else if (chance == 2)
-	                {
-	                    return Items.MAP;
-	                }
-	                else if (chance == 3)
-	                {
-	                    return Items.STICK;
-	                }
-	                else if (chance == 4)
-	                {
-	                    return Items.CLOCK;
-	                }
-	                
-	            default:
-	                return null;
-	        }
-	
+	        int day = (int)(this.worldObj.getWorldTime()/24000);
+	    	return eachIncrease * ((int)(day / PMSettings.dayDifficultyProgression));
 	    }
 	    
-	    
-	    public static Item getArmorByChance(EntityEquipmentSlot slotIn, int chance)
-	    {
-	        switch (slotIn)
-	        {
-	            case HEAD:
-
-	                if (chance == 0)
-	                {
-	                    return Items.LEATHER_HELMET;
-	                }
-	                else if (chance == 1)
-	                {
-	                    return Items.GOLDEN_HELMET;
-	                }
-	                else if (chance == 2)
-	                {
-	                    return Items.CHAINMAIL_HELMET;
-	                }
-	                else if (chance == 3)
-	                {
-	                    return Items.IRON_HELMET;
-	                }
-	                else if (chance == 4)
-	                {
-	                    return Items.DIAMOND_HELMET;
-	                }
-
-	            case CHEST:
-
-	                if (chance == 0)
-	                {
-	                    return Items.LEATHER_CHESTPLATE;
-	                }
-	                else if (chance == 1)
-	                {
-	                    return Items.GOLDEN_CHESTPLATE;
-	                }
-	                else if (chance == 2)
-	                {
-	                    return Items.CHAINMAIL_CHESTPLATE;
-	                }
-	                else if (chance == 3)
-	                {
-	                    return Items.IRON_CHESTPLATE;
-	                }
-	                else if (chance == 4)
-	                {
-	                    return Items.DIAMOND_CHESTPLATE;
-	                }
-
-	            case LEGS:
-
-	                if (chance == 0)
-	                {
-	                    return Items.LEATHER_LEGGINGS;
-	                }
-	                else if (chance == 1)
-	                {
-	                    return Items.GOLDEN_LEGGINGS;
-	                }
-	                else if (chance == 2)
-	                {
-	                    return Items.CHAINMAIL_LEGGINGS;
-	                }
-	                else if (chance == 3)
-	                {
-	                    return Items.IRON_LEGGINGS;
-	                }
-	                else if (chance == 4)
-	                {
-	                    return Items.DIAMOND_LEGGINGS;
-	                }
-
-	            case FEET:
-
-	                if (chance == 0)
-	                {
-	                    return Items.LEATHER_BOOTS;
-	                }
-	                else if (chance == 1)
-	                {
-	                    return Items.GOLDEN_BOOTS;
-	                }
-	                else if (chance == 2)
-	                {
-	                    return Items.CHAINMAIL_BOOTS;
-	                }
-	                else if (chance == 3)
-	                {
-	                    return Items.IRON_BOOTS;
-	                }
-	                else if (chance == 4)
-	                {
-	                    return Items.DIAMOND_BOOTS;
-	                }
-
-	            default:
-	                return null;
-	        }
-	    }
-
-
 	    public GameProfile updateGameprofile(GameProfile input)
 	    {
 	        if (input != null && !StringUtils.isNullOrEmpty(input.getName()))
@@ -669,6 +642,17 @@ public class EntityPlayerBase extends EntityMob
 	            this.playerProfile = NBTUtil.readGameProfileFromNBT(compound.getCompoundTag("Owner"));
 	            this.setOwner(playerProfile.getName());
 	        }
+	        
+	        if (compound.getBoolean("IsBaby"))
+	        {
+	            this.setChild(true);
+	        }
+	        
+	        if(compound.hasKey("OverlayType"))
+	        {
+	        	compound.getInteger("OverlayType");
+	        }
+
 
 	    }
 
@@ -685,6 +669,14 @@ public class EntityPlayerBase extends EntityMob
 	            NBTUtil.writeGameProfile(nbttagcompound, this.playerProfile);
 	            compound.setTag("Owner", nbttagcompound);
 	        }
+	        
+	        if (this.isChild())
+	        {
+	            compound.setBoolean("IsBaby", true);
+	        }
+	        
+	        //compound.setInteger("OverlayType", this.features.ordinal());
+
 	    }
 
 		private GameProfile randomSkin()
@@ -757,6 +749,23 @@ public class EntityPlayerBase extends EntityMob
 	    public boolean isPlayerSkin()
 	    {
 	    	return false;
+	    }
+	    
+	    /**
+	     * 	Layer Features are not synced
+	     */
+	    //@SideOnly(Side.CLIENT)
+	    public void setRandomFeatures()
+	    {
+	    	//this.features = LayerFeatures.randomFeature(this.rand);
+	    	
+			this.dataManager.set(this.RAIDER_VARIANT, LayerFeatures.randomFeature(this.rand).ordinal()); 
+	    }
+	    
+	    @SideOnly(Side.CLIENT)
+	    public LayerFeatures getFeatures()
+	    {
+			return LayerFeatures.values()[this.dataManager.get(RAIDER_VARIANT).intValue()]; 
 	    }
 
 }

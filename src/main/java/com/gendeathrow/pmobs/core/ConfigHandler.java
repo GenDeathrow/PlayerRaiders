@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Configuration;
 
 import org.apache.logging.log4j.Level;
 
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 
 public class ConfigHandler 
@@ -21,12 +22,6 @@ public class ConfigHandler
 	{
 		RaidersCore.logger.log(Level.INFO, "Loading Configs...");
 		
-		Configuration config;
-		File file = new File(configDir, "settings.cfg");
-		
-		config = new Configuration(file);
-		
-		config.load();
 		
 		PMSettings.daySpawnWeight = config.getInt("DaySpawnWeight", mobs, 20, 1, 1000, "Weight of Raiders spawning during Day  (Cuts into animal spawning)");
 		
@@ -44,12 +39,33 @@ public class ConfigHandler
 		
 		PMSettings.sprintersOnlyNight = config.getBoolean("Special Mobs Spawn at Night Only", mobs, false, "Hard/Fast/Special Mobs will only Spawn at night time only. (Except on hard days!)");
 		
-		PMSettings.renderNameTags = config.getBoolean("Render Name Tags", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders Name tags about thier heads.");
-		
 		PMSettings.safeForaDay = config.getBoolean("Safe for a Day", mobs, false, "Prevents Raiders from Spawning during first day");
+		
 		config.save();
 		
-		RaiderManager.readRaiderFile();
+
 	
+	}
+	
+	public static void preInit()
+	{
+		File file = new File(configDir, "settings.cfg");
+		
+		config = new Configuration(file);
+		
+		config.load();
+		
+		
+		PMSettings.renderNameTags = config.getBoolean("Render Name Tags", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders Name tags about thier heads.");
+		
+		PMSettings.renderOverlays = config.getBoolean("Render Skin Overlays", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders skins overlay features.");
+	}
+	
+	
+	public static void PostLoad()
+	{
+		RaiderManager.readRaiderFile();
+		
+		EquipmentManager.readEquipmentFile();
 	}
 }
