@@ -1,5 +1,8 @@
 package com.gendeathrow.pmobs.entity.New;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
@@ -14,12 +17,16 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -49,6 +56,15 @@ public class EntityHeroBrine extends EntityRaiderBase
 	{
 		super(worldIn);
 
+		invulnerable.add(DamageSource.drown);
+		invulnerable.add(DamageSource.cactus);
+		invulnerable.add(DamageSource.inFire);
+		invulnerable.add(DamageSource.lava);
+		invulnerable.add(DamageSource.fall);
+		invulnerable.add(DamageSource.lightningBolt);
+		invulnerable.add(DamageSource.onFire);
+		invulnerable.add(DamageSource.inFire);
+		invulnerable.add(DamageSource.wither);
 	}
 	
     protected void entityInit()
@@ -64,7 +80,7 @@ public class EntityHeroBrine extends EntityRaiderBase
         super.initEntityAI();
     }
     
-    private boolean isHeroBrine()
+    public boolean isHeroBrine()
     {
     	return this.getOwner().toLowerCase().equals("herobrine");
     }
@@ -95,8 +111,7 @@ public class EntityHeroBrine extends EntityRaiderBase
     
     private boolean shouldAttackPlayer(EntityPlayer player)
     {
-        ItemStack itemstack = player.inventory.armorInventory[3];
-
+        	ItemStack itemstack = player.inventory.armorInventory[3];
 
             Vec3d vec3d = player.getLook(1.0F).normalize();
             Vec3d vec3d1 = new Vec3d(this.posX - player.posX, this.getEntityBoundingBox().minY + (double)this.getEyeHeight() - (player.posY + (double)player.getEyeHeight()), this.posZ - player.posZ);
@@ -105,6 +120,19 @@ public class EntityHeroBrine extends EntityRaiderBase
             double d1 = vec3d.dotProduct(vec3d1);
             return d1 > 1.0D - 0.025D / d0 ? player.canEntityBeSeen(this) : false;
     }
+    
+    
+	@Override
+	public void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
+	{
+
+		if(this.isHeroBrine() && this.rand.nextDouble() <= .75)
+		{
+			this.dropItem(Items.ENDER_PEARL, 1);
+		}
+
+		super.dropLoot(wasRecentlyHit, lootingModifier, source);
+	}
     
 	@Override
 	public void onLivingUpdate()
@@ -117,9 +145,61 @@ public class EntityHeroBrine extends EntityRaiderBase
 				this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D, new int[0]);
 			}
 		}
+		else if(!this.worldObj.isRemote && isHeroBrine())
+		{
+			if(this.getActivePotionEffects().size() > 0)
+			{
+				this.clearActivePotions();
+			}
+			
+		}
 
 		super.onLivingUpdate();
 	}
+	
+	
+    protected void onDeathUpdate()
+    {
+    	
+    	if(this.isHeroBrine())
+    	{
+    		++this.deathTime;
+			this.setInvisible(true);
+    		if (this.deathTime == 40)
+    		{
+
+    			
+    			if (!this.worldObj.isRemote && (this.isPlayer() || this.recentlyHit > 0 && this.canDropLoot() && this.worldObj.getGameRules().getBoolean("doMobLoot")))
+    			{
+    				int i = this.getExperiencePoints(this.attackingPlayer);
+    				i = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i);
+    				while (i > 0)
+    				{	
+    					int j = EntityXPOrb.getXPSplit(i);
+    					i -= j;
+    					this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+    				}
+    			}
+
+    			for (int k = 0; k < 20; ++k)
+    			{
+    				double d2 = this.rand.nextGaussian() * 0.02D;
+    				double d0 = this.rand.nextGaussian() * 0.02D;
+    				double d1 = this.rand.nextGaussian() * 0.02D;
+    				this.worldObj.spawnParticle(EnumParticleTypes.DRAGON_BREATH, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
+    				this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
+    				this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
+    			}
+    			
+
+
+    			
+    			this.setDead();
+    		}
+    	}
+    	else super.onDeathUpdate();
+    }
+
 	
     @Nullable
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
@@ -130,13 +210,15 @@ public class EntityHeroBrine extends EntityRaiderBase
         if(this.isHeroBrine()) 	
        	{
         	this.targetTasks.addTask(1, new EntityHeroBrine.AIFindPlayer(this));
-            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(BABY_SPEED_BOOST_ID);
+            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SPEED_BOOST_ID);
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.35D);
             
             this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(3.0D);
             
             this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.0D);
             this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(60.0D);
+            //this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
             
             if(((EntityRangedAttacker)this).isRangedAttacker)
             {
@@ -216,6 +298,7 @@ public class EntityHeroBrine extends EntityRaiderBase
     		{
     			for (int i = 0; i < 64; ++i)
     			{
+    				
     				if (this.teleportRandomly())
     				{
     					return true;
@@ -228,7 +311,11 @@ public class EntityHeroBrine extends EntityRaiderBase
     		{
     			boolean flag = super.attackEntityFrom(source, amount);
 
-    			if (source.isUnblockable() && this.rand.nextInt(10) != 0)
+				if(source.getEntity() != null && this.rand.nextInt(10) <= 2 && source.getEntity() instanceof EntityPlayer)
+				{
+					this.teleportToEntityBack(source.getEntity());
+				}
+				else if (source.isUnblockable() && this.rand.nextInt(10) <= 5)
     			{
     				this.teleportRandomly();
     			}
@@ -237,6 +324,22 @@ public class EntityHeroBrine extends EntityRaiderBase
     		}
     	}else return super.attackEntityFrom(source, amount);
     }
+    
+    List<DamageSource> invulnerable = new ArrayList<DamageSource>();
+    
+    
+    @Override
+    public boolean isEntityInvulnerable(DamageSource source)
+    {
+    	if(this.isHeroBrine()) 
+    	{
+    		if(this.invulnerable.contains(source)) return true;
+    	}
+    		
+    		
+       return super.isEntityInvulnerable(source);
+    }
+
     
     public boolean isScreaming()
     {
@@ -335,7 +438,7 @@ public class EntityHeroBrine extends EntityRaiderBase
 
                     if (this.raider.shouldAttackPlayer((EntityPlayer)this.targetEntity))
                     {
-                        if (((EntityPlayer)this.targetEntity).getDistanceSqToEntity(this.raider) < 25.0D && this.teleportTime >= 30)
+                        if (((EntityPlayer)this.targetEntity).getDistanceSqToEntity(this.raider) < 25.0D && this.teleportTime >= 40)
                         {
                         	if(this.raider.rand.nextDouble() < 40)	
                         	{
@@ -347,9 +450,11 @@ public class EntityHeroBrine extends EntityRaiderBase
 
                         	}
                         	else this.raider.teleportRandomly();
+                        	
+                        	this.teleportTime = 0;
                         }
 
-                        this.teleportTime = 0;
+                        
                     }
                     else if (((EntityPlayer)this.targetEntity).getDistanceSqToEntity(this.raider) > 128.0D && this.teleportTime >= 30 && this.raider.teleportToEntity(this.targetEntity))
                     {

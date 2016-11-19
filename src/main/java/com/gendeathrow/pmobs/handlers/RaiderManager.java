@@ -1,9 +1,11 @@
 package com.gendeathrow.pmobs.handlers;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +13,16 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.WeightedRandom;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
+import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.core.ConfigHandler;
+import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.util.Tools;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.GsonBuilder;
@@ -30,10 +34,12 @@ import com.mojang.authlib.GameProfile;
 
 public class RaiderManager 
 {
-	public static HashMap<String, RaiderData> raidersList = new HashMap<String, RaiderData>();
+	public static final HashMap<String, RaiderData> raidersList = new HashMap<String, RaiderData>();
 	//public static List<RaiderData> raiderWeighted = Lists.<RaiderData>newArrayList();
 	
 	public static final File raiderFile = new File(ConfigHandler.configDir, "raiders.json");
+	
+	public static final File whiteListFolder = new File("raidersWhitelist");
 	
 	public static final Random rand = new Random();
 	
@@ -48,7 +54,7 @@ public class RaiderManager
 		raidersList.put("TheMattaBase", new RaiderData(new GameProfile(null, "TheMattaBase"), 10));
 		raidersList.put("Jsl7", new RaiderData(new GameProfile(null, "Jsl7"), 10));
 		raidersList.put("Turkey2349", new RaiderData(new GameProfile(null, "Turkey2349"), 10));
-		raidersList.put("McSqueaken", new RaiderData(new GameProfile(null, "McSqueaken"), 10));
+		//raidersList.put("McSqueaken", new RaiderData(new GameProfile(null, "McSqueaken"), 10));
 	}
 	
 	// ServerSide call
@@ -79,19 +85,28 @@ public class RaiderManager
 	// Cant get rid of herobrine.. he will add him self back
 	protected static void permanentRaiders()
 	{
+		int weight = (int) (WeightedRandom.getTotalWeight(getWeightedList()) * 0.01);
+		
 		if(!raidersList.containsKey("Herobrine"))
 		{
-			int weight = (int) (WeightedRandom.getTotalWeight(getWeightedList()) * 0.01);
-			//System.out.println("herobring weight ="+ weight);
 			raidersList.put("Herobrine", new RaiderData(new GameProfile(null, "Herobrine"), weight < 1 ? 1 : weight));
+		}
+		if(raidersList.containsKey("Herobrine"))
+		{
+			raidersList.get("Herobrine").itemWeight = weight < 1 ? 1 : weight;
+			markDirty = true;
 		}
 	}
 	
 	public static void addNewRaider(String ownerName, int weight)
 	{
-		raidersList.put(ownerName,  new RaiderData(new GameProfile(null, ownerName), weight));
-		//System.out.println(raidersList.size());
-		markDirty = true;
+		
+		if(!raidersList.containsKey(ownerName))
+		{
+			raidersList.put(ownerName,  new RaiderData(new GameProfile(null, ownerName), weight));
+			//System.out.println(raidersList.size());
+			markDirty = true;
+		}
 	}
 
 	public static void removeRaider(String ownerName)
@@ -111,11 +126,12 @@ public class RaiderManager
 	
 	public static void readRaiderFile()
 	{
+		 getTwitchSubscribers();
+		 
 	        if (raiderFile.isFile())
 	        {
 	            try
 	            {
-	            	//raiderWeighted.clear();
 	                raidersList.clear();
 
 	                raidersList.putAll(parseJson(FileUtils.readFileToString(raiderFile)));
@@ -123,6 +139,8 @@ public class RaiderManager
 	                //raiderWeighted.addAll(raidersList.values());
 	                
 	                permanentRaiders();
+	                
+	                getTwitchSubscribers();
 	            }
 	            catch (IOException ioexception)
 	            {
@@ -147,7 +165,7 @@ public class RaiderManager
 	        	   
 	            FileUtils.writeStringToFile(raiderFile, json);
 	            
-	            fo.close(); // don't swallow close Exception if copy completes normally
+	            fo.close(); 
 	        }
 	        catch (IOException ioexception)
 	        {
@@ -188,9 +206,16 @@ public class RaiderManager
 	                		weight = playerData.get("weight").getAsInt();
 	                	}
 
+	                	//System.out.println(playerOwner);
 	                	GameProfile playerProfile = new GameProfile((UUID)null,playerOwner);
+
 	                	RaiderData raiderData = new RaiderData(playerProfile, weight);
 	                	
+//	                	if(RaidersCore.proxy.isClient()) 
+//	                	{
+//	                		RaidersCore.logger.info("updateing profile: "+ playerOwner);
+	                			//RaidersSkinManager.updateProfile(raiderData);
+//	                	}
 	                	if(!map.containsKey(playerOwner))
 	                	{
 	                		map.put(playerOwner, raiderData);
@@ -236,7 +261,69 @@ public class RaiderManager
 	        
 	        return jsonobject;
 	}
-	    
-	    
+	
+	public static void getTwitchSubscribers()
+	{
+		getTwitchSubscribers(false);
+	}
+	
+	public static void getTwitchSubscribers(boolean force)
+	{
+		
+		whiteListFolder.mkdirs();
+
+		for(String list : PMSettings.whitelists)
+		{
+		
+			// First check to see if you have updated Twitch Subs yet
+			File subs = new File(whiteListFolder, list.replaceAll("\\W+", "") +".txt");
+
+			if(!subs.exists() || force)
+			{
+				try 
+				{
+					Tools.DownloadFile(list, subs.getPath());
+					
+					if(subs.exists())
+					{
+						parseTwitchSubsWhiteList(subs);
+					}
+					
+				} catch (IOException e) 
+				{
+					e.printStackTrace();
+				}
+			}
+		
+//			if(subs.exists())
+//			{
+//				try 
+//				{
+//					parseTwitchSubsWhiteList(subs);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+		}
+		
+	}
+	
+	private static void parseTwitchSubsWhiteList(File file) throws IOException
+	{
+		FileReader input = new FileReader(file);
+		BufferedReader bufRead = new BufferedReader(input);
+		String myLine = null;
+
+		try {
+			while ( (myLine = bufRead.readLine()) != null)
+			{    
+			    String[] array2 = myLine.split("\n");
+			    for (int i = 0; i < array2.length; i++)
+			    	addNewRaider(array2[i],10);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

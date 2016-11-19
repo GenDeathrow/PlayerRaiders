@@ -55,10 +55,7 @@ public class LayerFeatureRenderer implements LayerRenderer<EntityLivingBase>
 					this.layerModel.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 				GlStateManager.disableBlend();
 			}
-			
-			
-			
-			
+
 		}
 	}
 

@@ -51,6 +51,8 @@ public class EquipmentManager
 	
 	private static boolean markDirty = false;
 	
+	public static ArrayList<String> ErrorList = new ArrayList<String>();
+	
 	static
 	{
 
@@ -115,6 +117,8 @@ public class EquipmentManager
 		offHandList.clear();
 		mainHandList.clear();
 		
+		ErrorList.clear();
+		
 
 		if(jsonObject.has("Armor_Sets"))
 		{
@@ -175,7 +179,7 @@ public class EquipmentManager
 				if(weightedArmor != null)
 				{
 					armorList.add(weightedArmor);
-				}else System.out.println("Null Weigted item");
+				}
 				
 			}
 		}
@@ -206,8 +210,7 @@ public class EquipmentManager
 				if(weightedItem != null)
 				{
 					mainHandList.add(weightedItem);
-				}else System.out.println("Null Weigted item");
-		
+				}
 			}
 		}
 		
@@ -238,7 +241,7 @@ public class EquipmentManager
 				if(weightedItem != null)
 				{
 					offHandList.add(weightedItem);
-				}else System.out.println("Null Weigted item");
+				}
 			}
 		}
 		
@@ -268,9 +271,7 @@ public class EquipmentManager
 				if(arrowElement.has("TippedArrowsPotions"))
 				{
 					List<PotionEffect> collection = (List) new ArrayList();
-
-
-				
+					
 					if(arrowElement.get("TippedArrowsPotions").isJsonArray())
 					{
 						JsonArray TippedArrows = arrowElement.get("TippedArrowsPotions").getAsJsonArray();
@@ -280,9 +281,13 @@ public class EquipmentManager
 						
 							if(potionID.getAsJsonObject().has("potionID"))
 							{
-								System.out.println(potionID.getAsJsonObject().get("potionID").getAsString());
-									Potion potion = Potion.getPotionFromResourceLocation((potionID.getAsJsonObject().get("potionID").getAsString()));
-									if(potion != null) collection.add(new PotionEffect(potion, ticks));
+								Potion potion = Potion.getPotionFromResourceLocation((potionID.getAsJsonObject().get("potionID").getAsString()));
+								if(potion != null) collection.add(new PotionEffect(potion, ticks));
+								else 
+								{
+									ErrorList.add(potionID.getAsJsonObject().get("potionID").getAsString());
+									RaidersCore.logger.error("Potion could not be Found: "+ potionID.getAsJsonObject().get("potionID").getAsString());
+								}
 							}
 	
 						}
@@ -293,9 +298,13 @@ public class EquipmentManager
 						JsonObject potionID = arrowElement.get("TippedArrowsPotions").getAsJsonObject();
 						if(potionID.has("potionID"))
 						{
-							System.out.println(potionID.get("potionID").getAsString());
 							Potion potion = Potion.getPotionFromResourceLocation(potionID.get("potionID").getAsString());
 							if(potion != null) collection.add(new PotionEffect(potion, ticks));
+							else 
+							{
+								ErrorList.add(potionID.get("potionID").getAsString());
+								RaidersCore.logger.error("Potion could not be Found: "+ potionID.get("potionID").getAsString());
+							}
 						}
 					}
 					
@@ -310,7 +319,7 @@ public class EquipmentManager
 					{
 						tippedArrows.add(weightedItem);
 					
-					}else System.out.println("Null Weigted item");
+					}
 					
 
 					
@@ -320,10 +329,11 @@ public class EquipmentManager
 		}
 		
 
-		System.out.println("MainHandList Size: "+ mainHandList.size());
-		System.out.println("OffHand Size: "+ offHandList.size());
-		System.out.println("Armor Sets Size: "+ armorList.size());
-		System.out.println("Tipped Arrows Size: "+ tippedArrows.size());
+		RaidersCore.logger.info("MainHandList Size: "+ mainHandList.size());
+		RaidersCore.logger.info("OffHand Size: "+ offHandList.size());
+		RaidersCore.logger.info("Armor Sets Size: "+ armorList.size());
+		RaidersCore.logger.info("Tipped Arrows Size: "+ tippedArrows.size());
+		RaidersCore.logger.info("Errors: "+ ErrorList.size());
 	}
 	
 	private static ItemStack getItemStackFromID(String itemID)
@@ -332,26 +342,39 @@ public class EquipmentManager
 		String[] args = itemID.split(":");
 		
 
-		ItemStack stack;
-		
-//		System.out.println("modid: "+ args[0] +"| itemid: "+ args[1]);
+		ItemStack stack = null;
+		Item item = null;
+		int meta = 0;
 		
 		if(args.length == 3) 
 		{
 			try
 			{
-				int meta = Integer.parseInt(args[2]);
-				stack = new ItemStack(Item.getByNameOrId(args[0] +":"+ args[1]), 1, meta);		
-				System.out.println("meta:"+ meta);
+				meta = Integer.parseInt(args[2]);
+				item = Item.getByNameOrId(args[0] +":"+ args[1]);		
+				//System.out.println("meta:"+ meta);
 			}catch(Exception e)
 			{
-				stack = new ItemStack(Item.getByNameOrId(args[0] +":"+ args[1]));
-				System.out.println(e);
+				item = Item.getByNameOrId(args[0] +":"+ args[1]);
 			}
 		}
-		else  stack = new ItemStack(Item.getByNameOrId(args[0] +":"+ args[1]));
+		else
+		{
+			item = Item.getByNameOrId(args[0] +":"+ args[1]);
+		}
+			
 		
-		System.out.println(stack.getDisplayName());
+		
+		if(item != null)
+		{
+			stack = new ItemStack(Item.getByNameOrId(args[0] +":"+ args[1]), 1, meta);
+		}
+		else
+		{
+			ErrorList.add(itemID);
+			RaidersCore.logger.error("Item could not be Found: "+ itemID);
+		}
+
 		return stack;
 	}
 	
@@ -376,7 +399,8 @@ public class EquipmentManager
 		
 			}catch(Exception e)
 			{
-				System.out.println(stack.getDisplayName() + e);
+				RaidersCore.logger.error("Error Saving Stack to NBT "+ stack.getDisplayName() + e);
+				
 				return stack;
 			}
 		}

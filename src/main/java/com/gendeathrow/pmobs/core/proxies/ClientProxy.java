@@ -2,15 +2,18 @@ package com.gendeathrow.pmobs.core.proxies;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelBiped.ArmPose;
-import net.minecraftforge.common.util.EnumHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.gendeathrow.pmobs.client.ClientEventHandler;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
+import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class ClientProxy extends CommonProxy
@@ -41,7 +44,6 @@ public class ClientProxy extends CommonProxy
 	{
 		super.Init(event);
 		registerHandlers();
-		
 	}
 	
 	@Override
@@ -56,6 +58,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.registerHandlers();
 
+		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 	}
 	
 	@Override
@@ -89,5 +92,6 @@ public class ClientProxy extends CommonProxy
 	{
 		//ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(b), 0, new ModelResourceLocation(b.getRegistryName(), "inventory"));
 	}
+	
 	
 }

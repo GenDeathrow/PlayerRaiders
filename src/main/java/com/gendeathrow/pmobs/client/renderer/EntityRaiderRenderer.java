@@ -46,7 +46,6 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 	    private final ModelBiped defaultModel;
 	    
 	    private static ResourceLocation DEFAULT = new ResourceLocation("textures/entity/steve.png");
-		protected static final ResourceLocation dirtOVerlay1 = new ResourceLocation(RaidersCore.MODID ,"textures/entity/dirtySkin.png");
 
 	    private static HashMap<String, ResourceLocation> SkinsCache = new HashMap<String, ResourceLocation>();
 	    //private final List<LayerRenderer<EntityPlayerBase>> defaultLayers;  
@@ -64,10 +63,10 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 	        this.addLayer(new LayerArrow(this));
 	        
 	        if(PMSettings.renderOverlays)
-	        	{
-	        		System.out.println("rebder iverkats");
+	        {
+
 	        		this.addLayer(new LayerFeatureRenderer(this));
-	        	}
+	        }
 	        
 	        if(!PMSettings.renderNameTags) 
 	        {
@@ -112,9 +111,7 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 		@Override
 		protected ResourceLocation getEntityTexture(EntityRaiderBase entity) 
 		{
-
-			
-			return entity.getLocationSkin();
+			return entity.getLocationSkin() == null ? DefaultPlayerSkin.getDefaultSkinLegacy() : entity.getLocationSkin();
 		}
 		
 	    protected void preRenderCallback(EntityPlayerRaider entity, float partialTickTime)
@@ -132,25 +129,4 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 		    }
 	  	}
 		
-	    public static ThreadDownloadImageData getDownloadImageSkin(ResourceLocation resourceLocationIn, String username)
-	    {
-	        TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-	        ITextureObject itextureobject = texturemanager.getTexture(resourceLocationIn);
-
-
-	            itextureobject = new ThreadDownloadImageData((File)null, String.format("http://skins.minecraft.net/MinecraftSkins/%s.png", new Object[] {StringUtils.stripControlCodes(username)}), DefaultPlayerSkin.getDefaultSkin(getOfflineUUID(username)), new ImageBufferDownload());
-	            
-
-	            texturemanager.loadTexture(resourceLocationIn, itextureobject);
-
-	        return (ThreadDownloadImageData)itextureobject;
-	    }
-	    
-	    public static UUID getOfflineUUID(String username)
-	    {
-	        return UUID.nameUUIDFromBytes(("OfflinePlayer:" + username).getBytes(Charsets.UTF_8));
-	    }
-
-
-
 }

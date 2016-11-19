@@ -20,12 +20,12 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.2.13"
+version = "1.2.14_b15"
 group= "com.gendeathrow.pmobs" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "PlayerRaiders-1.10.2"
 
 minecraft {
-    version = "1.10.2-12.18.1.2011"
+    version = "1.10.2-12.18.2.2099"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.

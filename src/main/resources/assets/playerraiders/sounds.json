@@ -1,0 +1,41 @@
+{
+	"mob.raiders.say" : {
+		"category":"hostile",
+		"sounds" : [
+			"playerraiders:mob/raiders/grunt1",
+			"playerraiders:mob/raiders/grunt2",
+			"playerraiders:mob/raiders/grunt3",
+			"playerraiders:mob/raiders/grunt4",
+			"playerraiders:mob/raiders/grunt5",
+			"playerraiders:mob/raiders/grunt6",
+			"playerraiders:mob/raiders/grunt7",
+			"playerraiders:mob/raiders/grunt8",
+			"playerraiders:mob/raiders/grunt9",
+			"playerraiders:mob/raiders/grunt10",
+			"playerraiders:mob/raiders/grunt11",
+			"playerraiders:mob/raiders/grunt12",
+			"random/burp"
+		]
+	},
+	"mob.raiders.hurt" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "playerraiders:mob/raiders/grunt1",
+				"pitch" : 2 
+			},
+			{
+				"name" : "playerraiders:mob/raiders/grunt2",
+				"pitch" : 2
+			},
+			{
+				"name" : "playerraiders:mob/raiders/grunt3",
+				"pitch" : 2
+			},
+			{
+				"name" : "playerraiders:mob/raiders/grunt4",
+				"pitch" : 2
+			}
+		]
+	}
+}

@@ -2,12 +2,10 @@ package com.gendeathrow.pmobs.core;
 
 public class PMSettings 
 {
-
-	public static int daySpawnWeight = 100;
+	
+	public static float daySpawnPercentage = 0.45f;
 	
 	public static int NightSpawnWeight = 100;
-	
-	public static int dayMaxGroupSpawn = 1;
 	
 	public static int nightMaxGroupSpawn = 3;
 	
@@ -24,6 +22,13 @@ public class PMSettings
 	public static boolean safeForaDay = false;
 
 	public static boolean renderOverlays = true;
+
+	public static String[] whitelists;
 	
+
+	@Deprecated
+	public static int daySpawnWeight = 100;
+	@Deprecated
+	public static int dayMaxGroupSpawn = 1;
 
 }

@@ -32,7 +32,7 @@ import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRangedAttack;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
 
-public class EntityRangedAttacker extends EntityHeroBrine implements IRangedAttackMob
+public class EntityRangedAttacker extends EntityRider implements IRangedAttackMob
 {
 	
 	public boolean isRangedAttacker = false;
@@ -90,8 +90,8 @@ public class EntityRangedAttacker extends EntityHeroBrine implements IRangedAtta
 	@Override
 	public void attackEntityWithRangedAttack(EntityLivingBase target, float p_82196_2_) 
 	{
-		if(isRangedAttacker)
-		{
+//		if(isRangedAttacker)
+//		{
 			
 		       EntityTippedArrow entitytippedarrow = new EntityTippedArrow(this.worldObj, this);
 		        double d0 = target.posX - this.posX;
@@ -132,7 +132,7 @@ public class EntityRangedAttacker extends EntityHeroBrine implements IRangedAtta
 		        this.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
 		        this.worldObj.spawnEntityInWorld(entitytippedarrow);
 		        
-		}
+//		}
 	}
 	
     public void readEntityFromNBT(NBTTagCompound compound)
@@ -173,12 +173,14 @@ public class EntityRangedAttacker extends EntityHeroBrine implements IRangedAtta
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
     {
     	
-         
-    	if(this.rand.nextDouble() < .1d)
+        livingdata = super.onInitialSpawn(difficulty, livingdata);
+        
+    	      
+    	if(this.rand.nextDouble() < .1d && !this.isChild() && !this.isHeroBrine() && getProgressionDifficulty(1) >= 1)
     	{
     		this.isRangedAttacker = true;
     		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-    		if(this.rand.nextDouble() < .25) 
+    		if(this.rand.nextDouble() < .05 + (getProgressionDifficulty(.5) > .25 ? .25 : getProgressionDifficulty(.5))) 
     		{
     			try
     			{
@@ -191,9 +193,7 @@ public class EntityRangedAttacker extends EntityHeroBrine implements IRangedAtta
             
     	}
        	
-        livingdata = super.onInitialSpawn(difficulty, livingdata);
-     
-		
+  	
 		return livingdata;
     }
     

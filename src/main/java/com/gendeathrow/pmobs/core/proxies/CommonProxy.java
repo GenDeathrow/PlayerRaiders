@@ -5,7 +5,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.gendeathrow.pmobs.common.SoundEvents;
 import com.gendeathrow.pmobs.handlers.EventHandler;
 import com.gendeathrow.pmobs.world.WorldLoader;
 
@@ -34,11 +36,14 @@ public class CommonProxy
 
 	public void registerRenderers()
 	{
+		
 	}
 
 	public void registerModels()
 	{
+		
 	}
+	
 	
 	public void preInit(FMLPreInitializationEvent event) 
 	{
@@ -47,6 +52,7 @@ public class CommonProxy
 	
 	public void Init(FMLInitializationEvent event) 
 	{
+
 		
 	}
 	public void postInit(FMLPostInitializationEvent event) 

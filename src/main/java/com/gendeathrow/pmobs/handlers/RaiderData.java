@@ -26,4 +26,8 @@ public class RaiderData extends WeightedRandom.Item
 		return this.gameProfile;
 	}
 
+	public void setProfile(GameProfile profile)
+	{
+		gameProfile = profile;
+	}
 }

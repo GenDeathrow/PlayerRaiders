@@ -19,6 +19,7 @@ public class CommonCommands extends CommandBase
 	public CommonCommands()
 	{
 		coms.add(new AddNewPlayer());
+		coms.add(new UpdateTwitchWhitelist());
 	}
 	
 	@Override
