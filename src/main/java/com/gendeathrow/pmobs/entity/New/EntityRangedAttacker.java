@@ -176,11 +176,11 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
         livingdata = super.onInitialSpawn(difficulty, livingdata);
         
     	      
-    	if(this.rand.nextDouble() < .1d && !this.isChild() && !this.isHeroBrine() && getProgressionDifficulty(1) >= 1)
+    	if(this.rand.nextDouble() < .1d && !this.isChild() && !this.isHeroBrine() && this.difficultyManager.calculateProgressionDifficulty(1) >= 1)
     	{
     		this.isRangedAttacker = true;
     		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-    		if(this.rand.nextDouble() < .05 + (getProgressionDifficulty(.5) > .25 ? .25 : getProgressionDifficulty(.5))) 
+    		if(this.rand.nextDouble() < .05 + (this.difficultyManager.calculateProgressionDifficulty(.5) > .25 ? .25 : this.difficultyManager.calculateProgressionDifficulty(.5))) 
     		{
     			try
     			{

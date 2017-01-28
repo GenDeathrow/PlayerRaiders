@@ -19,6 +19,7 @@ public class ConfigHandler
 	public static Configuration config;
 	
 	private static String mobs = "Mobs";
+	private static String mobai = "MobsAI";
 	private static ConfigCategory remove = new ConfigCategory("remove");
 	public static void load()
 	{
@@ -52,14 +53,17 @@ public class ConfigHandler
 		
 		PMSettings.sprintersOnlyNight = config.getBoolean("Special Mobs Spawn at Night Only", mobs, false, "Hard/Fast/Special Mobs will only Spawn at night time only. (Except on hard days!)");
 		
+		PMSettings.removeVanillaSpawners = config.getBoolean("Remove Vanilla Mob Spawner", mobs, false, "Remove Vanilla Mob spawners from Dungeon Hooks");
+		
+		PMSettings.raidersSpawnerWeight = config.getInt("Mob Spawner Weight", mobs, 200, 1, 1000, "Changes dungeon spawner weight for raiders. Example is zombies are 200, where skeletons are 100.");
+		
 		PMSettings.safeForaDay = config.getBoolean("Safe for a Day", mobs, false, "Prevents All Mobs from Spawning during first day");
 		
-		
+		PMSettings.pyroAI = config.getBoolean("Pyromaniac", mobai, true, "Adds Pyromaniacs to the mix, they will seek out blocks to catch fire. small chance increases with each raid difficulty");
+		PMSettings.leapAttackAI = config.getBoolean("Leap Attack", mobai, true, "Gives some Raiders the abilit to leap attack, small chance increases with each raid difficulty");
+
 		config.removeCategory(remove);
 		config.save();
-		
-
-	
 		
 		// Load Kill Counter
 		

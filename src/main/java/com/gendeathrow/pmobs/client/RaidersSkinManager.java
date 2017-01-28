@@ -39,33 +39,6 @@ public class RaidersSkinManager
 	public static void cacheSkins()
 	{
 		
-		
-		//RaidersSkinManager.updateProfile();
-		
-		for(Entry<String, RaiderData> raider : RaiderManager.raidersList.entrySet())
-		{		
-//			if(!INSTANCE.cachedSkins.containsKey(raider.getValue().getProfile().getName()))
-//			{
-//				System.out.println("get raider skin for "+ raider.getValue().getProfile().getName());
-//				INSTANCE.cachedSkins.put(raider.getValue().getProfile().getName(), INSTANCE.cacheRaidersSkins(raider.getValue().getProfile()));
-//			}
-		}
-		
-//					for(Entry<String, RaiderData> raider : RaiderManager.raidersList.entrySet())
-//					{
-//						GameProfile profile = raider.getValue().getProfile();
-//		
-//						//profile = TileEntitySkull.updateGameprofile(profile);
-//						
-//						
-//						//profileCache.addEntry(gameProfile);
-//						setupProfiles(profile);
-//					
-//						if(!cachedSkins.containsKey(profile.getName()))
-//						{
-//							cachedSkins.put(profile.getName(), cacheRaidersSkins(profile));
-//						}
-//					}
 	}
 	
 	
@@ -88,21 +61,7 @@ public class RaidersSkinManager
 					{
 						//System.out.println("raider profile:"+ raider.getKey());
 						GameProfile profile = raider.getValue().getProfile();
-
-						
-						
-						//setupProfiles(profile);
-						
 						raider.getValue().setProfile(TileEntitySkull.updateGameprofile(profile));
-					
-						
-						
-//						if(!INSTANCE.cachedSkins.containsKey(raider.getValue().getProfile().getName()))
-//						{
-//							System.out.println("get raider skin for "+ raider.getValue().getProfile().getName());
-//							INSTANCE.cachedSkins.put(raider.getValue().getProfile().getName(), INSTANCE.cacheRaidersSkins(raider.getValue().getProfile()));
-//						}
-
 					}
 				}
 			});
@@ -115,8 +74,6 @@ public class RaidersSkinManager
 	{
 		
 		if(!badraiders.contains(raider.getOwner())) raiders.add(raider);
-		
-		
 
 		if (thread == null || thread.getState() == Thread.State.TERMINATED) {
 			thread = new Thread(new Runnable() 
@@ -196,8 +153,7 @@ public class RaidersSkinManager
         }
 	}
 	
-	
-	
+		
     public ResourceLocation cacheRaidersSkins(GameProfile gameprofile)
     {
     	gameprofile = RaidersSkinManager.INSTANCE.profileCache.getGameProfileForUsername(gameprofile.getName());

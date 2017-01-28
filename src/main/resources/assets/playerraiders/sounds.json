@@ -37,5 +37,34 @@
 				"pitch" : 2
 			}
 		]
+	},
+	"mob.raiders.laugh" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "playerraiders:mob/raiders/laugh01",
+				"pitch" : 2 
+			},
+			{
+				"name" : "playerraiders:mob/raiders/laugh01",
+				"pitch" : 1
+			},
+			{
+				"name" : "playerraiders:mob/raiders/laugh02",
+				"pitch" : 1
+			},
+			{
+				"name" : "playerraiders:mob/raiders/laugh02",
+				"pitch" : 2
+			}
+		]
+	},
+	"mob.raiders.scream" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "playerraiders:mob/raiders/scream"
+			}
+		]
 	}
 }

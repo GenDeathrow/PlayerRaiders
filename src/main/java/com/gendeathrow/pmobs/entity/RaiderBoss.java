@@ -8,26 +8,22 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.google.common.collect.Iterables;
-import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
 
-public class EntityPlayerRaider extends EntityRangedAttacker
+public class RaiderBoss extends EntityRaiderBase
 {
 
-	public EntityPlayerRaider(World worldIn) 
+	public RaiderBoss(World worldIn) 
 	{
 		super(worldIn);
 	}
-	
 
 	@Override
-    @SuppressWarnings(value = { "unchecked" })
     public ResourceLocation getLocationSkin()
     {
 		ResourceLocation resourcelocation =  DefaultPlayerSkin.getDefaultSkinLegacy();
@@ -50,6 +46,7 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 
 			if (map.containsKey(Type.SKIN))
 			{
+				//System.out.println("get skin");
 				resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
 			}
 		}
@@ -62,5 +59,4 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 		return resourcelocation;
     	
     }
-
 }

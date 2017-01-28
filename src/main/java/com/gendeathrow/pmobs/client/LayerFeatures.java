@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.util.ResourceLocation;
 
 import com.gendeathrow.pmobs.core.RaidersCore;
@@ -48,5 +50,15 @@ public enum LayerFeatures
     public static LayerFeatures randomFeature(Random rand)  
     {
         return VALUES.get(rand.nextInt(SIZE));
+    }
+    
+    @Nullable
+    public static LayerFeatures getFeature(int ordinal)
+    {
+    	for(LayerFeatures feature : VALUES)
+    	{
+    		if(feature.ordinal() == ordinal) return feature;
+    	}
+		return null;
     }
 }

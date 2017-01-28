@@ -1,12 +1,15 @@
-package com.gendeathrow.pmobs.client.model.renderer;
+package com.gendeathrow.pmobs.client.model.renderer.layers;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.GlStateManager.DestFactor;
+import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 
 import com.gendeathrow.pmobs.client.LayerFeatures;
+import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class LayerFeatureRenderer implements LayerRenderer<EntityLivingBase>
@@ -33,7 +36,7 @@ public class LayerFeatureRenderer implements LayerRenderer<EntityLivingBase>
 	
     protected void initDirt()
     {
-       this.layerModel = new RaiderModel(0F, true);
+       this.layerModel = new RaiderModel(0F);
     }
     
 	@Override
@@ -42,18 +45,22 @@ public class LayerFeatureRenderer implements LayerRenderer<EntityLivingBase>
 		if (entitylivingbaseIn instanceof EntityRaiderBase)
 		{
 
-
 			this.layerModel.setModelAttributes(this.renderer.getMainModel());
 			this.layerModel.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
 
 			
-			if(((EntityRaiderBase)entitylivingbaseIn).getFeatures() != LayerFeatures.NONE)
+			if(((EntityRaiderBase)entitylivingbaseIn).getFeatures() != LayerFeatures.NONE && this.layerModel.bipedBody.showModel)
 			{
-				GlStateManager.enableBlend();
-					//this.renderer.bindTexture(((EntityRaiderBase)entitylivingbaseIn).features.resource);
-					this.renderer.bindTexture(((EntityRaiderBase)entitylivingbaseIn).getFeatures().resource);
-					this.layerModel.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-				GlStateManager.disableBlend();
+	            	GlStateManager.pushMatrix();
+		            	GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+						GlStateManager.enableBlend();
+						GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+							this.renderer.bindTexture(((EntityRaiderBase)entitylivingbaseIn).getFeatures().resource);
+							this.layerModel.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+						GlStateManager.disableBlend();
+					GlStateManager.popMatrix();
+					
+
 			}
 
 		}

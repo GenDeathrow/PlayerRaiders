@@ -2,15 +2,20 @@ package com.gendeathrow.pmobs.entity.ai;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockDoublePlant;
+import net.minecraft.block.BlockGrass;
+import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.ai.EntityAIMoveToBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class EntityAIPyromaniac extends EntityAIMoveToBlock
@@ -24,6 +29,7 @@ public class EntityAIPyromaniac extends EntityAIMoveToBlock
   {
       super(theRaiderIn, speedIn, 16);
       this.theRaider = theRaiderIn;
+     // this.runDelay = 1200;
   }
 
   /**
@@ -79,24 +85,51 @@ public class EntityAIPyromaniac extends EntityAIMoveToBlock
 
       if (this.getIsAboveDestination())
       {
-          World world = this.theRaider.worldObj;
-          BlockPos blockpos = this.destinationBlock.east();
-          IBlockState iblockstate = world.getBlockState(blockpos);
+          World worldIn = this.theRaider.worldObj;
+          BlockPos blockpos = this.destinationBlock;
+          IBlockState iblockstate = worldIn.getBlockState(blockpos);
           Block block = iblockstate.getBlock();
-
+          boolean flag = false;
+          BlockPos burnPos = blockpos;
           if (this.currentTask == 0)
           {
-              if (world.isAirBlock(blockpos.up()))
+        	  try
+        	  {
+              for(EnumFacing facing : EnumFacing.HORIZONTALS)
               {
-            	  //world.playSound(null, pos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, itemRand.nextFloat() * 0.4F + 0.8F);
-            	  world.setBlockState(blockpos, Blocks.FIRE.getDefaultState(), 11);
-              }
+              	block = worldIn.getBlockState(blockpos.offset(facing,2).up()).getBlock();
+              	
+              	if (block.getFlammability(worldIn, blockpos.offset(facing,2), EnumFacing.UP) > 0 && !(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass))
+              	{
+              		for(EnumFacing burnlocation : EnumFacing.VALUES)
+              		{
+              			burnPos = blockpos.offset(facing,2).up().offset(burnlocation);
+              		 	if(worldIn.getBlockState(burnPos).getBlock() == Blocks.AIR) // && worldIn.getBlockState(burnPos.down()).getBlock().isSideSolid(worldIn.getBlockState(burnPos.down()), worldIn, burnPos.down(), EnumFacing.UP)
+              		 	{
+              		 		flag = true;
+              		 		break;
+              		 	}
 
-              //stack.damageItem(1, playerIn);
+              		}
+              		if(flag) break;
+              	}
+              }
+        	 }catch(Throwable e)
+        	 {
+        		 RaidersCore.logger.debug("Raider couldn't set block on fire..."+ e);
+        		 flag = false;
+        	 }
           }
           
+          
+          if(flag)
+          {
+        	  	this.theRaider.swingArm(EnumHand.MAIN_HAND);
+    			worldIn.playSound(null, burnPos, SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, this.theRaider.getRNG().nextFloat() * 0.4F + 0.8F);
+    			worldIn.setBlockState(burnPos, Blocks.FIRE.getDefaultState(), 11);
+          }
           this.currentTask = -1;
-          this.runDelay = 10;
+          this.runDelay = 2000;
       }
   }
 
@@ -105,17 +138,39 @@ public class EntityAIPyromaniac extends EntityAIMoveToBlock
    */
   protected boolean shouldMoveTo(World worldIn, BlockPos pos)
   {
+      Block block = null;
 	  
-      Block block = worldIn.getBlockState(pos.east()).getBlock();
-
-      if (block.isFlammable(worldIn, pos.east(), EnumFacing.UP))
+      boolean flag = false;
+      for(EnumFacing facing : EnumFacing.HORIZONTALS)
       {
-          if (this.wantsToBurnStuff && this.currentTask < 0)
-          {
-              this.currentTask = 0;
-              return true;
-          }
+      	block = worldIn.getBlockState(pos.offset(facing,2).up()).getBlock();
+      	try
+      	{
+      		if (!(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass) && block.getFlammability(worldIn, pos.offset(facing,2), EnumFacing.UP) > 0)
+      		{
+
+      			for(EnumFacing burnlocation : EnumFacing.VALUES)
+      			{
+      				BlockPos burnPos = pos.offset(facing,2).up().offset(burnlocation);
+      				if(worldIn.getBlockState(burnPos).getBlock() == Blocks.AIR)
+      				{
+      					flag = true;
+      				}
+      			}
+      		}
+      	}catch(Throwable e)
+      	{
+      		RaidersCore.logger.debug("Raider couldn't set block on fire..." + e);
+      		flag = false;
+      	}
       }
+  	  
+      
+		if (this.wantsToBurnStuff && this.currentTask < 0 && flag)
+		{
+			this.currentTask = 0;
+			return true;
+		}
 
       return false;
   }
