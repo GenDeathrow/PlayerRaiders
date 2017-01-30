@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import com.gendeathrow.pmobs.client.ClientEventHandler;
 import com.gendeathrow.pmobs.util.Tools;
 
 public class KillCounter 
@@ -76,6 +77,11 @@ public class KillCounter
 	
 	public static int addKillCount(String killer)
 	{
+		
+		
+		ClientEventHandler.whoKilled = killer;
+		
+		
 		if(killcnt.containsKey(killer))
 		{
 			killcnt.put(killer, killcnt.get(killer).intValue() + 1);

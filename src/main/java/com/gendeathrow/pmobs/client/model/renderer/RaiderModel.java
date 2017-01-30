@@ -37,8 +37,6 @@ public class RaiderModel extends ModelBiped
 	{
 		 super(modelSize, 0.0F, 64, 64);
 		 
-//		 this.bipedDeadmau5Head = new ModelRenderer(this, 24, 0);
-//		 this.bipedDeadmau5Head.addBox(-3.0F, -6.0F, -1.0F, 6, 6, 1, modelSize);
 //		 this.bipedCape = new ModelRenderer(this, 0, 0);
 //		 this.bipedCape.setTextureSize(64, 32);
 //		 this.bipedCape.addBox(-5.0F, 0.0F, -1.0F, 10, 16, 1, modelSize);
@@ -75,7 +73,7 @@ public class RaiderModel extends ModelBiped
     {
         this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
         
-//        GlStateManager.pushMatrix();
+        GlStateManager.pushMatrix();
 
         if (this.isChild)
         {
@@ -136,7 +134,7 @@ public class RaiderModel extends ModelBiped
             this.bipedHeadwear.render(scale);
         }
 
- //       GlStateManager.popMatrix();
+        GlStateManager.popMatrix();
     }
 
     public void renderCape(float scale)
@@ -153,6 +151,18 @@ public class RaiderModel extends ModelBiped
 		ItemStack offHand = entitylivingbaseIn.getHeldItem(EnumHand.OFF_HAND);
 
 		if (mainHand != null && mainHand.getItem() == Items.BOW && ((EntityRangedAttacker)entitylivingbaseIn).isSwingingArms())
+		{
+			if (entitylivingbaseIn.getPrimaryHand() == EnumHandSide.RIGHT)
+			{
+				this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+			}
+			else
+			{
+				this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+			}
+		}
+		
+		if (mainHand != null && ((EntityRaiderBase)entitylivingbaseIn).getRaiderRole() == EnumRaiderRole.BRUTE && ((EntityRangedAttacker)entitylivingbaseIn).isSwingingArms())
 		{
 			if (entitylivingbaseIn.getPrimaryHand() == EnumHandSide.RIGHT)
 			{

@@ -3,7 +3,6 @@ package com.gendeathrow.pmobs.entity.New;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -27,7 +26,6 @@ import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -35,7 +33,6 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -382,7 +379,7 @@ public class EntityRaiderBase extends EntityMob
     
     public void setBruteSize(boolean isBrute)
     {
-    	this.multiplySize(isBrute ? 2F : 1.0F);
+    	this.multiplySize(isBrute ? 1.5F : 1.0F);
     }
     
     protected final void multiplySize(float size)
@@ -465,7 +462,7 @@ public class EntityRaiderBase extends EntityMob
 		}
 		IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
 		
-		if(PMSettings.sprintersOnlyNight && !this.isChild())
+		if(PMSettings.sprintersOnlyNight && !this.isChild() && this.getRaiderRole() != EnumRaiderRole.TWEAKER && this.getRaiderRole() != EnumRaiderRole.BRUTE)
 		{
 			if(!this.worldObj.isDaytime()  && this.getRaiderRole() != EnumRaiderRole.TWEAKER)
 			{
@@ -627,6 +624,7 @@ public class EntityRaiderBase extends EntityMob
 	protected SoundEvent getAmbientSound()
 	{
 		if(this.getRNG().nextDouble() < .25 && this.isPyroTaskSet) return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_LAUGH;
+		if(this.getRNG().nextDouble() < .45 && this.getRaiderRole() == EnumRaiderRole.BRUTE) return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_BRUTE_LAUGH;
 		return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_SAY;
 	}
 
@@ -635,7 +633,7 @@ public class EntityRaiderBase extends EntityMob
 		return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_HURT;
 	}
 
-	protected SoundEvent getDeathSound()
+	protected SoundEvent getDeathSound() 
 	{
 		return SoundEvents.ENTITY_PLAYER_DEATH;
 	}
@@ -659,6 +657,10 @@ public class EntityRaiderBase extends EntityMob
 		return RaidersCore.playerraidersloot;
 	}
 	    
+    public boolean isHeroBrine()
+    {
+    	return false;
+    }
 	/**
 	 * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
 	 * when entity is reloaded from nbt. Mainly used for initializing attributes and inventory
@@ -722,30 +724,37 @@ public class EntityRaiderBase extends EntityMob
 	        	this.setLeapAttack(true);
 	        }
 	        
-	        if(rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.05, .15) && !this.isPyroTaskSet)
+	        
+	        if(rand.nextDouble() < .85 && !this.isHeroBrine())
 	        {
-	        	this.setMelee(true);
-	        	this.setRaiderRole(EnumRaiderRole.TWEAKER);
-	        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Tweaker Health", -.5, 2));
+	        	if(rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.05, .15) && !this.isPyroTaskSet)
+	        	{
+	        		this.setMelee(true);
+	        		this.setRaiderRole(EnumRaiderRole.TWEAKER);
+	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Tweaker Health", -.5, 2));
 	        	
+	        	}
+	        	else if(PMSettings.pyroAI && rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.025, .10) && !this.isTweaker)
+	        	{
+	        		this.setPyromaniac(true);
+	        		this.setRaiderRole(EnumRaiderRole.PYROMANIAC);
+	        		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
+	        	}
+	        	else if(rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.025, .10) && !this.isTweaker  && !this.isPyroTaskSet)
+	        	{
+	        		this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(.5);
+	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.15);
+	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30);
+		        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4);
+		        	this.setBrute(true);
+		        	this.setRaiderRole(EnumRaiderRole.BRUTE);
+		        	if(this.getHeldItem(EnumHand.OFF_HAND) != null) this.setHeldItem(EnumHand.OFF_HAND, null);
+		        	if(this.getHeldItem(EnumHand.MAIN_HAND) == null || this.getHeldItem(EnumHand.MAIN_HAND).getItem() != Items.IRON_SWORD) this.setHeldItem(EnumHand.OFF_HAND, new ItemStack(Items.IRON_SWORD));
+	        	}
 	        }
-	        else this.setMelee(false);
 	        
-	        if(PMSettings.pyroAI && rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.025, .10) && !this.isTweaker)
-	        {
-	        	this.setPyromaniac(true);
-		        this.setRaiderRole(EnumRaiderRole.PYROMANIAC);
-	        	this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
-	        }
-	        
-	        if(rand.nextDouble() < 0.75D + difficultyManager.calculateProgressionDifficulty(.025, .10) && !this.isTweaker)
-	        {
-		        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(.5);
-		        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.15);
-		        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30);
-		        this.setBrute(true);
-		        this.setRaiderRole(EnumRaiderRole.BRUTE);
-	        }
+	        if(!this.isPyroTaskSet) this.setMelee(false);
 	        	
 
 
@@ -758,7 +767,7 @@ public class EntityRaiderBase extends EntityMob
 	        
 	        
 	        this.setHealth(this.getMaxHealth());
-
+ 
 	        return livingdata;
 	}
 	
@@ -1036,6 +1045,14 @@ public class EntityRaiderBase extends EntityMob
 			PYROMANIAC(0.10, 0.05, 0.15, 0),
 			TWEAKER(0.10,0.05,0.15, 0),
 			BRUTE(.10,.01, 0);
+			//Troll mob
+			//Summoner
+			//illusionist
+			//technomancer
+			//witch
+			//scouts
+			//puppeter
+			
 
 			private double chance;
 			private double chanceIncrease;

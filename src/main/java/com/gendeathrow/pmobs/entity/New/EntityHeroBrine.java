@@ -80,6 +80,7 @@ public class EntityHeroBrine extends EntityRaiderBase
         super.initEntityAI();
     }
     
+    @Override
     public boolean isHeroBrine()
     {
     	return this.getOwner().toLowerCase().equals("herobrine");

@@ -17,13 +17,17 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.commands.common.CommonCommands;
 import com.gendeathrow.pmobs.common.SoundEvents;
+import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
 import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
@@ -34,6 +38,7 @@ public class RaidersCore
     public static final String MODID = "playerraiders";
     public static final String NAME = "Player Raiders";
     public static final String VERSION = "1.2.14.29";
+    public static final String CHANNELNAME = "genraiders";
     
 	@Instance(MODID)
 	public static RaidersCore instance;
@@ -44,6 +49,8 @@ public class RaidersCore
 	    
 	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".CommonProxy")
 	public static CommonProxy proxy;
+	
+	public static SimpleNetworkWrapper network;
 
     @EventHandler
     public void preinit(FMLPreInitializationEvent event)
@@ -53,6 +60,10 @@ public class RaidersCore
     	EntityRegistry.registerModEntity(EntityPlayerRaider.class, "Raiders", 1, this, 80, 3, true, -3971048, -6191748);
      	
      	ConfigHandler.preInit();
+     	
+       	RaidersCore.network = NetworkRegistry.INSTANCE.newSimpleChannel(RaidersCore.CHANNELNAME);
+       	
+       	network.registerMessage(RaiderDeathCntPacket.ClientHandler.class, RaiderDeathCntPacket.class, 0, Side.CLIENT);
     	
     	proxy.preInit(event);
      }
@@ -84,9 +95,6 @@ public class RaidersCore
     	RaidersCore.logger.info("Added "+ biomes.length +" biomes to Raiders spawn list.");
     
     	EntityRegistry.addSpawn(EntityPlayerRaider.class, PMSettings.NightSpawnWeight, 1, PMSettings.nightMaxGroupSpawn,EnumCreatureType.MONSTER, biomes);
-    	
-    	
-
     }
     
     @EventHandler

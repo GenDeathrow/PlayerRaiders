@@ -114,7 +114,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 		            entitytippedarrow.setKnockbackStrength(j);
 		        }
 
-		        boolean flag = this.isBurning() && difficultyinstance.func_190083_c() && this.rand.nextBoolean();
+		        boolean flag = this.isBurning() && difficultyinstance.isHard() && this.rand.nextBoolean();
 		        flag = flag || EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FLAME, this) > 0;
 
 		        if (flag)
@@ -188,7 +188,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     				if(tippedArrow != null)	this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, tippedArrow);
     			}catch(Exception e){ RaidersCore.logger.error(e); }
     		}
-            Biome biome = this.worldObj.getBiomeGenForCoords(new BlockPos(this));
+            Biome biome = this.worldObj.getBiome(new BlockPos(this));
             this.tasks.addTask(1, this.aiArrowAttack);
             
     	}
