@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIAttackRanged;
 import net.minecraft.entity.projectile.EntityTippedArrow;
@@ -176,7 +177,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
         livingdata = super.onInitialSpawn(difficulty, livingdata);
         
     	      
-    	if(this.rand.nextDouble() < .1d && !this.isChild() && !this.isHeroBrine() && this.difficultyManager.calculateProgressionDifficulty(1) >= 1)
+    	if(this.rand.nextDouble() < .1d && !this.isChild() && !this.isHeroBrine() && this.getRaiderRole() == EnumRaiderRole.NONE &&this.difficultyManager.calculateProgressionDifficulty(1) >= 1)
     	{
     		this.isRangedAttacker = true;
     		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
@@ -190,6 +191,8 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     		}
             Biome biome = this.worldObj.getBiome(new BlockPos(this));
             this.tasks.addTask(1, this.aiArrowAttack);
+            
+            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
             
     	}
        	

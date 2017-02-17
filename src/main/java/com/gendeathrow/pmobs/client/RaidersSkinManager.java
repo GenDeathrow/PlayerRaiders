@@ -1,12 +1,12 @@
 package com.gendeathrow.pmobs.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -22,6 +22,7 @@ import com.gendeathrow.pmobs.handlers.RaiderData;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.google.common.collect.Iterables;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -36,37 +37,63 @@ public class RaidersSkinManager
 	public final HashMap<String, ResourceLocation> cachedSkins = new HashMap<String, ResourceLocation>();
 	public static final RaidersSkinManager INSTANCE = new RaidersSkinManager();
 	
+	
+	
 	public static void cacheSkins()
 	{
+	
+		Iterator<RaiderData> raidersList = RaiderManager.getAllRaiders().values().iterator();
+		
+		while(raidersList.hasNext())
+		{
+			updateProfile(raidersList.next());
+		}
+		
 		
 	}
 	
 	
-	private static Thread thread;	
+	private static Thread thread;
+	
+	private static Thread thread2;
 	private static List<EntityRaiderBase> raiders = new ArrayList<EntityRaiderBase>();
 	
-	public synchronized static void updateProfile() {
+	private static List<RaiderData> raidersdata = new ArrayList<RaiderData>();
+	
+	public static void updateProfile(RaiderData raiderInfo) {
 
 		
-		if (thread == null || thread.getState() == Thread.State.TERMINATED) {
+		if(!badraiders.contains(raiderInfo.getOwnerName())) raidersdata.add(raiderInfo);
 
-			thread = new Thread(new Runnable() 
+		if (thread2 == null || thread2.getState() == Thread.State.TERMINATED) {
+			thread2 = new Thread(new Runnable() 
 			{
 
 				@Override
-				public void run() 
-				{
+				public void run() {
 					
-					for(Entry<String, RaiderData> raider : RaiderManager.raidersList.entrySet())
+					while (!raidersdata.isEmpty()) 
 					{
-						//System.out.println("raider profile:"+ raider.getKey());
-						GameProfile profile = raider.getValue().getProfile();
-						raider.getValue().setProfile(TileEntitySkull.updateGameprofile(profile));
+						RaiderData raider = raidersdata.get(0);
+
+						//raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
+						raider.setProfile(setupProfiles(raider.getProfile()));
+						
+						try 
+						{
+							//System.out.println("Getting Profile "+ raider.getOwnerName());
+							Thread.sleep(250);
+						} catch (InterruptedException e) 
+						{
+							e.printStackTrace();
+						}
+						
+						raidersdata.remove(0);
 					}
 				}
 			});
 
-			thread.start();
+			thread2.start();
 		}
 	}
 	
@@ -81,16 +108,34 @@ public class RaidersSkinManager
 
 				@Override
 				public void run() {
+					
 					while (!raiders.isEmpty()) 
 					{
 						EntityRaiderBase raider = raiders.get(0);
+
+						//boolean flag = profileCache.getUsernames() != null ? (Arrays.asList(profileCache.getUsernames()).contains(raider.getOwner())) : false;
 						
-						raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
-						
+						//raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
+						raider.setPlayerProfile(setupProfiles(raider.getPlayerProfile()));
 						raider.setProfileUpdated(true);
-			              
-						raiders.remove(0);
 						
+						//RaiderManager.setRaiderProfile(raider.getOwner(), raider.getPlayerProfile());
+						
+						try 
+						{
+							System.out.println("->"+ raider.getOwner());
+							//if(!flag)
+							//{
+							
+							
+								Thread.sleep(250);
+							//}
+						} catch (InterruptedException e) 
+						{
+							e.printStackTrace();
+						}
+						
+						raiders.remove(0);
 					}
 				}
 			});
@@ -106,10 +151,10 @@ public class RaidersSkinManager
 		
 		//setupProfiles(profile);
 	
-		if(!INSTANCE.cachedSkins.containsKey(profile.getName()))
-		{
-			
-		}
+//		if(!INSTANCE.cachedSkins.containsKey(profile.getName()))
+//		{
+//			
+//		}
 		
 	}
 	
@@ -123,7 +168,8 @@ public class RaidersSkinManager
             }
             else if (RaidersSkinManager.INSTANCE.profileCache != null && RaidersSkinManager.sessionService != null)
             {
-                GameProfile gameprofile = RaidersSkinManager.INSTANCE.profileCache.getGameProfileForUsername(input.getName());
+            	GameProfile gameprofile;
+                gameprofile = RaidersSkinManager.INSTANCE.profileCache.getGameProfileForUsername(input.getName());
 
                 if (gameprofile == null)
                 {

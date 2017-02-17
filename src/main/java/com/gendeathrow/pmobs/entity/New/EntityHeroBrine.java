@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.enchantment.EnchantmentFrostWalker;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -22,6 +24,7 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -108,6 +111,18 @@ public class EntityHeroBrine extends EntityRaiderBase
         }
 
         super.notifyDataManagerChange(key);
+    }
+    
+    @Override
+    protected void frostWalk(BlockPos pos)
+    {
+    	
+    	if(this.isHeroBrine())
+    	{
+    		EnchantmentFrostWalker.freezeNearby(this, this.worldObj, pos, 2);
+    	}
+    	
+    	else super.frostWalk(pos);
     }
     
     private boolean shouldAttackPlayer(EntityPlayer player)

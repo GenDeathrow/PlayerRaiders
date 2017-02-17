@@ -18,12 +18,11 @@ public class ClientEventHandler
 
 	public static String whoKilled = "";
 	
-	@SubscribeEvent
-	public void guiinit(GuiOpenEvent event)
-	{
-		if(event.getGui() == null) return;
-		System.out.println(event.getGui().getClass().getName());
-	}
+//	@SubscribeEvent
+//	public void guiinit(GuiOpenEvent event)
+//	{
+//		if(event.getGui() == null) return;
+//	}
 	
 	@SubscribeEvent
 	public void showDeathCount(DrawScreenEvent.Post event)

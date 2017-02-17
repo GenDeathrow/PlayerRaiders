@@ -169,7 +169,14 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
                 		world.addBlockEvent(destinationBlock, te.getBlockType(), 1, ((TileEntityChest)te).numPlayersUsing);
                 	}
                     	
-                	chestInventory.setInventorySlotContents(slot, inventorybasic.addItem(stealItem));
+                	try
+                	{
+                		chestInventory.setInventorySlotContents(slot, inventorybasic.addItem(stealItem));
+                	}
+                	catch(NullPointerException e)
+                	{
+                		e.printStackTrace();
+                	}
                 	
                 }
                 
@@ -210,7 +217,15 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
                     		world.addBlockEvent(destinationBlock, te.getBlockType(), 1, ((TileEntityChest)te).numPlayersUsing);
                     	}
                     	
-                    	capInventory.insertItem(slot, inventorybasic.addItem(stealItem), false);
+                     	try
+                    	{
+                     		capInventory.insertItem(slot, inventorybasic.addItem(stealItem), false);
+                    	}
+                    	catch(NullPointerException e)
+                    	{
+                    		e.printStackTrace();
+                    	}
+
                     }
                     
                     

@@ -35,10 +35,22 @@ public class PMSettings
 
 	public static int raidersSpawnerWeight = 200;
 
-	public static boolean pyroAI = true;
-	
-	public static float pyroChance = 0.05f;
-
 	public static boolean leapAttackAI = true;
+
+	// Raiders Classes
+	public static boolean pyroClass = true;
+		public static float pyroChance = 0.05f;
+	public static boolean bruteClass = true;
+	public static boolean tweakersClass = true;
+	
+	public static int pyroWeight = 2;
+	public static int bruteWeight = 5;
+	public static int tweakerWeight = 5;
+	public static int noneWeight = 80;
+	
+	//Factions
+	
+	public static boolean factionsEnabled = true;
+	
 
 }

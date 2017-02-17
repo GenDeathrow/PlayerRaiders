@@ -14,7 +14,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -54,8 +53,12 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
@@ -72,14 +75,15 @@ import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
 import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
+import com.gendeathrow.pmobs.handlers.RaiderData;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
-import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 
 
-public class EntityRaiderBase extends EntityMob 
+public class EntityRaiderBase extends EntityMob
 {
 
 	private NetworkPlayerInfo playerInfo;
@@ -101,6 +105,7 @@ public class EntityRaiderBase extends EntityMob
 	private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(EntityRaiderBase.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> RAIDER_VARIANT = EntityDataManager.<Integer>createKey(EntityRaiderBase.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> RAIDER_ROLE = EntityDataManager.<Integer>createKey(EntityRaiderBase.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> RAIDER_FACTION = EntityDataManager.<Integer>createKey(EntityRaiderBase.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ARMS_RAISED = EntityDataManager.<Boolean>createKey(EntityRaiderBase.class, DataSerializers.BOOLEAN);
     
 	private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID, "Baby speed boost", 0.5D, 1);
@@ -190,6 +195,7 @@ public class EntityRaiderBase extends EntityMob
 		this.getDataManager().register(IS_CHILD, Boolean.valueOf(false));
         this.getDataManager().register(RAIDER_VARIANT,Integer.valueOf(0));
         this.getDataManager().register(RAIDER_ROLE, Integer.valueOf(0));
+        this.getDataManager().register(RAIDER_FACTION, Integer.valueOf(0));
         this.getDataManager().register(ARMS_RAISED, Boolean.valueOf(false));
 	}
 	    
@@ -252,7 +258,6 @@ public class EntityRaiderBase extends EntityMob
 		
 	}
 	
-	
     @Override
     public boolean isEntityInvulnerable(DamageSource source)
     {
@@ -290,15 +295,40 @@ public class EntityRaiderBase extends EntityMob
     	return EnumRaiderRole.get(((Integer)this.getDataManager().get(RAIDER_ROLE)).intValue());
     }
     
-    @Override
-    public boolean canAttackClass(Class entity) 
+    
+    public void setRaiderFaction(EnumFaction faction)
     {
-    	if(willSteal) return false;
-    	
-    	if(entity == this.getClass()) return false;
-    	
-    	return true;
+    	this.getDataManager().set(RAIDER_FACTION, faction.ordinal());
     }
+    
+    public EnumFaction getRaiderFaction()
+    {
+    	return EnumFaction.get(((Integer)this.getDataManager().get(RAIDER_FACTION)).intValue());
+    }
+    
+    @Override
+    public boolean isOnSameTeam(Entity entityIn)
+    {
+    	if(entityIn instanceof EntityPlayer && this.getRaiderFaction() == EnumFaction.FRIENDLY)
+    	{
+    		return true;
+    	}
+    	else if(entityIn instanceof EntityRaiderBase)
+    	{
+    		return this.getRaiderFaction() == ((EntityRaiderBase) entityIn).getRaiderFaction();
+    	}
+    	else return this.isOnScoreboardTeam(entityIn.getTeam());
+    }
+    
+//    @Override
+//    public boolean canAttackClass(Class entity) 
+//    {
+//    	if(willSteal) return false;
+//    	
+//    	if(entity == this.getClass()) return false;
+//    	
+//    	return true;
+//    }
     
     public void setChild(boolean childZombie)
     {
@@ -423,29 +453,46 @@ public class EntityRaiderBase extends EntityMob
     }
     
     @Override
+    public int getMaxSpawnedInChunk()
+    {
+    	if(this.worldObj.isDaytime())
+    	{
+    		return 2;
+    	}
+        return 4;
+    }
+    
+    @Override
+    protected float getWaterSlowDown()
+    {
+        return .9F;
+    }
+    
+    
+    @Override
     public boolean getCanSpawnHere()
     {
     	if (this.worldObj.getDifficulty() == EnumDifficulty.PEACEFUL) return false;
     	
-    	int maxEntites = (int) ((this.difficultyManager.getDay() < 4 ) ? ((this.difficultyManager.getDay() * .15) + .15) * EnumCreatureType.MONSTER.getMaxNumberOfCreature() : EnumCreatureType.MONSTER.getMaxNumberOfCreature());
-    	
-    	if(this.worldObj.isDaytime())
-    	{
-
-    		List<EntityRaiderBase> list = this.worldObj.getEntities(EntityRaiderBase.class,  new Predicate<EntityRaiderBase>() 
-    		{
-    			@Override public boolean apply(EntityRaiderBase number) 
-    			{
-    				return true;
-    			}       
-    		});
-    	
-    		if(list.size()+1 >= (PMSettings.daySpawnPercentage * maxEntites))
-    		{
-    			return false;
-    		}
-    	}
-    	
+//    	int maxEntites = (int) ((this.difficultyManager.getDay() < 4 ) ? ((this.difficultyManager.getDay() * .15) + .15) * EnumCreatureType.MONSTER.getMaxNumberOfCreature() : EnumCreatureType.MONSTER.getMaxNumberOfCreature());
+//    	
+//    	if(this.worldObj.isDaytime())
+//    	{
+//
+//    		List<EntityRaiderBase> list = this.worldObj.getEntities(EntityRaiderBase.class,  new Predicate<EntityRaiderBase>() 
+//    		{
+//    			@Override public boolean apply(EntityRaiderBase number) 
+//    			{
+//    				return true;
+//    			}       
+//    		});
+//    	
+//    		if(list.size()+1 >= (PMSettings.daySpawnPercentage * maxEntites))
+//    		{
+//    			return false;
+//    		}
+//    	}
+//    	
     	
     	return true;
     }
@@ -547,6 +594,20 @@ public class EntityRaiderBase extends EntityMob
 			int i = MathHelper.floor_double(this.posX);
 			int j = MathHelper.floor_double(this.posY);
 			int k = MathHelper.floor_double(this.posZ);
+			
+			if(entitylivingbase != null && entitylivingbase instanceof EntityLivingBase)
+			{
+				this.setAttackTarget(entitylivingbase);
+//				
+//				List<EntityRaiderBase> entites = this.worldObj.getEntitiesWithinAABB(EntityRaiderBase.class, this.getCollisionBoundingBox().expandXyz(4D));
+//				
+//				for(EntityRaiderBase entity : entites)
+//				{
+//					entity.setAttackTarget(entitylivingbase);
+//				}
+//				
+			}
+			
 
 			return true;
 		}
@@ -568,9 +629,9 @@ public class EntityRaiderBase extends EntityMob
 	private int lastBurnTick = 0;
 	public boolean attackEntityAsMob(Entity entityIn)
 	{
-		boolean flag = super.attackEntityAsMob(entityIn);
+		boolean hasHitTarget = super.attackEntityAsMob(entityIn);
 
-		if (flag)
+		if (hasHitTarget)
 		{
 			int i = this.worldObj.getDifficulty().getDifficultyId();
 
@@ -587,18 +648,21 @@ public class EntityRaiderBase extends EntityMob
 				entityIn.setFire(2 * i);
 				lastBurnTick = 0;
 			}
+			
+			if(this.getRaiderRole() == EnumRaiderRole.BRUTE && entityIn instanceof EntityLiving)
+			{
+				((EntityLiving)entityIn).knockBack(entityIn, 2, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
+			}
 		}
 
-		return flag;
+		return hasHitTarget;
 	}
 
 	@Override
 	public void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
 	{
-
 		if(source.getEntity() != null && source.getEntity() instanceof EntityPlayer)
 		{
-			
 			double dropit = this.rand.nextDouble();
 			
 			if( dropit < (.025)) //lootingModifier*0.025 + 
@@ -613,19 +677,16 @@ public class EntityRaiderBase extends EntityMob
 				
 				this.worldObj.spawnEntityInWorld(skull);
 			}
-			
-			
 		}
-
 		super.dropLoot(wasRecentlyHit, lootingModifier, source);
 	}
 	
 
 	protected SoundEvent getAmbientSound()
 	{
-		if(this.getRNG().nextDouble() < .25 && this.isPyroTaskSet) return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_LAUGH;
-		if(this.getRNG().nextDouble() < .45 && this.getRaiderRole() == EnumRaiderRole.BRUTE) return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_BRUTE_LAUGH;
-		return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_SAY;
+		if(this.getRaiderRole() == EnumRaiderRole.PYROMANIAC && this.getRNG().nextDouble() < .45) return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_LAUGH;
+		else if(this.getRaiderRole() == EnumRaiderRole.BRUTE && this.getRNG().nextDouble() < .45) return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_BRUTE_LAUGH;
+		else return com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_SAY;
 	}
 
 	protected SoundEvent getHurtSound()
@@ -661,7 +722,8 @@ public class EntityRaiderBase extends EntityMob
     {
     	return false;
     }
-	/**
+	
+    /**
 	 * Called only once on an entity when first time spawned, via egg, mob spawner, natural spawning etc, but not called
 	 * when entity is reloaded from nbt. Mainly used for initializing attributes and inventory
 	 */
@@ -670,11 +732,11 @@ public class EntityRaiderBase extends EntityMob
 	{
 	        livingdata = super.onInitialSpawn(difficulty, livingdata);
 	        
-	        //this.tasks.addTask(2, melee);
-	        
 	        float f = difficulty.getClampedAdditionalDifficulty();
 	        
 	        this.setRandomFeatures(); 
+	        
+	        this.setRaiderFaction(EnumFaction.getRandomFaction(this, this.difficultyManager));
 	        
 	        this.setCanPickUpLoot(true);
 	      
@@ -717,46 +779,43 @@ public class EntityRaiderBase extends EntityMob
 	            this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(new AttributeModifier("Random zombie-spawn bonus", d0, 2));
 	        }
 
-
-        
-	        if(PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
-	        {
-	        	this.setLeapAttack(true);
-	        }
 	        
-	        
-	        if(rand.nextDouble() < .85 && !this.isHeroBrine())
+	        if(!this.isHeroBrine())
 	        {
-	        	if(rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.05, .15) && !this.isPyroTaskSet)
+	        	EnumRaiderRole raiderClass = EnumRaiderRole.getRandomRole(this, this.difficultyManager);
+	        	
+	        	if(raiderClass.equals(EnumRaiderRole.TWEAKER))
 	        	{
 	        		this.setMelee(true);
 	        		this.setRaiderRole(EnumRaiderRole.TWEAKER);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Tweaker Health", -.5, 2));
-	        	
-	        	}
-	        	else if(PMSettings.pyroAI && rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.025, .10) && !this.isTweaker)
-	        	{
-	        		this.setPyromaniac(true);
-	        		this.setRaiderRole(EnumRaiderRole.PYROMANIAC);
-	        		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
-	        	}
-	        	else if(rand.nextDouble() < 0.05D + difficultyManager.calculateProgressionDifficulty(.025, .10) && !this.isTweaker  && !this.isPyroTaskSet)
+	        	}else if(raiderClass.equals(EnumRaiderRole.BRUTE))
 	        	{
 	        		this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(.5);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.15);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
 	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30);
 		        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4);
+		        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Tweaker Health", 1.25, 2));
 		        	this.setBrute(true);
 		        	this.setRaiderRole(EnumRaiderRole.BRUTE);
 		        	if(this.getHeldItem(EnumHand.OFF_HAND) != null) this.setHeldItem(EnumHand.OFF_HAND, null);
-		        	if(this.getHeldItem(EnumHand.MAIN_HAND) == null || this.getHeldItem(EnumHand.MAIN_HAND).getItem() != Items.IRON_SWORD) this.setHeldItem(EnumHand.OFF_HAND, new ItemStack(Items.IRON_SWORD));
+		        	if(this.getHeldItem(EnumHand.MAIN_HAND) == null || this.getHeldItem(EnumHand.MAIN_HAND).getItem() != Items.IRON_SWORD) this.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+
+	        	}else if(raiderClass.equals(EnumRaiderRole.PYROMANIAC))
+	        	{
+	        		this.setPyromaniac(true);
+	        		this.setRaiderRole(EnumRaiderRole.PYROMANIAC);
+	        		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
 	        	}
 	        }
 	        
+	        if((this.getRaiderRole() == EnumRaiderRole.NONE || this.getRaiderRole() == EnumRaiderRole.PYROMANIAC) && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
+	        {
+	        	this.setLeapAttack(true);
+	        }
+	        
 	        if(!this.isPyroTaskSet) this.setMelee(false);
-	        	
-
 
 	        difficultyManager.setHealthDifficulty(difficulty);
 	        
@@ -765,13 +824,12 @@ public class EntityRaiderBase extends EntityMob
 	        	difficultyManager.setSpeedDifficulty(difficulty);
 	        }
 	        
-	        
 	        this.setHealth(this.getMaxHealth());
  
 	        return livingdata;
 	}
 	
-		private DifficultyProgression getDifficultyProgession()
+		public DifficultyProgression getDifficultyProgession()
 		{
 			return this.difficultyManager;
 		}
@@ -862,7 +920,7 @@ public class EntityRaiderBase extends EntityMob
 	            //System.out.println(compound.getCompoundTag("Owner"));
 	            this.setOwner(playerProfile.getName());
 	            
-	            this.updatePlayerProfile();
+	            //this.updatePlayerProfile();
 	        }
 	        
 	        if (compound.getBoolean("IsBaby"))
@@ -990,7 +1048,7 @@ public class EntityRaiderBase extends EntityMob
 			if(RaidersSkinManager.INSTANCE.cachedSkins.containsKey(this.playerProfile.getName()))
 			{
 				resourcelocation = RaidersSkinManager.INSTANCE.cachedSkins.get(this.playerProfile.getName());
-			}
+			}  
 
 			return resourcelocation;
 	    }  
@@ -1001,6 +1059,16 @@ public class EntityRaiderBase extends EntityMob
 	    	return RaidersSkinManager.profileCache.getGameProfileForUsername((input.getName()));
 	    }
 	    
+	    @Override
+	    public ITextComponent getDisplayName()
+	    {
+	    	TextFormatting color = getRaiderFaction() == EnumFaction.FRIENDLY ? TextFormatting.GREEN : getRaiderFaction() == EnumFaction.HOSTILE ? TextFormatting.RED : TextFormatting.GRAY;
+	    	
+	        TextComponentString textcomponentstring = new TextComponentString(color + this.getName());
+	        textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
+	        textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
+	        return textcomponentstring;
+	    }
 	    
 	    public void setOwner(String name)
 	    {
@@ -1042,9 +1110,11 @@ public class EntityRaiderBase extends EntityMob
 	    
 		public enum EnumRaiderRole
 		{
-			PYROMANIAC(0.10, 0.05, 0.15, 0),
-			TWEAKER(0.10,0.05,0.15, 0),
-			BRUTE(.10,.01, 0);
+			//weight , startDifficulty
+			NONE(PMSettings.noneWeight,0),
+			PYROMANIAC(PMSettings.pyroWeight, 0),
+			TWEAKER(PMSettings.tweakerWeight, 0),
+			BRUTE(PMSettings.bruteWeight, 0);
 			//Troll mob
 			//Summoner
 			//illusionist
@@ -1054,17 +1124,12 @@ public class EntityRaiderBase extends EntityMob
 			//puppeter
 			
 
-			private double chance;
-			private double chanceIncrease;
-			private double maxChanceToSpawn;
+			private int weight;
+			private int maxWeight;
 			private int startDifficulty;
 			
-			
-			EnumRaiderRole(double chance, double chanceIncrease, double max)
-			{
-				
-				this(chance, chanceIncrease, max, 0);
-			}
+			private final static List<WeightedRoles> weightedRoles = Lists.newArrayList();
+			private static int lastRefresh = 0;
 			
 			public static EnumRaiderRole get(int intValue) 
 			{
@@ -1075,26 +1140,99 @@ public class EntityRaiderBase extends EntityMob
 				return null;
 			}
 
-			EnumRaiderRole(double chance, double chanceIncrease, double max, int startDifficulty)
+			EnumRaiderRole(int weight, int startDifficulty)
 			{
-				this.chance = chance;
-				this.chanceIncrease = chanceIncrease;
-				this.maxChanceToSpawn = max;
+				this.weight = weight;
 				this.startDifficulty = startDifficulty;
+			}
+			
+
+			public boolean isEnabled()
+			{
+				if(this == PYROMANIAC) return PMSettings.pyroClass;
+				else if(this == BRUTE) return PMSettings.bruteClass;
+				else if(this == TWEAKER) return PMSettings.tweakersClass;
+				else return true;
 			}
 			
 			
 			public static EnumRaiderRole getRandomRole(EntityRaiderBase raider, DifficultyProgression manager)
 			{
-				for(EnumRaiderRole Role : EnumRaiderRole.values())
+				if(raider.getDifficultyProgession().getDay() != lastRefresh) 
 				{
-					if(raider.getRNG().nextDouble() < Role.chance + manager.calculateProgressionDifficulty(Role.chanceIncrease, Role.startDifficulty, Role.maxChanceToSpawn))
+					weightedRoles.clear();
+				}
+
+				if(weightedRoles.size() <= 0)
+				{
+					for(EnumRaiderRole value : EnumRaiderRole.values())
 					{
-						return Role;
+						if(value.isEnabled()) 
+						{
+							int extraWeight = value.weight + manager.getRaidDifficulty();
+							int weight = value != NONE ? extraWeight > (value.weight * 2) ? value.weight * 2 : extraWeight : value.weight;
+							
+							weightedRoles.add(new WeightedRoles(value, weight));
+						}
+						
+						
 					}
+					lastRefresh = raider.getDifficultyProgession().getDay();
 				}
 				
+				return WeightedRandom.getRandomItem(raider.getRNG(), weightedRoles).GetRole();
+			}
+		}
+
+		
+		public static class WeightedRoles extends WeightedRandom.Item
+		{
+
+			
+			private EnumRaiderRole role;
+			
+			public WeightedRoles(EnumRaiderRole role, int itemWeightIn) 
+			{
+				super(itemWeightIn);
+				this.role = role;
+			}
+			
+			public EnumRaiderRole GetRole() { return role; }
+			
+		}
+		
+		//Factions
+		public enum EnumFaction
+		{
+			HOSTILE,
+			NEUTRAL,
+			FRIENDLY;
+			
+			
+			
+			EnumFaction() { 	}
+			
+			public static EnumFaction get(int intValue) 
+			{
+				for(EnumFaction role : EnumFaction.values())
+				{
+					if (role.ordinal() == intValue) return role;
+				}
 				return null;
+			}
+
+			public static EnumFaction getRandomFaction(EntityRaiderBase raider, DifficultyProgression manager)
+			{
+				double randval = raider.getRNG().nextDouble();
+					
+				if(randval < .9 + (manager.getRaidDifficulty() * .05) || !PMSettings.factionsEnabled)
+				{
+					return HOSTILE;
+				}
+				else
+				{
+						return FRIENDLY;
+				}
 			}
 		}
 }

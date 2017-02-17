@@ -32,6 +32,8 @@ public class EntityPlayerRaider extends EntityRangedAttacker
     {
 		ResourceLocation resourcelocation =  DefaultPlayerSkin.getDefaultSkinLegacy();
 		
+	
+		
 		if (this.getPlayerProfile() != null && this.getPlayerProfile().getName() != null) 
 		{
 			Minecraft minecraft = Minecraft.getMinecraft();
@@ -40,10 +42,14 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 
             if ((this.profileset == true && property == null ))
             {
-            	RaidersSkinManager.addToBadList(this.getOwner());
+            	//RaidersSkinManager.addToBadList(this.getOwner());
             	return resourcelocation;
             }
-            else if(this.profileset = false) return resourcelocation;
+            else if(this.profileset = false)
+            {
+            	//RaidersSkinManager.addToBadList(this.getOwner());
+            	return resourcelocation;
+            }
             
             
 			Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(getPlayerProfile());
@@ -55,8 +61,22 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 		}
 		else
 		{
-			this.setPlayerProfile(RaiderManager.getRaiderProfile(this.getOwner()));
-			RaidersSkinManager.updateProfile(this);
+			if(RaiderManager.getRaiderProfile(this.getOwner()) != null)
+			{
+				this.setPlayerProfile(RaiderManager.getRaiderProfile(this.getOwner()));
+			}
+			else
+			{
+				this.setPlayerProfile(RaiderManager.getRaiderProfile(this.getOwner()));
+				
+				RaidersSkinManager.updateProfile(this);
+			
+//				if(this.getPlayerProfile() != null)
+//				{
+//					RaiderManager.setRaiderProfile(this.getOwner(), this.getPlayerProfile());
+//				}
+
+			}
 		}
 		
 		return resourcelocation;

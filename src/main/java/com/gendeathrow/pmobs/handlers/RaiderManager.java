@@ -2,10 +2,10 @@ package com.gendeathrow.pmobs.handlers;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,6 @@ import net.minecraft.util.WeightedRandom;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.core.ConfigHandler;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
@@ -54,7 +53,7 @@ public class RaiderManager
 		raidersList.put("TheMattaBase", new RaiderData(new GameProfile(null, "TheMattaBase"), 10));
 		raidersList.put("Jsl7", new RaiderData(new GameProfile(null, "Jsl7"), 10));
 		raidersList.put("Turkey2349", new RaiderData(new GameProfile(null, "Turkey2349"), 10));
-		//raidersList.put("McSqueaken", new RaiderData(new GameProfile(null, "McSqueaken"), 10));
+
 	}
 	
 	// ServerSide call
@@ -82,6 +81,20 @@ public class RaiderManager
 			return raidersList.get(ownerName).getProfile();
 		}
 	}
+	
+	public static HashMap<String, RaiderData> getAllRaiders()
+	{
+		return raidersList;
+	}
+	
+	public static void setRaiderProfile(String ownerName, GameProfile newProfile)
+	{
+		if(raidersList.containsKey(ownerName))
+		{
+			raidersList.get(ownerName).setProfile(newProfile);
+		}
+	}
+	
 	// Cant get rid of herobrine.. he will add him self back
 	protected static void permanentRaiders()
 	{
