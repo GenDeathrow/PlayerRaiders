@@ -27,7 +27,7 @@ public class ConfigHandler
 	public static void load()
 	{
 		RaidersCore.logger.log(Level.INFO, "Loading Configs...");
-		
+		  
 		PMSettings.whitelists = config.getStringList("WhiteLists", config.CATEGORY_GENERAL, new String[0], "# One whitelist link per line. Example: http://whitelist.twitchapps.com/list.php?id=12345 [default: ]");
 		
 		//PMSettings.daySpawnPercentage = config.getFloat("DaySpawnPercentage", mobs, 0.45f, 0.01f, 1.0f, "Percentage of day time spawning vs Night time spawn weight.");
@@ -57,19 +57,22 @@ public class ConfigHandler
 
 		// Raiders Classes
 		PMSettings.bruteClass = config.getBoolean("Brute Class Enabled", classes, true, "Adds Brute to the mix. They are slower, bigger, extra health, and hit alot harder");
-		//PMSettings.bruteWeight = config.getInt("Brute Weight", classes, 5, 1, 1000, "");
 		PMSettings.bruteWeight = config.get(classes, "Brute Weight", 5).getInt(5);
 
 		PMSettings.tweakersClass = config.getBoolean("Tweakers Class Enabled", classes, true, "Adds Tweakers to the mix. They are a lot faster,and have lower health");
-		//PMSettings.tweakerWeight = config.getInt("Tweakers Weight", classes, 5, 1, 1000, "");
 		PMSettings.tweakerWeight = config.get(classes,"Tweakers Weight", 5).getInt(5);
 		
 		
 		PMSettings.pyroClass = config.getBoolean("Pyromaniac Class Enabled", classes, true, "Adds Pyromaniacs to the mix, they will seek out blocks to catch fire. small chance increases with each raid difficulty");
-		//PMSettings.pyroWeight = config.getInt("Pyromaniac Weight", classes, 5, 1, 1000, "");
 		PMSettings.pyroWeight = config.get(classes, "Pyromaniac Weight", 2).getInt(2);
 		
 		PMSettings.noneWeight = config.get(classes, "No Class Weight", 80, "No Class is a normal raider").getInt();
+
+		PMSettings.screamerClass = config.getBoolean("Screamer Class Enabled", classes, true, "Adds Screamer to the mix, A type of witch class");
+		PMSettings.screamerWeight = config.get(classes, "Screamer Weight", 3).getInt(2);
+		
+		PMSettings.rangerClass = config.getBoolean("Ranger Class Enabled", classes, true, "Adds Ranger to the mix, These guys are Bow wielding maniacs.");
+		PMSettings.rangerWeight = config.get(classes, "Ranger Weight", 10).getInt(2);
 
 		config.removeCategory(remove);
 		

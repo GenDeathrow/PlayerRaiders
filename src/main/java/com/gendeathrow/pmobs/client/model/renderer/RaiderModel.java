@@ -9,6 +9,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.common.util.EnumHelper;
 
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
@@ -179,6 +180,17 @@ public class RaiderModel extends ModelBiped
 			this.leftArmPose = HoldingSkull;
 		}
 		
+    	if (((EntityRaiderBase)entitylivingbaseIn).getRaiderRole() == EnumRaiderRole.WITCH && ((EntityRaiderBase)entitylivingbaseIn).isArmsRaised())
+        {
+			this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+			this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+			
+			for (int i = 0; i < 10; ++i)
+			{
+				entitylivingbaseIn.worldObj.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, entitylivingbaseIn.posX + (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * (double)entitylivingbaseIn.width, entitylivingbaseIn.posY + entitylivingbaseIn.getRNG().nextDouble() * (double)entitylivingbaseIn.height - 0.25D, entitylivingbaseIn.posZ + (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * (double)entitylivingbaseIn.width, (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * 2.0D, -entitylivingbaseIn.getRNG().nextDouble(), (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * 2.0D, new int[0]);
+			}
+        }
+		
 		super.setLivingAnimations(entitylivingbaseIn, p_78086_2_, p_78086_3_, partialTickTime);
 	}
 	
@@ -217,6 +229,7 @@ public class RaiderModel extends ModelBiped
         	this.bipedRightArm.rotateAngleZ -= 1.25;
 
         }
+    	
     	
     	//copyModelAngles(this.bipedHead, this.bipedHeadwear);
 //    	copyModelAngles(this.bipedLeftLeg, this.bipedLeftLegwear);

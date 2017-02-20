@@ -70,6 +70,7 @@ import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
+import com.gendeathrow.pmobs.entity.ai.EntityAIScreamer;
 import com.gendeathrow.pmobs.entity.ai.EntityAIStealFarmland;
 import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
 import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
@@ -113,19 +114,6 @@ public class EntityRaiderBase extends EntityMob
 	
 	private float raiderWidth = -1.0F;
 	private float raiderHeight;
-	// AI Additions
-	private boolean isBreakDoorsTaskSet = false;
-    private final EntityAIBreakDoor breakDoor = new EntityAIBreakDoor(this);
- 
-    private boolean isLeapAttackTaskSet = false;
-    private final EntityAILeapAtTarget leapAttack = new EntityAILeapAtTarget(this, 0.4F);
-
-    private boolean isPyroTaskSet = false;
-    private final EntityAIPyromaniac pyromaniac = new EntityAIPyromaniac(this, 2D);
-
-    private boolean isTweaker = false;
-    private final EntityAIAttackMelee melee = new EntityAIAttackMelee(this, 0.8, false);
-    private final TwitchersAttack meleeTweaker = new TwitchersAttack(this, 1, false);
     
     private String playerName;
     
@@ -156,27 +144,50 @@ public class EntityRaiderBase extends EntityMob
 
 	}
 	
+	
+	/*
+	#################
+	  #	AI CODE
+	#################
+	*/
+	
+	private boolean isBreakDoorsTaskSet = false;
+    private final EntityAIBreakDoor breakDoor = new EntityAIBreakDoor(this);
+ 
+    private boolean isLeapAttackTaskSet = false;
+    private final EntityAILeapAtTarget leapAttack = new EntityAILeapAtTarget(this, 0.4F);
+
+    private boolean isPyroTaskSet = false;
+    private final EntityAIPyromaniac pyromaniac = new EntityAIPyromaniac(this, 2D);
+
+    private boolean isTweaker = false;
+    protected final EntityAIAttackMelee melee = new EntityAIAttackMelee(this, 0.8, false);
+    private final TwitchersAttack meleeTweaker = new TwitchersAttack(this, 1, false);
+	
+    protected final EntityAINearestAttackableTarget attackPlayerAI = new EntityAINearestAttackableTarget(this, EntityPlayer.class, true);
+    protected final EntityAINearestAttackableTarget attackVillagerAI =  new EntityAINearestAttackableTarget(this, EntityVillager.class, false);
+    protected final EntityAINearestAttackableTarget attackLivingAI = new EntityAINearestAttackableTarget(this, EntityLiving.class, true);
+    
+    protected final EntityAIWatchClosest watchClosestAI =  new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F);
+    protected final EntityAIWander wanderAI = new EntityAIWander(this, 1.0D);
+    protected final EntityAILookIdle lookIdleAI = new EntityAILookIdle(this);
+    
+    protected boolean initAI = false; 
+    
 	protected void initEntityAI()
 	{
 	        this.tasks.addTask(0, new EntityAISwimming(this));
-
 	        this.tasks.addTask(4, new EntityAIOpenDoor(this, false));
 	        this.tasks.addTask(4, new EntityAIStealItemInv(this, 1.0D, 10));
 	        this.tasks.addTask(2, new EntityAIMoveTowardsRestriction(this, 1.0D));
 	        this.tasks.addTask(7, new EntityAIStealFarmland(this, 0.6D));
-	        this.tasks.addTask(8, new EntityAIWander(this, 1.0D));
-	        this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-	        this.tasks.addTask(9, new EntityAILookIdle(this));
-
+	        
 	        this.applyEntityAI();
 	}
 
 	protected void applyEntityAI()
 	{
-        	this.tasks.addTask(6, new EntityAIMoveThroughVillage(this, 1.0D, false));
-	        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, false));
-	        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityVillager.class, false));
-	        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityLiving.class, true));
+        	//this.tasks.addTask(6, new EntityAIMoveThroughVillage(this, 1.0D, false));
 	}
 
 	protected void applyEntityAttributes()
@@ -186,6 +197,21 @@ public class EntityRaiderBase extends EntityMob
 	        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
 	        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.5D);
 	        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(3.0D);
+	}
+	
+	protected void applyEntityAIPostInitalSpawn()
+	{
+        this.targetTasks.addTask(3, attackPlayerAI);
+        this.targetTasks.addTask(4, attackVillagerAI);
+        this.targetTasks.addTask(4, attackLivingAI);
+        this.tasks.addTask(8, wanderAI);
+        this.tasks.addTask(9, watchClosestAI);
+        this.tasks.addTask(9, lookIdleAI);
+        
+		if(!this.getRaiderRole().equals(EnumRaiderRole.TWEAKER) && !this.getRaiderRole().equals(EnumRaiderRole.WITCH) )
+			this.tasks.addTask(2, this.meleeTweaker);
+		
+		this.initAI = true;
 	}
 
 	protected void entityInit()
@@ -235,7 +261,7 @@ public class EntityRaiderBase extends EntityMob
 		}
 	}
 	
-	public void setMelee(boolean enabled)
+	public void setTweakerMelee(boolean enabled)
 	{
 		
 		if (this.isTweaker != enabled)
@@ -244,19 +270,18 @@ public class EntityRaiderBase extends EntityMob
 
 			if (enabled)
 			{
-				this.tasks.removeTask(this.melee);
 				this.tasks.addTask(2, this.meleeTweaker);
 		        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.30D);
 			}
 			else
 			{
 				this.tasks.removeTask(this.meleeTweaker);
-				this.tasks.addTask(2, this.melee);
 		        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.25D);
 			}
 		}
 		
 	}
+	
 	
     @Override
     public boolean isEntityInvulnerable(DamageSource source)
@@ -780,34 +805,32 @@ public class EntityRaiderBase extends EntityMob
 	        }
 
 	        
-	        if(!this.isHeroBrine())
+	        if(!this.isHeroBrine() && !this.isChild())
 	        {
-	        	EnumRaiderRole raiderClass = EnumRaiderRole.getRandomRole(this, this.difficultyManager);
+	        	this.setRaiderRole(EnumRaiderRole.getRandomRole(this, this.difficultyManager));
 	        	
-	        	if(raiderClass.equals(EnumRaiderRole.TWEAKER))
+	        	if(this.getRaiderRole().equals(EnumRaiderRole.TWEAKER))
 	        	{
-	        		this.setMelee(true);
-	        		this.setRaiderRole(EnumRaiderRole.TWEAKER);
+	        		this.setTweakerMelee(true);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Tweaker Health", -.5, 2));
-	        	}else if(raiderClass.equals(EnumRaiderRole.BRUTE))
+	        	}else if(this.getRaiderRole().equals(EnumRaiderRole.BRUTE))
 	        	{
+		        	this.setBrute(true);
 	        		this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(.5);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.15);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
 	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30);
 		        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4);
-		        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Tweaker Health", 1.25, 2));
-		        	this.setBrute(true);
-		        	this.setRaiderRole(EnumRaiderRole.BRUTE);
+		        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Brute Health", 1.25, 2));
 		        	if(this.getHeldItem(EnumHand.OFF_HAND) != null) this.setHeldItem(EnumHand.OFF_HAND, null);
 		        	if(this.getHeldItem(EnumHand.MAIN_HAND) == null || this.getHeldItem(EnumHand.MAIN_HAND).getItem() != Items.IRON_SWORD) this.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 
-	        	}else if(raiderClass.equals(EnumRaiderRole.PYROMANIAC))
+	        	}else if(this.getRaiderRole().equals(EnumRaiderRole.PYROMANIAC))
 	        	{
 	        		this.setPyromaniac(true);
-	        		this.setRaiderRole(EnumRaiderRole.PYROMANIAC);
 	        		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
 	        	}
+
 	        }
 	        
 	        if((this.getRaiderRole() == EnumRaiderRole.NONE || this.getRaiderRole() == EnumRaiderRole.PYROMANIAC) && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
@@ -815,16 +838,16 @@ public class EntityRaiderBase extends EntityMob
 	        	this.setLeapAttack(true);
 	        }
 	        
-	        if(!this.isPyroTaskSet) this.setMelee(false);
-
 	        difficultyManager.setHealthDifficulty(difficulty);
 	        
-	        if(!this.isChild())
+	        if(!this.isChild() && !this.isHeroBrine())
 	        {
 	        	difficultyManager.setSpeedDifficulty(difficulty);
 	        }
 	        
 	        this.setHealth(this.getMaxHealth());
+	        
+	        this.applyEntityAIPostInitalSpawn();
  
 	        return livingdata;
 	}
@@ -944,8 +967,9 @@ public class EntityRaiderBase extends EntityMob
 	                this.raidersInventory.addItem(itemstack);
 	            }
 	        }
-
-
+	        
+	        //Resets AI
+	        if(!this.initAI) this.applyEntityAIPostInitalSpawn();
 	    }
 
 	    /**
@@ -1114,7 +1138,9 @@ public class EntityRaiderBase extends EntityMob
 			NONE(PMSettings.noneWeight,0),
 			PYROMANIAC(PMSettings.pyroWeight, 0),
 			TWEAKER(PMSettings.tweakerWeight, 0),
-			BRUTE(PMSettings.bruteWeight, 0);
+			BRUTE(PMSettings.bruteWeight, 0),
+			WITCH(1000,0),
+			RANGED(10,1);
 			//Troll mob
 			//Summoner
 			//illusionist

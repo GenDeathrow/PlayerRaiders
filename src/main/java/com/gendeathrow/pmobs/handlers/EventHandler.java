@@ -95,14 +95,13 @@ public class EventHandler
 			
 			if(event.getAddition() != null)
 			{
-
-				
-				//System.out.println(event.getAddition().getAdditionalAI(event.getEntity()).getClass().getSimpleName());
+//				System.out.println(event.getAddition().getAdditionalAI(event.getEntity()).getClass().getSimpleName());
 			
 				EnumRaiderRole raiderClass = raider.getRaiderRole();
+				
+				String className = event.getAddition().getAdditionalAI(raider).getClass().getSimpleName(); 
 	
-
-				if(event.getAddition().getAdditionalAI(raider).getClass().getSimpleName().equalsIgnoreCase("ESM_EntityAIDemolition"))
+				if(className.equalsIgnoreCase("ESM_EntityAIDemolition"))
 				{
 					//System.out.println("ESM_EntityAIDemolition--"+ raiderClass.name() + ":"+ raider.getDifficultyProgession().getRaidDifficulty());
 					
@@ -134,8 +133,33 @@ public class EventHandler
 						}
 					}
 				}
+				else if(className.equalsIgnoreCase("ESM_EntityAIDigging"))
+				{
+					if(raiderClass == EnumRaiderRole.WITCH)
+					{
+						event.setResult(Result.DENY);
+					}
+				}
 				
 				
+			}
+		}
+		
+	}
+	
+	
+	@SubscribeEvent
+	public void getESM(EsmTaskEvent.Modified event)
+	{
+		if(event.getEntity() instanceof EntityRaiderBase)
+		{
+			EntityRaiderBase raider = (EntityRaiderBase) event.getEntity();
+			
+			if(event.getModifier() != null)
+			{
+
+				//System.out.println(event.getModifier().getClass().getSimpleName());
+				//ModifierNearestAttackable
 			}
 		}
 		

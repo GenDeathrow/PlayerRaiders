@@ -71,11 +71,6 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 				
 				RaidersSkinManager.updateProfile(this);
 			
-//				if(this.getPlayerProfile() != null)
-//				{
-//					RaiderManager.setRaiderProfile(this.getOwner(), this.getPlayerProfile());
-//				}
-
 			}
 		}
 		

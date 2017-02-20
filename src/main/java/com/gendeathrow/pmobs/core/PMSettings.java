@@ -42,15 +42,22 @@ public class PMSettings
 		public static float pyroChance = 0.05f;
 	public static boolean bruteClass = true;
 	public static boolean tweakersClass = true;
+	public static boolean screamerClass = true;
+	public static boolean rangerClass = true;
 	
-	public static int pyroWeight = 2;
+	public static int pyroWeight = 4;
 	public static int bruteWeight = 5;
 	public static int tweakerWeight = 5;
 	public static int noneWeight = 80;
-	
+	public static int screamerWeight = 2;
+	public static int rangerWeight = 10;
 	//Factions
 	
 	public static boolean factionsEnabled = true;
+
+	
+
+	
 	
 
 }
