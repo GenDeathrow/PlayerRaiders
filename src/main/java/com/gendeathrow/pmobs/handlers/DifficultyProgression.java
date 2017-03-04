@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 
 public class DifficultyProgression 
 {
@@ -17,7 +18,7 @@ public class DifficultyProgression
 	public static double speedDifficulty = .015;
 		public static double speedDifficultyMax = .75;
 		public static double speedMIN = 0.1;
-		public static double speedMAX = .5;
+		public static double speedMAX = .35;
 		
 	public static double healthDifficulty = .05;
 		
@@ -109,23 +110,31 @@ public class DifficultyProgression
     	double healthChance = calculateProgressionDifficulty(healthDifficulty, 1.00D);
     	boolean addDefaultHealth = getRaidDifficulty()>= 1;
     	
-        if (this.rand.nextFloat() < difficulty.getClampedAdditionalDifficulty() * 0.025F)
+    	if(raider.isChild())
+    	{
+    		raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Child Health", -.75, 2));
+    	}
+    	else if (this.rand.nextFloat() < difficulty.getClampedAdditionalDifficulty() * 0.015F)
         {
-            raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Leader bonus", this.rand.nextDouble() * 4.0D + 1.0D + calculateProgressionDifficulty(.10), 2));
+            raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Leader bonus", this.rand.nextDouble() * 3.0D + 1.0D + calculateProgressionDifficulty(1), 2));
         }
         else if(this.rand.nextFloat() < healthChance)
         {
-        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 2.0D + 1.00D + calculateProgressionDifficulty(.1), 2));
+        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 2.0D + 1.00D + calculateProgressionDifficulty(1), 2));
         }
-        else if(addDefaultHealth)
+        else if(addDefaultHealth || raider.getRaiderRole() == EnumRaiderRole.WITCH)
         {
-        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Small Health bonus", this.rand.nextDouble() + 1.00D + calculateProgressionDifficulty(.10), 2));
+        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Small Health bonus", this.rand.nextDouble() + 1.00D + calculateProgressionDifficulty(1), 2));
         }
     }
     
     public void setDamageDifficulty(DifficultyInstance difficulty)
     {
     	
+    	if(raider.isChild())
+    	{
+    		raider.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).applyModifier(new AttributeModifier("Child Dmg", -.5, 2));
+    	}
     }
     
     

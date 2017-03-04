@@ -1,11 +1,8 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.entity.projectile.EntitySmallFireball;
@@ -16,9 +13,10 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+
+import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 public class EntityAIScreamerAttack extends EntityAIBase
 {
@@ -42,7 +40,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
     private int strafingTime = -1;
     
     private final double moveSpeedAmp = 1.2D;
-    private final float maxAttackDistance = 30;
+    private final float maxAttackDistance = 60;
     
     private int armAnimation = 20;
     
@@ -185,11 +183,11 @@ public class EntityAIScreamerAttack extends EntityAIBase
         		{
         			this.FireBallAttack(entitylivingbase, d0);
         		}
-        		else if(this.lightingCoolDown <= 0)
+        		else if(this.lightingCoolDown <= 0 && d0 <= 30)
         		{
         			this.LightingAttack(entitylivingbase, d0);
         		}
-        		else if(this.potionCooldown <= 0)
+        		else if(this.potionCooldown <= 0 && d0 <= 25)
         		{
         			this.ThrowPotion(entitylivingbase);
         		}

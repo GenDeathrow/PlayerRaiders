@@ -1,7 +1,7 @@
 package com.gendeathrow.pmobs.handlers;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -19,11 +19,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
+import com.gendeathrow.pmobs.client.audio.CryingWitch;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 import funwayguy.epicsiegemod.api.EsmTaskEvent;
 
@@ -37,16 +39,28 @@ public class EventHandler
     @SubscribeEvent
 	public void spawnEvent(LivingSpawnEvent.CheckSpawn event)
 	{
- 		if(PMSettings.safeForaDay && event.getEntity() instanceof EntityMob &&  event.getWorld().getWorldTime() < 13000)
+ 		if((PMSettings.safeForaDay && event.getEntity() instanceof EntityMob &&  event.getWorld().getWorldTime() < 13000))
  		{
  			if(event.getEntity().posY > 50)
  			{
  				event.setResult(Result.DENY);
  			}
+ 		}else if(event.getEntity() instanceof EntityRaiderBase)
+ 		{
+ 			int day = (int) (event.getWorld().getWorldTime() / 24000);
+ 			
+ 			for(int noday : PMSettings.noSpawnDays)
+ 			{
+ 				if(day == noday)
+ 				{
+ 					event.setResult(Result.DENY);
+ 					return;
+ 				}
+
+ 			}
  		}
 	}
-		
-    
+
 	@SubscribeEvent
 	public void playerKilled(LivingDeathEvent event)
 	{
@@ -106,17 +120,18 @@ public class EventHandler
 					//System.out.println("ESM_EntityAIDemolition--"+ raiderClass.name() + ":"+ raider.getDifficultyProgession().getRaidDifficulty());
 					
 					boolean flag = false;
+					boolean holdingTnt = raider.getHeldItemOffhand() != null && raider.getHeldItemOffhand().getItem() == Item.getItemFromBlock(Blocks.TNT);
 					
-					if(raider.getDifficultyProgession().getRaidDifficulty() < 1)
+					if(raider.getDifficultyProgession().getRaidDifficulty() < PMSettings.esmDemolitionRaidDiff)
 					{
 						//System.out.println("Denied ESM_EntityAIDemolition for under raid dificulty 1");
 						flag = true;
 					}
-					else if(raiderClass == EnumRaiderRole.TWEAKER || raiderClass == EnumRaiderRole.BRUTE || raiderClass == EnumRaiderRole.PYROMANIAC || raider.isHeroBrine())
+					else if(raiderClass != EnumRaiderRole.NONE || raider.isHeroBrine() || raider.isChild())
 					{
 						//System.out.println("Denied ESM_EntityAIDemolition for "+ raider.getOwner() + ">>"+ raiderClass);
 						flag = true;
-					}else if(raider.getRNG().nextDouble() > 0.05)
+					}else if(holdingTnt && raider.getRNG().nextDouble() > PMSettings.esmDemoPercentage )
 					{
 						flag = true;
 					}
@@ -125,7 +140,7 @@ public class EventHandler
 					{
 						event.setResult(Result.DENY);
 						
-						if(raider.getHeldItemOffhand() != null && raider.getHeldItemOffhand().getItem() == Item.getItemFromBlock(Blocks.TNT))
+						if(holdingTnt)
 						{
 							if(raiderClass == EnumRaiderRole.PYROMANIAC) 
 								raider.setHeldItem(EnumHand.OFF_HAND, new ItemStack(Items.FLINT_AND_STEEL));
@@ -135,7 +150,7 @@ public class EventHandler
 				}
 				else if(className.equalsIgnoreCase("ESM_EntityAIDigging"))
 				{
-					if(raiderClass == EnumRaiderRole.WITCH)
+					if((raider.isChild() || raiderClass != EnumRaiderRole.NONE) && raider.getRNG().nextFloat() > PMSettings.esmDiggingPercentage)
 					{
 						event.setResult(Result.DENY);
 					}

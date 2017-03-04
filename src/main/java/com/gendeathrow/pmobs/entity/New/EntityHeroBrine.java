@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentFrostWalker;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -24,6 +27,7 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -39,6 +43,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.DifficultyInstance;
@@ -120,9 +125,43 @@ public class EntityHeroBrine extends EntityRaiderBase
     	if(this.isHeroBrine())
     	{
     		EnchantmentFrostWalker.freezeNearby(this, this.worldObj, pos, 2);
+    		
+    		coolLavaNearby(this,this.worldObj, pos, 2);
     	}
     	
     	else super.frostWalk(pos);
+    }
+    
+    
+    
+    
+    public static void coolLavaNearby(EntityLivingBase living, World worldIn, BlockPos pos, int level)
+    {
+        if (living.onGround)
+        {
+            float f = (float)Math.min(16, 2 + level);
+            BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos(0, 0, 0);
+
+            for (BlockPos.MutableBlockPos blockpos$mutableblockpos1 : BlockPos.getAllInBoxMutable(pos.add((double)(-f), -1.0D, (double)(-f)), pos.add((double)f, -1.0D, (double)f)))
+            {
+                if (blockpos$mutableblockpos1.distanceSqToCenter(living.posX, living.posY, living.posZ) <= (double)(f * f))
+                {
+                    blockpos$mutableblockpos.setPos(blockpos$mutableblockpos1.getX(), blockpos$mutableblockpos1.getY() + 1, blockpos$mutableblockpos1.getZ());
+                    IBlockState iblockstate = worldIn.getBlockState(blockpos$mutableblockpos);
+
+                    if (iblockstate.getMaterial() == Material.AIR)
+                    {
+                        IBlockState iblockstate1 = worldIn.getBlockState(blockpos$mutableblockpos1);
+
+                        if (iblockstate1.getMaterial() == Material.LAVA && ((Integer)iblockstate1.getValue(BlockLiquid.LEVEL)).intValue() == 0 && worldIn.canBlockBePlaced(Blocks.OBSIDIAN, blockpos$mutableblockpos1, false, EnumFacing.DOWN, (Entity)null, (ItemStack)null))
+                        {
+                            worldIn.setBlockState(blockpos$mutableblockpos1, Blocks.OBSIDIAN.getDefaultState());
+                            worldIn.scheduleUpdate(blockpos$mutableblockpos1.toImmutable(), Blocks.OBSIDIAN, MathHelper.getRandomIntegerInRange(living.getRNG(), 60, 120));
+                        }
+                    }
+                }
+            }
+        }
     }
     
     private boolean shouldAttackPlayer(EntityPlayer player)

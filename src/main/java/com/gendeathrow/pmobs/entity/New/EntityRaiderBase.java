@@ -20,7 +20,6 @@ import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIBreakDoor;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAIMoveThroughVillage;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIOpenDoor;
@@ -67,16 +66,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.gendeathrow.pmobs.client.LayerFeatures;
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
+import com.gendeathrow.pmobs.core.ConfigHandler.ItemDrop;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
-import com.gendeathrow.pmobs.entity.ai.EntityAIScreamer;
 import com.gendeathrow.pmobs.entity.ai.EntityAIStealFarmland;
 import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
 import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
-import com.gendeathrow.pmobs.handlers.RaiderData;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
 import com.google.common.collect.Lists;
@@ -99,7 +97,7 @@ public class EntityRaiderBase extends EntityMob
 	  
 	public static final UUID BABY_SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
     public static final UUID SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D837");
-    public static final UUID NIGHT_SPEED_BOOST_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D838");
+    public static final UUID DAY_SPEED_MODIFIER_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D838");
     public static final UUID SPEED_OFFSET_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D839");
     
 	private static final DataParameter<String> SKIN_VARIANT = EntityDataManager.<String>createKey(EntityRaiderBase.class, DataSerializers.STRING);
@@ -109,8 +107,8 @@ public class EntityRaiderBase extends EntityMob
     private static final DataParameter<Integer> RAIDER_FACTION = EntityDataManager.<Integer>createKey(EntityRaiderBase.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ARMS_RAISED = EntityDataManager.<Boolean>createKey(EntityRaiderBase.class, DataSerializers.BOOLEAN);
     
-	private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID, "Baby speed boost", 0.5D, 1);
-	private static final AttributeModifier NIGHT_TIME_BOOST = new AttributeModifier(NIGHT_SPEED_BOOST_ID, "Night speed boost", 0.05D, 1);
+	private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID, "Baby speed boost", 0.45D, 1);
+	private static final AttributeModifier DAY_SPEED_MODIFIER = new AttributeModifier(DAY_SPEED_MODIFIER_ID, "Day speed reduced", PMSettings.daySpeedRestiction - 1, 1);
 	
 	private float raiderWidth = -1.0F;
 	private float raiderHeight;
@@ -197,6 +195,7 @@ public class EntityRaiderBase extends EntityMob
 	        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
 	        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.5D);
 	        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(3.0D);
+	        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10);
 	}
 	
 	protected void applyEntityAIPostInitalSpawn()
@@ -296,7 +295,6 @@ public class EntityRaiderBase extends EntityMob
         this.getDataManager().set(ARMS_RAISED, Boolean.valueOf(armsRaised));
     }
 
-    @SideOnly(Side.CLIENT)
     public boolean isArmsRaised()
     {
         return ((Boolean)this.getDataManager().get(ARMS_RAISED)).booleanValue();
@@ -532,23 +530,24 @@ public class EntityRaiderBase extends EntityMob
 			BlockPos blockpos = this.getRidingEntity() instanceof EntityBoat ? (new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ)).up() : new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ);
 
 		}
+		
 		IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
 		
-		if(PMSettings.sprintersOnlyNight && !this.isChild() && this.getRaiderRole() != EnumRaiderRole.TWEAKER && this.getRaiderRole() != EnumRaiderRole.BRUTE)
+		if(!this.isChild()&& this.getRaiderFaction() != EnumFaction.FRIENDLY && this.getRaiderRole() != EnumRaiderRole.WITCH && !this.isHeroBrine() && this.getRaiderRole() != EnumRaiderRole.BRUTE)
 		{
-			if(!this.worldObj.isDaytime()  && this.getRaiderRole() != EnumRaiderRole.TWEAKER)
+			if(this.worldObj.isDaytime())
 			{
-				if(!iattributeinstance.hasModifier(NIGHT_TIME_BOOST))
+				if(!iattributeinstance.hasModifier(DAY_SPEED_MODIFIER))
 				{
-					iattributeinstance.applyModifier(NIGHT_TIME_BOOST);
+					iattributeinstance.applyModifier(DAY_SPEED_MODIFIER);
 				}
 
 			}
 			else
 			{
-				if(iattributeinstance.hasModifier(NIGHT_TIME_BOOST))
+				if(iattributeinstance.hasModifier(DAY_SPEED_MODIFIER))
 				{
-					iattributeinstance.removeModifier(NIGHT_TIME_BOOST);
+					iattributeinstance.removeModifier(DAY_SPEED_MODIFIER);
 				}
 			
 			}
@@ -702,6 +701,8 @@ public class EntityRaiderBase extends EntityMob
 				
 				this.worldObj.spawnEntityInWorld(skull);
 			}
+			
+			this.getRaiderRole().dropLoot(this);
 		}
 		super.dropLoot(wasRecentlyHit, lootingModifier, source);
 	}
@@ -775,9 +776,7 @@ public class EntityRaiderBase extends EntityMob
 	        ((PathNavigateGround)this.getNavigator()).setEnterDoors(true);
 
 	        ((PathNavigateGround)this.getNavigator()).setBreakDoors(true);
-
-	        if(this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) this.setChild(true); 
-        	
+     	
 	        this.setAlwaysRenderNameTag(false);
 	        
 	        this.setEquipmentBasedOnDifficulty(difficulty);
@@ -809,6 +808,11 @@ public class EntityRaiderBase extends EntityMob
 	        {
 	        	this.setRaiderRole(EnumRaiderRole.getRandomRole(this, this.difficultyManager));
 	        	
+	        	if(PMSettings.tweakerOnlyNight && this.worldObj.isDaytime() && this.getRaiderRole() == EnumRaiderRole.TWEAKER)
+	        	{
+	        		this.setRaiderRole(EnumRaiderRole.NONE);
+	        	}
+	        	
 	        	if(this.getRaiderRole().equals(EnumRaiderRole.TWEAKER))
 	        	{
 	        		this.setTweakerMelee(true);
@@ -819,7 +823,6 @@ public class EntityRaiderBase extends EntityMob
 	        		this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(.5);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.15);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
-	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30);
 		        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4);
 		        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Brute Health", 1.25, 2));
 		        	if(this.getHeldItem(EnumHand.OFF_HAND) != null) this.setHeldItem(EnumHand.OFF_HAND, null);
@@ -829,16 +832,29 @@ public class EntityRaiderBase extends EntityMob
 	        	{
 	        		this.setPyromaniac(true);
 	        		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
+	        	}else if(this.getRaiderRole().equals(EnumRaiderRole.WITCH))
+	        	{
+	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(15);
+	        	}else if(this.getRaiderRole().equals(EnumRaiderRole.RANGED))
+	        	{
+	        		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(5);
 	        	}
+
 
 	        }
 	        
-	        if((this.getRaiderRole() == EnumRaiderRole.NONE || this.getRaiderRole() == EnumRaiderRole.PYROMANIAC) && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
+
+	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) this.setChild(true); 
+  
+	        
+	        if(!this.isChild() && (this.getRaiderRole() == EnumRaiderRole.NONE || this.getRaiderRole() == EnumRaiderRole.PYROMANIAC) && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
 	        {
 	        	this.setLeapAttack(true);
 	        }
 	        
 	        difficultyManager.setHealthDifficulty(difficulty);
+	        
+	        difficultyManager.setDamageDifficulty(difficulty);
 	        
 	        if(!this.isChild() && !this.isHeroBrine())
 	        {
@@ -846,7 +862,7 @@ public class EntityRaiderBase extends EntityMob
 	        }
 	        
 	        this.setHealth(this.getMaxHealth());
-	        
+	       	        
 	        this.applyEntityAIPostInitalSpawn();
  
 	        return livingdata;
@@ -940,10 +956,7 @@ public class EntityRaiderBase extends EntityMob
 	        if (compound.hasKey("Owner"))
 	        {
 	            this.playerProfile = NBTUtil.readGameProfileFromNBT(compound.getCompoundTag("Owner"));
-	            //System.out.println(compound.getCompoundTag("Owner"));
 	            this.setOwner(playerProfile.getName());
-	            
-	            //this.updatePlayerProfile();
 	        }
 	        
 	        if (compound.getBoolean("IsBaby"))
@@ -966,6 +979,16 @@ public class EntityRaiderBase extends EntityMob
 	            {
 	                this.raidersInventory.addItem(itemstack);
 	            }
+	        }
+	        
+	        if(compound.hasKey("raiderClass"))
+	        {
+	        	this.setRaiderRole(EnumRaiderRole.get(compound.getInteger("raiderClass")));
+	        }
+	        
+	        if(compound.hasKey("faction"))
+	        {
+	        	this.setRaiderFaction(EnumFaction.get(compound.getInteger("faction")));
 	        }
 	        
 	        //Resets AI
@@ -1006,6 +1029,10 @@ public class EntityRaiderBase extends EntityMob
 	        }
 
 	        compound.setTag("Inventory", nbttaglist);
+	        
+	        compound.setInteger("raiderClass", this.getRaiderRole().ordinal());
+	        
+	        compound.setInteger("faction", this.getRaiderFaction().ordinal());
 	    }
 
 		private GameProfile randomSkin()
@@ -1135,12 +1162,12 @@ public class EntityRaiderBase extends EntityMob
 		public enum EnumRaiderRole
 		{
 			//weight , startDifficulty
-			NONE(PMSettings.noneWeight,0),
-			PYROMANIAC(PMSettings.pyroWeight, 0),
-			TWEAKER(PMSettings.tweakerWeight, 0),
-			BRUTE(PMSettings.bruteWeight, 0),
-			WITCH(1000,0),
-			RANGED(10,1);
+			NONE(PMSettings.noneWeight,0, PMSettings.noneDrops),
+			PYROMANIAC(PMSettings.pyroWeight, 0, PMSettings.pyroDrops),
+			TWEAKER(PMSettings.tweakerWeight, 0, PMSettings.tweakerDrops),
+			BRUTE(PMSettings.bruteWeight, 0, PMSettings.bruteDrops),
+			WITCH(PMSettings.screamerWeight,0, PMSettings.screamerDrops),
+			RANGED(PMSettings.rangerWeight,1, PMSettings.rangerDrops);
 			//Troll mob
 			//Summoner
 			//illusionist
@@ -1153,6 +1180,7 @@ public class EntityRaiderBase extends EntityMob
 			private int weight;
 			private int maxWeight;
 			private int startDifficulty;
+			private ArrayList<ItemDrop> drops;
 			
 			private final static List<WeightedRoles> weightedRoles = Lists.newArrayList();
 			private static int lastRefresh = 0;
@@ -1166,10 +1194,11 @@ public class EntityRaiderBase extends EntityMob
 				return null;
 			}
 
-			EnumRaiderRole(int weight, int startDifficulty)
+			EnumRaiderRole(int weight, int startDifficulty, ArrayList<ItemDrop> drops)
 			{
 				this.weight = weight;
 				this.startDifficulty = startDifficulty;
+				this.drops = drops;
 			}
 			
 
@@ -1178,7 +1207,21 @@ public class EntityRaiderBase extends EntityMob
 				if(this == PYROMANIAC) return PMSettings.pyroClass;
 				else if(this == BRUTE) return PMSettings.bruteClass;
 				else if(this == TWEAKER) return PMSettings.tweakersClass;
+				else if(this == WITCH) return PMSettings.screamerClass;
+				else if(this == RANGED) return PMSettings.rangerClass;
 				else return true;
+			}
+			
+			public void dropLoot(EntityRaiderBase raider)
+			{
+				for(ItemDrop drop : this.drops)
+				{
+					if(drop.shouldDrop(raider.getRNG()))
+					{
+						raider.entityDropItem(drop.getStack(raider.getRNG()), 0.0f);
+					}
+				}
+
 			}
 			
 			
@@ -1193,15 +1236,13 @@ public class EntityRaiderBase extends EntityMob
 				{
 					for(EnumRaiderRole value : EnumRaiderRole.values())
 					{
-						if(value.isEnabled()) 
+						if(value.isEnabled() && raider.getDifficultyProgession().getRaidDifficulty() >= value.startDifficulty) 
 						{
 							int extraWeight = value.weight + manager.getRaidDifficulty();
 							int weight = value != NONE ? extraWeight > (value.weight * 2) ? value.weight * 2 : extraWeight : value.weight;
 							
 							weightedRoles.add(new WeightedRoles(value, weight));
 						}
-						
-						
 					}
 					lastRefresh = raider.getDifficultyProgession().getDay();
 				}
@@ -1257,7 +1298,7 @@ public class EntityRaiderBase extends EntityMob
 				}
 				else
 				{
-						return FRIENDLY;
+					return FRIENDLY;
 				}
 			}
 		}

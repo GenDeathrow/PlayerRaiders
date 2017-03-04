@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.EnumHelper;
 
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
@@ -198,6 +199,13 @@ public class RaiderModel extends ModelBiped
 	@Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
+		boolean witchActive = entityIn instanceof EntityRangedAttacker && ((EntityRangedAttacker) entityIn).isWitchActive();
+        
+		if (!witchActive && ((EntityRaiderBase) entityIn).getRaiderRole() == EnumRaiderRole.WITCH)
+        {
+			 GlStateManager.translate(0.0F, 0.25F, 0.0F);
+        }
+		
     	super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
 
 //        if (entityIn.isSneaking())
@@ -208,6 +216,22 @@ public class RaiderModel extends ModelBiped
 //        {
 //            this.bipedCape.rotationPointY = 0.0F;
 //        }
+    	
+        if (!witchActive && ((EntityRaiderBase) entityIn).getRaiderRole() == EnumRaiderRole.WITCH)
+        {
+            this.bipedRightArm.rotateAngleX += -((float)Math.PI / 5F);
+            this.bipedLeftArm.rotateAngleX += -((float)Math.PI / 5F);
+            this.bipedRightLeg.rotateAngleX = -1.4137167F;
+            this.bipedRightLeg.rotateAngleY = ((float)Math.PI / 10F);
+            this.bipedRightLeg.rotateAngleZ = 0.07853982F;
+            this.bipedLeftLeg.rotateAngleX = -1.4137167F;
+            this.bipedLeftLeg.rotateAngleY = -((float)Math.PI / 10F);
+            this.bipedLeftLeg.rotateAngleZ = -0.07853982F;
+            
+           // this.bipedBody.rotateAngleX += MathHelper.sin(ageInTicks * (float)Math.PI) * 5.0F;
+           // this.bipedBody.rotateAngleY -= MathHelper.sin(ageInTicks * 0.067F) * 5.0F;
+        }
+        
         
     	if (this.leftArmPose == HoldingSkull)
         {

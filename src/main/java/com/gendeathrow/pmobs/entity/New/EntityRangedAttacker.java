@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -18,6 +19,7 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.entity.projectile.EntitySmallFireball;
@@ -60,6 +62,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 	
     private static final DataParameter<Boolean> SWINGING_ARMS = EntityDataManager.<Boolean>createKey(EntityRangedAttacker.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IS_AGGRESSIVE = EntityDataManager.<Boolean>createKey(EntityRangedAttacker.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_ACTIVE = EntityDataManager.<Boolean>createKey(EntityRangedAttacker.class, DataSerializers.BOOLEAN);
     //private static final DataParameter<Integer> SCREAMERATTACK = EntityDataManager.<BOOLEAN>createKey(EntityRangedAttacker.class, DataSerializers.BOOLEAN);
     
     private static final UUID MODIFIER_UUID = UUID.fromString("5CD17E52-A79A-43D3-A529-90FDE04B181E");
@@ -109,6 +112,8 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 
 		this.getDataManager().register(SWINGING_ARMS, Boolean.valueOf(false));
 		this.getDataManager().register(IS_AGGRESSIVE, Boolean.valueOf(false));
+		this.getDataManager().register(IS_ACTIVE, Boolean.valueOf(false));
+		
     }
 	
 	protected void initEntityAI()
@@ -129,7 +134,17 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     {
         this.getDataManager().set(IS_AGGRESSIVE, Boolean.valueOf(aggressive));
     }
+    
+    public void setWitchActive(boolean active)
+    {
+    	this.getDataManager().set(IS_ACTIVE, Boolean.valueOf(active));
+    }
 
+    public boolean isWitchActive()
+    {
+    	 return ((Boolean)this.getDataManager().get(IS_ACTIVE)).booleanValue();
+    }
+    
     public boolean isDrinkingPotion()
     {
         return ((Boolean)this.getDataManager().get(IS_AGGRESSIVE)).booleanValue();
@@ -290,9 +305,12 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
         
         if(i) this.setCombatTask();
         
-        if(this.getRaiderRole().equals(EnumRaiderRole.WITCH) && !this.preCombatSet && !this.postCombatSet)
+        if(this.getRaiderRole().equals(EnumRaiderRole.WITCH))
         {
-        	this.setWitchPreCombat();
+        	if(this.isWitchActive())
+        		this.setWitchCombat();
+        	else 
+        		this.setWitchPreCombat();
         }
     }
     
@@ -302,6 +320,10 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
         
         if(this.getRaiderRole() == EnumRaiderRole.RANGED)
         	compound.setBoolean("RangedAttacker", this.isRangedAttacker);
+        
+        if(this.getRaiderRole() == EnumRaiderRole.WITCH)
+        	compound.setBoolean("isWitchActive", this.isWitchActive());
+        
     }
 
     private int witchAttackTimer;
@@ -332,13 +354,15 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     	{
     		this.setWitchPreCombat();
     		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+    		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
+    		this.setHealth(this.getMaxHealth());
     	}
        	
   	
 		return livingdata;
     }
     
-    private boolean preCombatSet = false;
+    public boolean preCombatSet = false;
     private boolean postCombatSet = false;
     
     private void setWitchPreCombat()
@@ -354,6 +378,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 		this.tasks.removeTask(melee);
 		
 		this.preCombatSet = true;
+		this.setWitchActive(false);
     }
     
     public void setWitchCombat()
@@ -367,12 +392,24 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 		//this.tasks.addTask(2, this.aiPotionAttack);
         this.tasks.addTask(2, this.aiScreamerAttack);
 		postCombatSet = true;
+		preCombatSet = false;
+		this.setWitchActive(true);
     }
+    
+    private int cryTick = 30;
     
     public void onLivingUpdate()
     {
         if (!this.worldObj.isRemote && this.getRaiderRole().equals(EnumRaiderRole.WITCH))
         {
+        	
+            if(preCombatSet && cryTick-- <= 0)
+            {
+            	// not working correctly
+         	   //this.worldObj.playRecord(this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_WITCH_CRY);
+         	   cryTick = 600;
+            }
+             
             if (this.isDrinkingPotion())
             {
                 if (this.witchAttackTimer-- <= 0)
@@ -434,6 +471,9 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
             {
                 this.worldObj.setEntityState(this, (byte)15);
             }
+            
+            this.RemoveEntitiesfromArea(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(30.0D, 10.0D, 30.0D)));
+
         }
 
         super.onLivingUpdate();
@@ -454,6 +494,15 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
             super.handleStatusUpdate(id);
         }
     }
+    
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount)
+    {
+    	if(this.getRaiderRole() == EnumRaiderRole.WITCH && !this.isWitchActive())
+    		return false;
+    	else
+    		return super.attackEntityFrom(source, amount);
+     }
     
     
     public void onStruckByLightning(EntityLightningBolt lightningBolt)
@@ -534,6 +583,44 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
             }
         }
     }
+    
+    
+	@Override
+	public void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
+	{
+//
+//		if(this.getRaiderRole() == EnumRaiderRole.WITCH)
+//		{
+//			this.dropItem(Items.EXPERIENCE_BOTTLE, this.getRNG().nextInt(2)+1);
+//			this.dropItem(Items.GOLDEN_APPLE, 1);
+//			if(this.getRNG().nextDouble() <= 0.01) this.dropItem(Items.DRAGON_BREATH, 1);
+//		}
+
+		super.dropLoot(wasRecentlyHit, lootingModifier, source);
+	}
+	
+	
+	private void RemoveEntitiesfromArea(List<Entity> p_70970_1_)
+	{
+		double d0 = (this.getEntityBoundingBox().minX + this.getEntityBoundingBox().maxX) / 2.0D;
+		double d1 = (this.getEntityBoundingBox().minZ + this.getEntityBoundingBox().maxZ) / 2.0D;
+
+		for (Entity entity : p_70970_1_)
+		{
+			if(entity instanceof EntityPlayer) 
+			{
+				continue;
+			}
+	        	
+			if (entity instanceof EntityMob)
+			{
+				double d2 = entity.posX - d0;
+				double d3 = entity.posZ - d1;
+				double d4 = d2 * d2 + d3 * d3;
+				entity.addVelocity(d2 / d4 * 4.0D, 0.0D, d3 / d4 * 4.0D);
+			}
+		}
+	}
     
     public class EntityAILookDepressed extends EntityAIBase
     {

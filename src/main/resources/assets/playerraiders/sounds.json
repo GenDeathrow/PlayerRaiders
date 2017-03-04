@@ -83,5 +83,22 @@
 				"name" : "playerraiders:mob/raiders/scream"
 			}
 		]
+	},
+	"mob.raiders.screamerscream" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "playerraiders:mob/raiders/screamer_scream"
+			}
+		]
+	},
+	"mob.raiders.screamercry" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "playerraiders:mob/raiders/screamer_cry",
+				"stream": true
+			}
+		]
 	}
 }

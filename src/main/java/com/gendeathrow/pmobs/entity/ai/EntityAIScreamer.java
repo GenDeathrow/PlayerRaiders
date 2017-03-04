@@ -10,6 +10,7 @@ import net.minecraft.entity.passive.HorseType;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 
@@ -20,6 +21,7 @@ public class EntityAIScreamer  extends EntityAIBase{
 
    private EntityRangedAttacker raider;
    private int maxStrikes = 0;
+   private boolean triggered = false;
    
    
    public EntityAIScreamer(EntityRangedAttacker raiderIn)
@@ -33,12 +35,14 @@ public class EntityAIScreamer  extends EntityAIBase{
       
    public boolean shouldExecute()
    {
-       return this.raider.worldObj.isAnyPlayerWithinRangeAt(this.raider.posX, this.raider.posY, this.raider.posZ, 15.0D);
+       return this.raider.worldObj.isAnyPlayerWithinRangeAt(this.raider.posX, this.raider.posY, this.raider.posZ, 10.0D) || this.triggered;
    }
    
    
    private int ticks = 0;
    private int strikes = 0;
+   private boolean hasScreamed = false;
+
    
    /**
     * Updates the task
@@ -49,9 +53,19 @@ public class EntityAIScreamer  extends EntityAIBase{
 
        if(strikes <= maxStrikes)
        {
-    	   if(ticks == 0 || (ticks % 5 == 0 && this.raider.getRNG().nextInt(2) == 1) || ticks % 10 == 0)
-    	   {   
+    	   if(ticks == 0 || (ticks % 2 == 0 && this.raider.getRNG().nextInt(2) == 1) || ticks % 4 == 0)
+    	   {
+    		   if(!hasScreamed)
+    			   this.raider.playSound(com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_WITCH_SCREAM, 3, 1); 
+
     		   this.raider.worldObj.addWeatherEffect(new EntityLightningBolt(this.raider.worldObj, this.raider.posX + getRandomPosition(), this.raider.posY, this.raider.posZ + getRandomPosition(), true));
+    		   if(!this.raider.worldObj.isRaining())
+    		   {
+    			   this.raider.worldObj.getWorldInfo().setThundering(true);
+    			   this.raider.worldObj.getWorldInfo().setThunderTime(600);
+    		   }
+    		   
+    		   this.triggered = true;
     		   strikes++;
     	   }
        }

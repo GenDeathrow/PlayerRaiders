@@ -2,18 +2,16 @@ package com.gendeathrow.pmobs.core.proxies;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.gendeathrow.pmobs.client.ClientEventHandler;
+import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
-import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class ClientProxy extends CommonProxy
@@ -64,7 +62,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerModels()
 	{
-		//registerBlock(ModBlocks.gdDragonEgg);
+		//registerBlock(ModBlocks.gdDragonEgg);  
 	}
 	
 		
@@ -73,6 +71,8 @@ public class ClientProxy extends CommonProxy
 	{
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityRaiderBase.class, EntityRaiderRenderer.FACTORY);
+		
+		RenderingRegistry.registerEntityRenderingHandler(EntityDropPod.class, DropPodRenderer.FACTORY);
 
 //		
 //			RenderingRegistry.registerEntityRenderingHandler(EntityRider.class, RenderEntityRider.FACTORY);
