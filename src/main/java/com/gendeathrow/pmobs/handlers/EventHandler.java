@@ -1,11 +1,11 @@
 package com.gendeathrow.pmobs.handlers;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -14,21 +14,24 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
-import com.gendeathrow.pmobs.client.audio.CryingWitch;
+import com.gendeathrow.pmobs.core.ConfigHandler;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 import funwayguy.epicsiegemod.api.EsmTaskEvent;
 
+@Optional.Interface(iface="funwayguy.epicsiegemod.api.EsmTaskEvent", modid="epicsiegemod")
 
 public class EventHandler 
 {
@@ -51,7 +54,7 @@ public class EventHandler
  			
  			for(int noday : PMSettings.noSpawnDays)
  			{
- 				if(day == noday)
+ 				if(day == noday && event.getWorld().isDaytime())
  				{
  					event.setResult(Result.DENY);
  					return;
@@ -100,6 +103,7 @@ public class EventHandler
 			
 	}
 	
+	@Optional.Method(modid="epicsiegemod")
 	@SubscribeEvent
 	public void getESM(EsmTaskEvent.Addition event)
 	{
@@ -117,22 +121,24 @@ public class EventHandler
 	
 				if(className.equalsIgnoreCase("ESM_EntityAIDemolition"))
 				{
-					//System.out.println("ESM_EntityAIDemolition--"+ raiderClass.name() + ":"+ raider.getDifficultyProgession().getRaidDifficulty());
+					boolean raidflag = raider.getDifficultyProgession().getRaidDifficulty() < PMSettings.esmDemolitionRaidDiff;
 					
 					boolean flag = false;
 					boolean holdingTnt = raider.getHeldItemOffhand() != null && raider.getHeldItemOffhand().getItem() == Item.getItemFromBlock(Blocks.TNT);
 					
-					if(raider.getDifficultyProgession().getRaidDifficulty() < PMSettings.esmDemolitionRaidDiff)
+					if(raidflag)
 					{
 						//System.out.println("Denied ESM_EntityAIDemolition for under raid dificulty 1");
 						flag = true;
 					}
 					else if(raiderClass != EnumRaiderRole.NONE || raider.isHeroBrine() || raider.isChild())
 					{
-						//System.out.println("Denied ESM_EntityAIDemolition for "+ raider.getOwner() + ">>"+ raiderClass);
+						//System.out.println("Class/Type: Denied ESM_EntityAIDemolition for "+ raider.getOwner() + ">>"+ raiderClass);
 						flag = true;
-					}else if(holdingTnt && raider.getRNG().nextDouble() > PMSettings.esmDemoPercentage )
+					}
+					else if(!raider.getOwner().equalsIgnoreCase("Funwayguy") && holdingTnt && raider.getRNG().nextDouble() > PMSettings.esmDemoPercentage)
 					{
+						//System.out.println("Percentage: Denied ESM_EntityAIDemolition for "+ raider.getOwner() + ">>"+ raiderClass);
 						flag = true;
 					}
 					
@@ -140,19 +146,57 @@ public class EventHandler
 					{
 						event.setResult(Result.DENY);
 						
-						if(holdingTnt)
+						if(holdingTnt && raiderClass == EnumRaiderRole.PYROMANIAC)
 						{
-							if(raiderClass == EnumRaiderRole.PYROMANIAC) 
 								raider.setHeldItem(EnumHand.OFF_HAND, new ItemStack(Items.FLINT_AND_STEEL));
-							else raider.setHeldItem(EnumHand.OFF_HAND, null);
 						}
+						else raider.setHeldItem(EnumHand.OFF_HAND, null);
+
 					}
 				}
 				else if(className.equalsIgnoreCase("ESM_EntityAIDigging"))
 				{
-					if((raider.isChild() || raiderClass != EnumRaiderRole.NONE) && raider.getRNG().nextFloat() > PMSettings.esmDiggingPercentage)
+					boolean flag = raider.getDifficultyProgession().getRaidDifficulty() < PMSettings.esmDigginRaidDiff;
+					
+					if((raider.isChild() || raiderClass != EnumRaiderRole.NONE || flag) && raider.getRNG().nextFloat() > PMSettings.esmDiggingPercentage)
 					{
+						//System.out.println("Denied digging for under raid dificulty 1 - " + flag);
+						
+						if(raider.getHeldItemMainhand() != null && raider.getHeldItemMainhand().getItem() == Items.IRON_PICKAXE)
+							raider.setHeldItem(EnumHand.MAIN_HAND, null);
+						
 						event.setResult(Result.DENY);
+					}
+					else
+					{
+						int rand = raider.getRNG().nextInt(100);
+						
+						if(rand < PMSettings.esmDiggingTools)
+						{
+							int tool = Math.max(raider.getRNG().nextInt(6)-3, 0);
+							  
+							if(raider.getDifficultyProgession().getRaidDifficulty() >= PMSettings.esmDiamondToolsRaidDiff && rand <= PMSettings.esmDiamondDiggingTools)
+							{
+								if(tool == 0)
+									raider.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.DIAMOND_PICKAXE));
+								else if(tool <= 2)
+									raider.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SHOVEL));
+								else
+									raider.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.DIAMOND_AXE));
+							}
+							else
+							{	
+								if(tool == 0)
+									raider.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.IRON_PICKAXE));
+								else if(tool <= 2)						
+									raider.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.IRON_SHOVEL));
+								else						
+									raider.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.IRON_AXE));
+							}
+							
+							raider.setDropChance(EntityEquipmentSlot.MAINHAND, 0.05F);
+						}
+	
 					}
 				}
 				
@@ -162,7 +206,7 @@ public class EventHandler
 		
 	}
 	
-	
+	@Optional.Method(modid = "epicseigemod")
 	@SubscribeEvent
 	public void getESM(EsmTaskEvent.Modified event)
 	{
@@ -187,33 +231,25 @@ public class EventHandler
 	}
 		
 		
-    boolean hasChecked = false;
+    boolean hasCheckedSkins = false;
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) 
     {
     	
-    	if(!event.player.worldObj.isRemote || hasChecked)
-    	{
-    		return;
-    	}
-    	hasChecked = true;
-			
-    	if(EquipmentManager.ErrorList.size() > 0)
-    	{
-    		event.player.addChatComponentMessage(new TextComponentTranslation(EquipmentManager.ErrorList.size() + " Errors were found in Raiders Equipment json. Check Console for more info."));
-    	}
-			
-    	//RaidersSkinManager.INSTANCE.cacheSkins();
-    	RaidersSkinManager.INSTANCE.cacheSkins();	
+    	if(!event.player.worldObj.isRemote)	return;
+
     }
 		
 		
-//	    @SubscribeEvent
-//	    public void onLootTablesLoaded (LootTableLoadEvent event) 
-//	    {
-//	    	
-//	    	
-//	    }
-		
+	@SubscribeEvent
+	public void onConfigChanged(ConfigChangedEvent event)
+	{
+		if(event.getModID().equals(RaidersCore.MODID))
+		{
+			ConfigHandler.config.save();
+			ConfigHandler.load();
+		}
+	}
+	
 		
 }

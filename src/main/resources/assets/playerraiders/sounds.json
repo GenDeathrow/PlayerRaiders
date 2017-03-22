@@ -100,5 +100,13 @@
 				"stream": true
 			}
 		]
+	},
+	"ambient.raiddayboom" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "playerraiders:ambient/suspense"
+			}
+		]
 	}
 }

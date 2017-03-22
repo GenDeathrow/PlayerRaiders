@@ -1,14 +1,14 @@
 [
 {
   "modid": "playerraiders",
-  "name": "Player Raiders",
+  "name": "Raiders",
   "description": "Creates Fake Players, That are all trying to kill you",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "http://minecraft.curseforge.com/members/GenDeathrow/projects",
+  "url": "https://minecraft.curseforge.com/projects/raiders",
   "updateUrl": "",
-  "authorList": ["GenDeathrow"],
-  "credits": "Custom mod originally for Darkosto",
+  "authorList": ["GenDeathrow", "Darkosto"],
+  "credits": "Custom mod originally for Invasion Modpack by Darkosto",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []

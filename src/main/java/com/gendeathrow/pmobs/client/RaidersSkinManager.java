@@ -76,8 +76,8 @@ public class RaidersSkinManager
 					{
 						RaiderData raider = raidersdata.get(0);
 
-						//raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
-						raider.setProfile(setupProfiles(raider.getProfile()));
+						raider.setProfile(TileEntitySkull.updateGameprofile(raider.getProfile()));
+						//raider.setProfile(setupProfiles(raider.getProfile()));
 						
 						try 
 						{
@@ -115,8 +115,8 @@ public class RaidersSkinManager
 
 						//boolean flag = profileCache.getUsernames() != null ? (Arrays.asList(profileCache.getUsernames()).contains(raider.getOwner())) : false;
 						
-						//raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
-						raider.setPlayerProfile(setupProfiles(raider.getPlayerProfile()));
+						raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
+						//raider.setPlayerProfile(setupProfiles(raider.getPlayerProfile()));
 						raider.setProfileUpdated(true);
 						
 						//RaiderManager.setRaiderProfile(raider.getOwner(), raider.getPlayerProfile());

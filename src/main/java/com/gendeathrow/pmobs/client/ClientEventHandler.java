@@ -7,18 +7,30 @@ import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.gendeathrow.pmobs.client.audio.CryingWitch;
 import com.gendeathrow.pmobs.client.data.KillCounter;
+import com.gendeathrow.pmobs.client.gui.RaidNotification;
+import com.gendeathrow.pmobs.common.SoundEvents;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
+import com.gendeathrow.pmobs.handlers.DifficultyProgression;
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
 
+@SideOnly(Side.CLIENT)
 public class ClientEventHandler 
 {
 
@@ -55,10 +67,45 @@ public class ClientEventHandler
     	}
 	}
     
+      
+    boolean hasCheckedSkins = false;
+    int lastRaidCheck = 0;
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) 
+    {
+
+    	
+    	if(!hasCheckedSkins)
+    	{
+        	//System.out.println("CacheSkins");
+    		hasCheckedSkins = true;
+			
+    		if(EquipmentManager.ErrorList.size() > 0)
+    		{
+    			event.player.addChatComponentMessage(new TextComponentTranslation(EquipmentManager.ErrorList.size() + " Errors were found in Raiders Equipment json. Check Console for more info."));
+    		}
+    		//RaidersSkinManager.INSTANCE.cacheSkins();
+    		RaidersSkinManager.INSTANCE.cacheSkins();
+    	}
+    	
+    	
+    	if(event.player.worldObj == null || !event.player.worldObj.isRemote) return;
+    	if(event.player.worldObj.getWorldTime() % 1000 != 0 || event.phase == Phase.END) return;
+    	
+    	int diff = DifficultyProgression.getRaidDifficulty(event.player.worldObj);
     
+    	if(lastRaidCheck != diff)
+    	{
+    		lastRaidCheck = diff;
+    		RaidNotification.ScheduleNotice("Raid Difficulty "+ diff, "Raiders have gotten harder!", SoundEvents.RAID_DAY_SUSPENSE.getRegistryName().toString());
+    	}
+
+    }
+    
+		
 	boolean witchNear = false;
 	int maxDistance = 35;
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void fogRender(RenderFogEvent event)
 	{
 		this.witchNear = false;
@@ -95,7 +142,7 @@ public class ClientEventHandler
 			
 			GlStateManager.setFogDensity(0.1f);
 			GlStateManager.setFogStart(fogStart);		
-			GlStateManager.setFogEnd(Math.max(fogDistance,10));	
+			GlStateManager.setFogEnd(Math.max(fogDistance,20));	
 			
 		}
 	}

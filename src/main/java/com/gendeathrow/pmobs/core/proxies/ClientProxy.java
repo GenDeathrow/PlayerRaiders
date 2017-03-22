@@ -9,9 +9,12 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import com.gendeathrow.pmobs.client.ClientEventHandler;
+import com.gendeathrow.pmobs.client.gui.RaidNotification;
 import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
+import com.gendeathrow.pmobs.client.renderer.HiredRaiderRenderer;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
+import com.gendeathrow.pmobs.entity.HiredRaiders.HiredRaider;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class ClientProxy extends CommonProxy
@@ -55,7 +58,7 @@ public class ClientProxy extends CommonProxy
 	public void registerHandlers()
 	{
 		super.registerHandlers();
-
+		MinecraftForge.EVENT_BUS.register(new RaidNotification());
 		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 	}
 	
@@ -71,6 +74,8 @@ public class ClientProxy extends CommonProxy
 	{
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityRaiderBase.class, EntityRaiderRenderer.FACTORY);
+		
+		RenderingRegistry.registerEntityRenderingHandler(HiredRaider.class, HiredRaiderRenderer.FACTORY);
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityDropPod.class, DropPodRenderer.FACTORY);
 

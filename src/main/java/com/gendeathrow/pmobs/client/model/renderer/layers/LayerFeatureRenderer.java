@@ -49,7 +49,7 @@ public class LayerFeatureRenderer implements LayerRenderer<EntityLivingBase>
 			this.layerModel.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
 
 			
-			if(((EntityRaiderBase)entitylivingbaseIn).getFeatures() != LayerFeatures.NONE && this.layerModel.bipedBody.showModel)
+			if(((EntityRaiderBase)entitylivingbaseIn).getFeatures() != LayerFeatures.NONE && !entitylivingbaseIn.isInvisible())
 			{
 	            	GlStateManager.pushMatrix();
 		            	GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

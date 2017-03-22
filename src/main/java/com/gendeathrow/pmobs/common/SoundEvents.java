@@ -17,6 +17,7 @@ public class SoundEvents
 	public static SoundEvent RAIDERS_BRUTE_LAUGH;
 	public static SoundEvent RAIDERS_WITCH_SCREAM;
 	public static SoundEvent RAIDERS_WITCH_CRY;
+	public static SoundEvent RAID_DAY_SUSPENSE;
 	
 	public static void register()
 	{
@@ -29,7 +30,8 @@ public class SoundEvents
 		ResourceLocation locationscream = new ResourceLocation(RaidersCore.MODID, "mob.raiders.scream");
 		ResourceLocation locationWitchscream = new ResourceLocation(RaidersCore.MODID, "mob.raiders.screamerscream");
 		ResourceLocation locationWitchscry = new ResourceLocation(RaidersCore.MODID, "mob.raiders.screamercry");
-
+		ResourceLocation locationsuspense = new ResourceLocation(RaidersCore.MODID, "ambient.raiddayboom");
+		
 		
 		RAIDERS_SAY = new SoundEvent(locationSay);
 		RAIDERS_HURT = new SoundEvent(locationHurt);
@@ -38,6 +40,7 @@ public class SoundEvents
 		RAIDERS_BRUTE_LAUGH = new SoundEvent(locationbrutelaugh);
 		RAIDERS_WITCH_SCREAM = new SoundEvent(locationWitchscream);
 		RAIDERS_WITCH_CRY = new SoundEvent(locationWitchscry);
+		RAID_DAY_SUSPENSE = new SoundEvent(locationsuspense);
 		
 		GameRegistry.register(SoundEvents.RAIDERS_SAY, locationSay);
 		GameRegistry.register(SoundEvents.RAIDERS_LAUGH, locationlaugh);
@@ -46,5 +49,7 @@ public class SoundEvents
 		GameRegistry.register(SoundEvents.RAIDERS_BRUTE_LAUGH, locationbrutelaugh);
 		GameRegistry.register(SoundEvents.RAIDERS_WITCH_SCREAM, locationWitchscream);
 		GameRegistry.register(SoundEvents.RAIDERS_WITCH_CRY, locationWitchscry);
+		GameRegistry.register(SoundEvents.RAID_DAY_SUSPENSE, locationsuspense);
+
 	}
 }

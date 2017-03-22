@@ -24,7 +24,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
     private int attackStep;
     private int attackTime;
     
-    private int fireBallCoolDown = 60;
+    private int fireBallCoolDown = 55;
     private int lightingCoolDown = 100;
     private int potionCooldown = 20;
     
@@ -224,7 +224,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
             }
             else
             {
-                this.fireBallCoolDown = 100;
+                this.fireBallCoolDown = 50 + (this.raider.getRNG().nextInt(20) - 5);
                 this.attackStep = 0;
                 this.attackTime = 60;
             }
@@ -261,7 +261,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
 	       {
 	    	   this.nxLightingAttack = this.raider.getRNG().nextInt(10)+15;
 	    	   lightningAttack = 0;
-	    	   lightingCoolDown = 100;
+	    	   lightingCoolDown = 100 + (this.raider.getRNG().nextInt(20) - 10);
 	    	   strikes = 0;
 	    	   maxStrikes = this.raider.getRNG().nextInt(2)+1;
 	    	   this.attackTime = 60;

@@ -15,8 +15,8 @@ import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 public class DifficultyProgression 
 {
 	
-	public static double speedDifficulty = .015;
-		public static double speedDifficultyMax = .75;
+	public static double speedDifficulty = .035;
+		public static double speedDifficultyMax = .35;
 		public static double speedMIN = 0.1;
 		public static double speedMAX = .35;
 		
@@ -85,6 +85,10 @@ public class DifficultyProgression
     	return (int)(raider.worldObj.getWorldTime()/24000);
     }
     
+    public static int getDay(World worldObj)
+    {
+    	return (int)(worldObj.getWorldTime()/24000);
+    }
     
     /** 
      * Get Current Raid Difficultly
@@ -96,44 +100,55 @@ public class DifficultyProgression
     	return ((int)(getDay() / PMSettings.dayDifficultyProgression));
     }
     
+    public static int getRaidDifficulty(World worldObj)
+    {
+    	return ((int)(getDay(worldObj) / PMSettings.dayDifficultyProgression));
+    }
+    
+    
+    
+    
     public void setSpeedDifficulty(DifficultyInstance difficulty)
     {  
+    	if(raider.isChild() || raider.isHeroBrine() || (raider.getRaiderRole() != EnumRaiderRole.NONE || raider.getRaiderRole() != EnumRaiderRole.PYROMANIAC)) return;
+    	
     	if(rand.nextDouble() < calculateProgressionDifficulty(speedDifficulty, speedDifficultyMax))
     	{
-        	double speed = -0.01 + (.25 - (-0.01)) * rand.nextDouble();
+        	double speed = -0.05 + (.25- (-0.05)) * rand.nextDouble();
             raider.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(EntityRaiderBase.SPEED_BOOST_ID, "Speed Bonus", speed , 0));
     	}
     }
     
     public void setHealthDifficulty(DifficultyInstance difficulty)
     {
-    	double healthChance = calculateProgressionDifficulty(healthDifficulty, 1.00D);
+    	double healthChance = calculateProgressionDifficulty(healthDifficulty, 0.10D) + (difficulty.getClampedAdditionalDifficulty() * 0.015F);
     	boolean addDefaultHealth = getRaidDifficulty()>= 1;
     	
+    	double extraHealth = PMSettings.HealthMaxOut < 0 ? calculateProgressionDifficulty(PMSettings.HealthIncrease) : getRaidDifficulty() >= PMSettings.HealthMaxOut ? PMSettings.HealthIncrease * PMSettings.HealthMaxOut : calculateProgressionDifficulty(PMSettings.HealthIncrease);
+    	
+        if(this.rand.nextFloat() < healthChance)
+        {
+        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 5.0D + 1.00D + extraHealth, 0));
+        }
+        else if(addDefaultHealth || raider.getRaiderRole() == EnumRaiderRole.WITCH)
+        {
+        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Small Health bonus", this.rand.nextDouble() + 1.00D + extraHealth, 0));
+        }
+        
     	if(raider.isChild())
     	{
     		raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Child Health", -.75, 2));
     	}
-    	else if (this.rand.nextFloat() < difficulty.getClampedAdditionalDifficulty() * 0.015F)
-        {
-            raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Leader bonus", this.rand.nextDouble() * 3.0D + 1.0D + calculateProgressionDifficulty(1), 2));
-        }
-        else if(this.rand.nextFloat() < healthChance)
-        {
-        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 2.0D + 1.00D + calculateProgressionDifficulty(1), 2));
-        }
-        else if(addDefaultHealth || raider.getRaiderRole() == EnumRaiderRole.WITCH)
-        {
-        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Small Health bonus", this.rand.nextDouble() + 1.00D + calculateProgressionDifficulty(1), 2));
-        }
     }
     
     public void setDamageDifficulty(DifficultyInstance difficulty)
     {
-    	
     	if(raider.isChild())
     	{
     		raider.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).applyModifier(new AttributeModifier("Child Dmg", -.5, 2));
+    	}else if(raider.getRaiderRole() == EnumRaiderRole.TWEAKER)
+    	{
+    		raider.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).applyModifier(new AttributeModifier("Tweaker Dmg", 1, 0));
     	}
     }
     

@@ -10,6 +10,7 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import com.gendeathrow.pmobs.client.model.renderer.DropPodModel;
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class DropPodRenderer extends Render<EntityDropPod>
 {
@@ -31,12 +32,13 @@ public class DropPodRenderer extends Render<EntityDropPod>
 	       GlStateManager.pushMatrix();
 	        GlStateManager.disableCull();
 	        GlStateManager.translate((float)x, (float)y, (float)z);
+			GlStateManager.scale(-1D, -1D, -1D);
 	        GlStateManager.enableRescaleNormal();
 	        GlStateManager.enableAlpha();
 	        
 	        this.bindEntityTexture(entity);
 
-
+	        GlStateManager.translate(0, -1.2f, 0);
 	        this.model.render(entity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
 
 	        GlStateManager.popMatrix();
@@ -48,6 +50,7 @@ public class DropPodRenderer extends Render<EntityDropPod>
 	{
 		return texture;
 	}
+
 	
 	public DropPodModel getMainModel()
 	{

@@ -19,7 +19,7 @@ public class CryingWitch extends MovingSound{
         this.raider = minecartIn;
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 2f;
+        this.volume = 3f;
     }
 
 	@Override

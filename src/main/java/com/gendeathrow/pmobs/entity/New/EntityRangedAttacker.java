@@ -35,6 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
@@ -46,6 +47,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.GuiScreenEvent.PotionShiftEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -156,8 +158,9 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 		
 		if(this.getRaiderRole() == EnumRaiderRole.RANGED)
 			rangerAttack(target, distanceFactor);
-		else if(this.getRaiderRole() == EnumRaiderRole.WITCH)
-			screamerAttack(target, distanceFactor);
+	
+		//else if(this.getRaiderRole() == EnumRaiderRole.WITCH)
+		///screamerAttack(target, distanceFactor);
 	}
 	
 	private int fireballTick = 0;
@@ -339,7 +342,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     	{
     		this.isRangedAttacker = true;
     		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
-    		if(this.rand.nextDouble() < .05 + (this.difficultyManager.calculateProgressionDifficulty(.5) > .25 ? .25 : this.difficultyManager.calculateProgressionDifficulty(.5))) 
+    		if(this.rand.nextDouble() < .05 + (this.difficultyManager.calculateProgressionDifficulty(.05) > .25 ? .25 : this.difficultyManager.calculateProgressionDifficulty(.05))) 
     		{
     			try
     			{
@@ -348,12 +351,14 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     			}catch(Exception e){ RaidersCore.logger.error(e); }
     		}
             this.tasks.addTask(1, this.aiArrowAttack);
-            this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+            //this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+            this.removeAllModifiers(SharedMonsterAttributes.MOVEMENT_SPEED);
             
     	}else if(this.getRaiderRole().equals(EnumRaiderRole.WITCH))
     	{
     		this.setWitchPreCombat();
-    		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+    		//this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
+    		this.removeAllModifiers(SharedMonsterAttributes.MOVEMENT_SPEED);
     		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
     		this.setHealth(this.getMaxHealth());
     	}
@@ -397,13 +402,13 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     }
     
     private int cryTick = 30;
-    
+    private boolean hasCastInvisability = false;
     public void onLivingUpdate()
     {
         if (!this.worldObj.isRemote && this.getRaiderRole().equals(EnumRaiderRole.WITCH))
         {
-        	
-            if(preCombatSet && cryTick-- <= 0)
+
+        	if(preCombatSet && cryTick-- <= 0)
             {
             	// not working correctly
          	   //this.worldObj.playRecord(this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_WITCH_CRY);
@@ -448,16 +453,26 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
                 }
                 else if (this.rand.nextFloat() < 0.05F && this.getHealth() < this.getMaxHealth())
                 {
-                    potiontype = PotionTypes.HEALING;
+                	if(this.rand.nextFloat() < 0.05)
+                		potiontype = PotionTypes.REGENERATION;
+                	else
+                		potiontype = PotionTypes.HEALING;
                 }
                 else if (this.rand.nextFloat() < 0.5F && this.getAttackTarget() != null && !this.isPotionActive(MobEffects.SPEED) && this.getAttackTarget().getDistanceSqToEntity(this) > 121.0D)
                 {
                     potiontype = PotionTypes.SWIFTNESS;
                 }
-
+                else if(!hasCastInvisability && this.rand.nextFloat() < 0.01F && this.getAttackTarget() != null && !this.isPotionActive(MobEffects.INVISIBILITY) && this.getAttackTarget().getDistanceSqToEntity(this) < 5.0D)
+                {
+                	if(this.rand.nextFloat() > 0.4F)
+                		potiontype = PotionTypes.INVISIBILITY;
+                	hasCastInvisability = true;
+                }
+                
                 if (potiontype != null)
                 {
-                    this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), potiontype));
+                	ItemStack stack = PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), potiontype);
+                    this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
                     this.witchAttackTimer = this.getHeldItemMainhand().getMaxItemUseDuration();
                     this.setAggressive(true);
                     this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_WITCH_DRINK, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
@@ -472,7 +487,8 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
                 this.worldObj.setEntityState(this, (byte)15);
             }
             
-            this.RemoveEntitiesfromArea(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(30.0D, 10.0D, 30.0D)));
+            if(this.isWitchActive())
+            	this.RemoveEntitiesfromArea(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(30.0D, 10.0D, 30.0D)));
 
         }
 
@@ -524,7 +540,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 
         if (source.isMagicDamage())
         {
-            damage = (float)((double)damage * 0.15D);
+            damage = (float)((double)damage * 0.50D);
         }
 
         return damage;

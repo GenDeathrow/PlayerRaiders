@@ -7,11 +7,9 @@ import com.gendeathrow.pmobs.core.ConfigHandler.ItemDrop;
 public class PMSettings 
 {
 	
+	public static boolean attackAll = true;
+
 	public static float daySpawnPercentage = 0.45f;
-	
-	public static int raidersSpawnWeight = 100;
-	
-	public static int raidersMaxGroupSpawn = 3;
 	
 	public static float setEquptmentHard = .1f;
 	
@@ -22,8 +20,6 @@ public class PMSettings
 	public static boolean renderNameTags = true; 
 	
 	public static boolean sprintersOnlyNight = false; 
-	
-	public static boolean safeForaDay = false;
 
 	public static boolean renderOverlays = true;
 
@@ -35,9 +31,6 @@ public class PMSettings
 	@Deprecated
 	public static int dayMaxGroupSpawn = 1;
 
-	public static boolean removeVanillaSpawners = false;
-
-	public static int raidersSpawnerWeight = 200;
 
 	public static boolean leapAttackAI = true;
 
@@ -55,18 +48,25 @@ public class PMSettings
 	public static int noneWeight = 80;
 	public static int screamerWeight = 2;
 	public static int rangerWeight = 10;
+
 	
+	public static int rangerStartDiff = 1;
+	public static int screamerStartDiff = 0;
+	public static int bruteStartDiff = 0;
+	public static int tweakerStartDiff = 0;
+	public static int pyroStartDiff = 0;
+
 	public static boolean tweakerOnlyNight = false;
+
 	//Factions
-	
 	public static boolean factionsEnabled = true;
 
 	//ESM SETTINGS
-	public static float esmDiggingPercentage = 0.3f;
-	public static float esmDemoPercentage = 0.05f;
+	public static float esmDiggingPercentage = 0.6f;
+	public static float esmDemoPercentage = 1f;
 	public static int esmDemolitionRaidDiff = 1;
 	
-	public static float daySpeedRestiction = 0.40F;
+	public static float daySpeedRestiction = 0.60F;
 
 	public static ArrayList<ItemDrop> screamerDrops;
 	public static ArrayList<ItemDrop> tweakerDrops;
@@ -76,5 +76,31 @@ public class PMSettings
 	public static ArrayList<ItemDrop> rangerDrops;
 
 	public static int[] noSpawnDays;
+	
+	public static boolean anyLightLvlSpawning = true;
 
+	public static boolean veryHostile;
+
+	public static int HealthIncrease = 20;
+
+	public static int HealthMaxOut = -1;
+
+	public static int[] dimensions = new int[]{0};
+	
+	// SpawnSettings
+	public static boolean removeVanillaSpawners = false;
+	public static int raidersSpawnerWeight = 200;
+	public static int raidersSpawnWeight = 100;
+	public static boolean safeForaDay = false;	
+	public static int raidersMaxGroupSpawn = 3;
+
+	public static boolean spawnNether = true;
+	public static boolean spawnEnd = false;
+
+	//esm
+	public static int esmDiggingTools = 20;
+	public static int esmDiamondDiggingTools = 5;
+	public static int esmDiamondToolsRaidDiff = 2;
+	public static int esmDigginRaidDiff = 0;
+	
 }
