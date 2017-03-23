@@ -839,7 +839,7 @@ public class EntityRaiderBase extends EntityMob
 	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) 
 	        {
 	        	this.setChild(true); 
-	        	this.setFeatures(0);
+	        	//this.setFeatures(0);
 	        }
   
 	        

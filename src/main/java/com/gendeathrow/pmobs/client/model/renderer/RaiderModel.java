@@ -94,10 +94,10 @@ public class RaiderModel extends ModelBiped
             this.bipedLeftLeg.render(scale);
             this.bipedHeadwear.render(scale);
             
-            this.bipedLeftLegwear.render(scale);
-            this.bipedRightLegwear.render(scale);
-            this.bipedLeftArmwear.render(scale);
-            this.bipedRightArmwear.render(scale);
+//            this.bipedLeftLegwear.render(scale);
+//            this.bipedRightLegwear.render(scale);
+//            this.bipedLeftArmwear.render(scale);
+//            this.bipedRightArmwear.render(scale);
             this.bipedBodyWear.render(scale);
         }
         else
@@ -107,6 +107,14 @@ public class RaiderModel extends ModelBiped
                 GlStateManager.translate(0.0F, 0.2F, 0.0F);
             }
 
+            
+//    		boolean witchActive = entityIn instanceof EntityRangedAttacker && ((EntityRangedAttacker) entityIn).isWitchActive();
+//
+//    		if (!witchActive && ((EntityRaiderBase) entityIn).getRaiderRole() == EnumRaiderRole.WITCH)
+//            {
+//    			 GlStateManager.translate(0.0F, 0.25F, 0.0F);
+//            }
+            
             this.bipedHead.render(scale);
             this.bipedBody.render(scale);
             this.bipedRightArm.render(scale);
