@@ -16,7 +16,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -24,6 +23,7 @@ import com.gendeathrow.pmobs.client.audio.CryingWitch;
 import com.gendeathrow.pmobs.client.data.KillCounter;
 import com.gendeathrow.pmobs.client.gui.RaidNotification;
 import com.gendeathrow.pmobs.common.SoundEvents;
+import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
@@ -101,13 +101,16 @@ public class ClientEventHandler
     	}
 
     }
-    
+      
 		
 	boolean witchNear = false;
 	int maxDistance = 35;
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void fogRender(RenderFogEvent event)
 	{
+		
+		if(!PMSettings.screamerFogOn) return;
+		
 		this.witchNear = false;
 		float fogDistance = 0;
 		

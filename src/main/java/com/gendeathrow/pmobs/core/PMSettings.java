@@ -102,5 +102,7 @@ public class PMSettings
 	public static int esmDiamondDiggingTools = 5;
 	public static int esmDiamondToolsRaidDiff = 2;
 	public static int esmDigginRaidDiff = 0;
+
+	public static boolean screamerFogOn = true;
 	
 }

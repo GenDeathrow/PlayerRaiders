@@ -1,5 +1,7 @@
 package com.gendeathrow.pmobs.handlers;
 
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -9,6 +11,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -42,6 +45,20 @@ public class EventHandler
     @SubscribeEvent
 	public void spawnEvent(LivingSpawnEvent.CheckSpawn event)
 	{
+//    	BlockPos blockpos = new BlockPos(event.getEntity());
+//    	IBlockState blockstate = event.getWorld().getBlockState(blockpos);
+//    	
+//    	if(event.getEntity() instanceof EntityRaiderBase && blockstate.getMaterial() == Material.LAVA)
+//    	{
+//    		System.out.println("found lava");
+//    		
+//    		event.setResult(Result.ALLOW);
+//    		
+//    	}
+//    	else System.out.println(blockstate.getMaterial().toString());
+    	
+    	
+    	
  		if((PMSettings.safeForaDay && event.getEntity() instanceof EntityMob &&  event.getWorld().getWorldTime() < 13000))
  		{
  			if(event.getEntity().posY > 50)

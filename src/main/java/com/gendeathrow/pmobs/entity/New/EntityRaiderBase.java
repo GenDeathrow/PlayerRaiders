@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
@@ -141,7 +142,7 @@ public class EntityRaiderBase extends EntityMob
 
 	}
 	
-	
+
 	/*
 	#################
 	  #	AI CODE
@@ -510,30 +511,17 @@ public class EntityRaiderBase extends EntityMob
     {
     	if (this.worldObj.getDifficulty() == EnumDifficulty.PEACEFUL) return false;
     	
-    	if(PMSettings.anyLightLvlSpawning && this.isValidLightLevel()) return true;
+    	if(PMSettings.anyLightLvlSpawning || this.isValidLightLevel()) return true;
     	
-//    	int maxEntites = (int) ((this.difficultyManager.getDay() < 4 ) ? ((this.difficultyManager.getDay() * .15) + .15) * EnumCreatureType.MONSTER.getMaxNumberOfCreature() : EnumCreatureType.MONSTER.getMaxNumberOfCreature());
-//    	
-//    	if(this.worldObj.isDaytime())
-//    	{
-//
-//    		List<EntityRaiderBase> list = this.worldObj.getEntities(EntityRaiderBase.class,  new Predicate<EntityRaiderBase>() 
-//    		{
-//    			@Override public boolean apply(EntityRaiderBase number) 
-//    			{
-//    				return true;
-//    			}       
-//    		});
-//    	
-//    		if(list.size()+1 >= (PMSettings.daySpawnPercentage * maxEntites))
-//    		{
-//    			return false;
-//    		}
-//    	}
-//    	
-    	
-    	return true;
+    	return super.getCanSpawnHere();
     }
+    
+	@Override
+    public boolean isNotColliding()
+    {
+        return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.worldObj.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
+    }
+
     
     private int ScreamTick = 1200;
 	@Override
@@ -590,12 +578,6 @@ public class EntityRaiderBase extends EntityMob
 		super.onLivingUpdate();
 	}
 	
-    public boolean isNotColliding()
-    {
-        return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.worldObj.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
-    }
-
-   		
     public InventoryBasic getRaidersInventory()
     {
         return this.raidersInventory;
@@ -623,9 +605,9 @@ public class EntityRaiderBase extends EntityMob
 	{
 		if (super.attackEntityFrom(source, amount))
 		{
-			EntityLivingBase entitylivingbase = this.getAttackTarget();
-
-			if (entitylivingbase == null && source.getEntity() instanceof EntityLivingBase)
+			EntityLivingBase entitylivingbase = null;
+			
+			if (source.getEntity() instanceof EntityLivingBase)
 			{
 				entitylivingbase = (EntityLivingBase)source.getEntity();
 			}
@@ -634,19 +616,10 @@ public class EntityRaiderBase extends EntityMob
 			int j = MathHelper.floor_double(this.posY);
 			int k = MathHelper.floor_double(this.posZ);
 			
-			if(entitylivingbase != null && entitylivingbase instanceof EntityLivingBase)
+			if(entitylivingbase != null && this.getRNG().nextInt(2) == 0)
 			{
-				this.setAttackTarget(entitylivingbase);
-//				
-//				List<EntityRaiderBase> entites = this.worldObj.getEntitiesWithinAABB(EntityRaiderBase.class, this.getCollisionBoundingBox().expandXyz(4D));
-//				
-//				for(EntityRaiderBase entity : entites)
-//				{
-//					entity.setAttackTarget(entitylivingbase);
-//				}
-//				
+				this.setAttackTarget((EntityLivingBase)entitylivingbase);
 			}
-			
 
 			return true;
 		}
@@ -863,7 +836,11 @@ public class EntityRaiderBase extends EntityMob
 	        }
 	        
 
-	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) this.setChild(true); 
+	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) 
+	        {
+	        	this.setChild(true); 
+	        	this.setFeatures(0);
+	        }
   
 	        
 	        if(!this.isChild() && (this.getRaiderRole() == EnumRaiderRole.NONE || this.getRaiderRole() == EnumRaiderRole.PYROMANIAC) && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))

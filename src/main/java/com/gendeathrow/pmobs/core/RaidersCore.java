@@ -1,10 +1,10 @@
 package com.gendeathrow.pmobs.core;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
+import net.minecraft.entity.EntityLiving.SpawnPlacementType;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.storage.loot.LootTableList;
@@ -33,14 +33,13 @@ import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
-import com.gendeathrow.pmobs.entity.HiredRaiders.HiredRaider;
 
 @Mod(modid = RaidersCore.MODID, name=RaidersCore.NAME, version = RaidersCore.VERSION, guiFactory = "com.gendeathrow.pmobs.client.ConfigGuiFactory")
 public class RaidersCore
 {
     public static final String MODID = "playerraiders";
     public static final String NAME = "Player Raiders";
-    public static final String VERSION = "1.3.0";
+    public static final String VERSION = "1.3.1";
     public static final String CHANNELNAME = "genraiders";
     
 	@Instance(MODID)
@@ -113,7 +112,6 @@ public class RaidersCore
     	EntityRegistry.addSpawn(EntityPlayerRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn,EnumCreatureType.MONSTER, biomes);
 
     	//EntitySpawnPlacementRegistry.setPlacementType(EntityPlayerRaider.class, SpawnPlacementType.ON_GROUND);
-    	//EntitySpawnPlacementRegistry.setPlacementType(EntityWaterRaider.class, SpawnPlacementType.IN_WATER);
     	
     	
     }

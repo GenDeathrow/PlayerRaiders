@@ -343,6 +343,7 @@ public class EntityHeroBrine extends EntityRaiderBase
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
+ 
     	if(isHeroBrine())
     	{
     		if (this.isEntityInvulnerable(source))
@@ -377,7 +378,7 @@ public class EntityHeroBrine extends EntityRaiderBase
 
     			return flag;
     		}
-    	}else return super.attackEntityFrom(source, amount);
+    	}else  return super.attackEntityFrom(source, amount);
     }
     
     List<DamageSource> invulnerable = new ArrayList<DamageSource>();

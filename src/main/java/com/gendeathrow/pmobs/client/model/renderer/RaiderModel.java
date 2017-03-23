@@ -100,26 +100,6 @@ public class RaiderModel extends ModelBiped
             this.bipedRightArmwear.render(scale);
             this.bipedBodyWear.render(scale);
         }
-//        else if(entityIn instanceof EntityRaiderBase && ((EntityRaiderBase)entityIn).getRaiderRole() == EnumRaiderRole.BRUTE)
-//        {
-//     		   float f = 2.0F;
-//     		   GlStateManager.scale(1.5F, 1.5F, 1.5F);
-//     		   GlStateManager.translate(0.0F, -8f * scale, 0.0F);
-//     		   this.bipedHead.render(scale);
-//               this.bipedBody.render(scale);
-//               this.bipedRightArm.render(scale);
-//               this.bipedLeftArm.render(scale);
-//               this.bipedRightLeg.render(scale);
-//               this.bipedLeftLeg.render(scale);
-//
-//               this.bipedHeadwear.render(scale);
-//     		   this.bipedLeftLegwear.render(scale);
-//     		   this.bipedRightLegwear.render(scale);
-//     		   this.bipedLeftArmwear.render(scale);
-//     		   this.bipedRightArmwear.render(scale);
-//     		   this.bipedBodyWear.render(scale);   
-//     		   
-//        }
         else
         {
             if (entityIn.isSneaking())
@@ -227,18 +207,13 @@ public class RaiderModel extends ModelBiped
             this.bipedLeftLeg.rotateAngleX = -1.4137167F;
             this.bipedLeftLeg.rotateAngleY = -((float)Math.PI / 10F);
             this.bipedLeftLeg.rotateAngleZ = -0.07853982F;
-            
-           // this.bipedBody.rotateAngleX += MathHelper.sin(ageInTicks * (float)Math.PI) * 5.0F;
-           // this.bipedBody.rotateAngleY -= MathHelper.sin(ageInTicks * 0.067F) * 5.0F;
         }
         
         
     	if (this.leftArmPose == HoldingSkull)
         {
         	this.bipedLeftArm.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
-        	//this.bipedLeftArm.rotateAngleY = 0.1F + this.bipedHead.rotateAngleY + 0.4F;
         	this.bipedLeftArm.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
-        	//this.bipedLeftArm.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
         }
     	
     	if (entityIn instanceof EntityRaiderBase && ((EntityRaiderBase)entityIn).getRaiderRole() == EnumRaiderRole.TWEAKER && ((EntityRaiderBase)entityIn).isArmsRaised())
@@ -261,6 +236,7 @@ public class RaiderModel extends ModelBiped
 //        copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);
 //        copyModelAngles(this.bipedRightArm, this.bipedRightArmwear);
 //        copyModelAngles(this.bipedBody, this.bipedBodyWear);
+    	
     }
 	
 	

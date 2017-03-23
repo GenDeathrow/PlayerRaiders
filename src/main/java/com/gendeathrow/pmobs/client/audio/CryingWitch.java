@@ -19,7 +19,7 @@ public class CryingWitch extends MovingSound{
         this.raider = minecartIn;
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 3f;
+        this.volume = 2.25f;
     }
 
 	@Override
@@ -34,20 +34,6 @@ public class CryingWitch extends MovingSound{
 			 this.xPosF = (float)this.raider.posX;
 			 this.yPosF = (float)this.raider.posY;
 			 this.zPosF = (float)this.raider.posZ;
-			 
-			 
-//			 float f = MathHelper.sqrt_double(this.raider.motionX * this.raider.motionX + this.raider.motionZ * this.raider.motionZ);
-//
-//			 if ((double)f >= 0.01D)
-//			 {
-//				 this.distance = MathHelper.clamp_float(this.distance + 0.0025F, 0.0F, 1.0F);
-//				 this.volume = 0.0F + MathHelper.clamp_float(f, 0.0F, 1.5F);
-//			 }
-//			 else
-//			 {
-//				 this.distance = 0.0F;
-//				 this.volume = 0.0F;
-//			 }
 		 }
 	}
 }

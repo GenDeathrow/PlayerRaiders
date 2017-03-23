@@ -57,7 +57,7 @@ public class ConfigHandler
 		PMSettings.factionsEnabled = config.getBoolean("Enable Factions", mobs, true, "If true Some Raiders can belong to a friendly/hostile faction. If false they are all hostile");
 		
 		PMSettings.daySpeedRestiction = config.getFloat("DayTime Speed Modifier", mobs, 0.4f, -1f, 2f, "Mulitply raiders speed during Daytime. 1 is normal speed.");
-		PMSettings.anyLightLvlSpawning = config.getBoolean("Spawn no light levels", mobs, true, "Raiders will spawn reguardless of light levels.");
+		PMSettings.anyLightLvlSpawning = config.getBoolean("Spawn no light levels", mobs, true, "Raiders will spawn reguardless of light levels. Basically Daytime Spawning.");
 		
 		// Mob AI stuff
 		PMSettings.leapAttackAI = config.getBoolean("Leap Attack", mobai, true, "Gives some Raiders the abilit to leap attack, small chance increases with each raid difficulty");
@@ -98,6 +98,7 @@ public class ConfigHandler
 			PMSettings.screamerWeight = config.get(classes, "Screamer Weight", 2).getInt(2);
 			PMSettings.screamerDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Screamer Drops", screamerDrops).getStringList());
 			PMSettings.screamerStartDiff = config.get(classes, "Screamer Start Difficulty", 0).getInt(0);
+			PMSettings.screamerFogOn = config.get(classes, "Screamer Fog", true).getBoolean(true);
 		
 			PMSettings.rangerClass = config.getBoolean("Ranger Class Enabled", classes, true, "Adds Ranger to the mix, These guys are Bow wielding maniacs.");
 			PMSettings.rangerWeight = config.get(classes, "Ranger Weight", 10).getInt(10);

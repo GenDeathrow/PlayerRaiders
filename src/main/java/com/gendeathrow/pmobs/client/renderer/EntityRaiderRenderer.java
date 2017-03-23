@@ -56,6 +56,15 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 //	            }
 //	        });
 //	        
+        if(!PMSettings.renderNameTags) 
+        {
+        	this.NAME_TAG_RANGE = 0;
+        }else 
+        {
+        	this.NAME_TAG_RANGE = 64.0f;
+        
+        }
+        
 	        
 		if(PMSettings.renderOverlays)
 		{
