@@ -492,10 +492,10 @@ public class EntityRaiderBase extends EntityMob
     @Override
     public int getMaxSpawnedInChunk()
     {
-    	if(this.worldObj.isDaytime())
-    	{
-    		return 2;
-    	}
+//    	if(this.worldObj.isDaytime())
+//    	{
+//    		return 2;
+//    	}
         return 4;
     }
     
@@ -873,8 +873,11 @@ public class EntityRaiderBase extends EntityMob
 	    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
 	    {
 
+
 	    	if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05))
 	        {
+		    	//System.out.println((0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05));
+		    	
 	            int i = this.rand.nextInt(2);
 	            float f = this.worldObj.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
 
@@ -885,6 +888,7 @@ public class EntityRaiderBase extends EntityMob
 	            
 	            for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
 	            {
+	            	//System.out.print(entityequipmentslot.getName());
 	                if (entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.ARMOR)
 	                {
 	                    ItemStack itemstack = this.getItemStackFromSlot(entityequipmentslot);
@@ -910,7 +914,7 @@ public class EntityRaiderBase extends EntityMob
 	                {
 	                    ItemStack itemstack = this.getItemStackFromSlot(entityequipmentslot);
 
-	                    if (!handflag && this.rand.nextFloat() > f + this.difficultyManager.calculateProgressionDifficulty(.035))
+	                    if (!handflag && this.rand.nextFloat() > f + this.difficultyManager.calculateProgressionDifficulty(.05))
 	                    {
 	                        break;
 	                    }

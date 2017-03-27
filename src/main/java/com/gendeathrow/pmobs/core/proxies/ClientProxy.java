@@ -13,7 +13,9 @@ import com.gendeathrow.pmobs.client.gui.RaidNotification;
 import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
 import com.gendeathrow.pmobs.client.renderer.HiredRaiderRenderer;
+import com.gendeathrow.pmobs.client.renderer.SignalTransmitterRenderer;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
+import com.gendeathrow.pmobs.entity.EntitySignalTransmitter;
 import com.gendeathrow.pmobs.entity.HiredRaiders.HiredRaider;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
@@ -78,6 +80,8 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerEntityRenderingHandler(HiredRaider.class, HiredRaiderRenderer.FACTORY);
 		
 		RenderingRegistry.registerEntityRenderingHandler(EntityDropPod.class, DropPodRenderer.FACTORY);
+		
+		RenderingRegistry.registerEntityRenderingHandler(EntitySignalTransmitter.class, SignalTransmitterRenderer.FACTORY);
 
 //		
 //			RenderingRegistry.registerEntityRenderingHandler(EntityRider.class, RenderEntityRider.FACTORY);

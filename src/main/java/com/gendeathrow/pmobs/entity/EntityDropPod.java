@@ -83,6 +83,7 @@ public class EntityDropPod extends Entity
         return !this.isDead;
     }
 
+    int despawnOnGround = 300;
     
     
     public void onUpdate()
@@ -95,7 +96,15 @@ public class EntityDropPod extends Entity
         {
         	// on stops?
         }
-
+        
+        if(this.onGround)
+        {
+        	despawnOnGround--;
+        	
+        	if(despawnOnGround <= 0)
+        		this.setDead();
+        }
+        
         if (!this.hasNoGravity())
         {
             this.motionY -= 0.03999999910593033D;

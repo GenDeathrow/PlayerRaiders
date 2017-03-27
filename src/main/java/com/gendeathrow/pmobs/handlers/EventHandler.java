@@ -1,7 +1,5 @@
 package com.gendeathrow.pmobs.handlers;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,10 +9,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -22,13 +19,12 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 
-import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.core.ConfigHandler;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 
@@ -80,6 +76,18 @@ public class EventHandler
  			}
  		}
 	}
+    
+    @SubscribeEvent
+    public void onDamage(LivingFallEvent event)
+    {
+    	if(event.getEntity().isRiding())
+    	{
+    		if (event.getEntity().getRidingEntity() instanceof EntityDropPod)
+    		{
+    			event.setCanceled(true);
+    		}
+    	}
+    }
 
 	@SubscribeEvent
 	public void playerKilled(LivingDeathEvent event)
@@ -175,9 +183,8 @@ public class EventHandler
 				{
 					boolean flag = raider.getDifficultyProgession().getRaidDifficulty() < PMSettings.esmDigginRaidDiff;
 					
-					if((raider.isChild() || raiderClass != EnumRaiderRole.NONE || flag) && raider.getRNG().nextFloat() > PMSettings.esmDiggingPercentage)
+					if(raider.isChild() || raiderClass != EnumRaiderRole.NONE || flag || raider.getRNG().nextFloat() > PMSettings.esmDiggingPercentage)
 					{
-						//System.out.println("Denied digging for under raid dificulty 1 - " + flag);
 						
 						if(raider.getHeldItemMainhand() != null && raider.getHeldItemMainhand().getItem() == Items.IRON_PICKAXE)
 							raider.setHeldItem(EnumHand.MAIN_HAND, null);
