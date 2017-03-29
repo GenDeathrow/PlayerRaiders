@@ -82,7 +82,7 @@ public class RaidersSkinManager
 						try 
 						{
 							//System.out.println("Getting Profile "+ raider.getOwnerName());
-							Thread.sleep(250);
+							Thread.sleep(300);
 						} catch (InterruptedException e) 
 						{
 							e.printStackTrace();

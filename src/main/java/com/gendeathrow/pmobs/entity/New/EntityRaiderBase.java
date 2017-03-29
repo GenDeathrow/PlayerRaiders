@@ -8,6 +8,8 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGlowstone;
+import net.minecraft.block.BlockTorch;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -56,6 +58,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -397,6 +400,7 @@ public class EntityRaiderBase extends EntityMob
     @Override
     public void onDeath(DamageSource cause)
     {
+    	//if(this.wasridding) System.out.println("was ridding.. but died");
     	super.onDeath(cause);
     	
     	for(int i = 0; i < this.raidersInventory.getSizeInventory(); i++)
@@ -412,6 +416,7 @@ public class EntityRaiderBase extends EntityMob
     	}
     }
     
+    
     public void notifyDataManagerChange(DataParameter<?> key)
     {
         if (IS_CHILD.equals(key))
@@ -425,7 +430,7 @@ public class EntityRaiderBase extends EntityMob
         		setBruteSize(true);
         	}
         }
-        
+
         super.notifyDataManagerChange(key);
     }
     
@@ -511,9 +516,52 @@ public class EntityRaiderBase extends EntityMob
     {
     	if (this.worldObj.getDifficulty() == EnumDifficulty.PEACEFUL) return false;
     	
-    	if(PMSettings.anyLightLvlSpawning || this.isValidLightLevel()) return true;
-    	
-    	return super.getCanSpawnHere();
+     	if(PMSettings.anyLightLvlSpawning) 
+    	{
+    		
+     		if(PMSettings.torchStopSpawns)
+    		{
+    			if(!this.worldObj.canSeeSky(this.getPosition()))
+    			{
+					boolean flag = false;
+					
+    				for(MutableBlockPos blockpos : this.getPosition().getAllInBoxMutable(this.getPosition().add(3, 3, 3), this.getPosition().add(-3, -3, -3)))
+    				{
+    					Block block = this.worldObj.getBlockState(blockpos).getBlock();
+
+    					if(block instanceof BlockTorch || block instanceof BlockGlowstone)
+    					{
+    						flag = true;
+    						//System.out.println("Found torch/glowstone");
+    					}
+    				}
+    				
+					if(flag && this.worldObj.getLightBrightness(this.getPosition()) < 8)
+					{
+						//System.out.println("light level too low");
+						return true;
+					}else return false;
+    			}
+    			else 
+    			{
+    				//System.out.println("can see sky");
+    				return true;
+    			}
+    		}
+    		else 
+    		{
+    			//System.out.println("can spawn any light level");
+    			return true;
+    		}
+
+    	}else
+    	{
+    		//System.out.println("normal vanilla");
+    		return this.isValidLightLevel();
+    	}
+
+
+    	//return super.getCanSpawnHere();
     }
     
 	@Override
@@ -522,16 +570,20 @@ public class EntityRaiderBase extends EntityMob
         return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.worldObj.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
     }
 
-    
+    boolean wasridding = false;
     private int ScreamTick = 1200;
 	@Override
 	public void onLivingUpdate()
 	{
+		if(this.isRiding() || wasridding)
+		{
+			wasridding = true;
+			//System.out.println(">"+ this.getPosition().toString());
+		}
 		if (this.worldObj.isDaytime() && !this.worldObj.isRemote && !this.isChild())
 		{
 			float f = this.getBrightness(1.0F);
 			BlockPos blockpos = this.getRidingEntity() instanceof EntityBoat ? (new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ)).up() : new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ);
-
 		}
 		
 		IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);

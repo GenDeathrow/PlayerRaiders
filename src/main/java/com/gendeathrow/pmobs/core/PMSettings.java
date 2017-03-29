@@ -16,6 +16,7 @@ public class PMSettings
 	public static float setEquitmentDefault = .025f;
 	
 	public static int dayDifficultyProgression = 5;
+	public static int lastRaidCheck = 0;
 	
 	public static boolean renderNameTags = true; 
 	
@@ -104,5 +105,7 @@ public class PMSettings
 	public static int esmDigginRaidDiff = 0;
 
 	public static boolean screamerFogOn = true;
+
+	public static boolean torchStopSpawns = true;
 	
 }

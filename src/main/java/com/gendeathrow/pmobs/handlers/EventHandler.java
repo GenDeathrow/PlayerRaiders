@@ -18,11 +18,14 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import com.gendeathrow.pmobs.core.ConfigHandler;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.core.network.ClientUpdatePacket;
 import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
@@ -105,6 +108,13 @@ public class EventHandler
 		}
 	
 	}
+	
+	@SubscribeEvent
+	public void playerLogIn(PlayerLoggedInEvent event)
+	{
+		RaidersCore.network.sendTo(new ClientUpdatePacket(ConfigHandler.getRaidDifficultyProgressions()), (EntityPlayerMP) event.player);
+	}
+	
 	
 	public void getPotentialSpwans(WorldEvent.PotentialSpawns event)
 	{

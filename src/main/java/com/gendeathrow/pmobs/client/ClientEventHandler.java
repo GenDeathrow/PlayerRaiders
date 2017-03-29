@@ -66,10 +66,9 @@ public class ClientEventHandler
     		}
     	}
 	}
-    
-      
+
     boolean hasCheckedSkins = false;
-    int lastRaidCheck = 0;
+  //
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) 
     {
@@ -87,16 +86,16 @@ public class ClientEventHandler
     		//RaidersSkinManager.INSTANCE.cacheSkins();
     		RaidersSkinManager.INSTANCE.cacheSkins();
     	}
-    	
+    	  
     	
     	if(event.player.worldObj == null || !event.player.worldObj.isRemote) return;
     	if(event.player.worldObj.getWorldTime() % 1000 != 0 || event.phase == Phase.END) return;
     	
     	int diff = DifficultyProgression.getRaidDifficulty(event.player.worldObj);
     
-    	if(lastRaidCheck != diff)
+    	if(PMSettings.lastRaidCheck != diff)
     	{
-    		lastRaidCheck = diff;
+    		PMSettings.lastRaidCheck = diff;
     		RaidNotification.ScheduleNotice("Raid Difficulty "+ diff, "Raiders have gotten harder!", SoundEvents.RAID_DAY_SUSPENSE.getRegistryName().toString());
     	}
 

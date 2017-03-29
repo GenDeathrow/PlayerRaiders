@@ -46,15 +46,50 @@ public class RaiderManager
 	
 	static
 	{
+		//cool kids
 		raidersList.put("Gen_Deathrow", new RaiderData(new GameProfile(null, "Gen_Deathrow"), 10));
-		raidersList.put("FunwayGuy", new RaiderData(new GameProfile(null, "FunwayGuy"), 10));
+		raidersList.put("Funwayguy", new RaiderData(new GameProfile(null, "Funwayguy"), 10));
 		raidersList.put("Darkosto", new RaiderData(new GameProfile(null, "Darkosto"), 10));
 		raidersList.put("Kashdeya", new RaiderData(new GameProfile(null, "Kashdeya"), 10));
 		raidersList.put("TheMattaBase", new RaiderData(new GameProfile(null, "TheMattaBase"), 10));
 		raidersList.put("Jsl7", new RaiderData(new GameProfile(null, "Jsl7"), 10));
 		raidersList.put("Turkey2349", new RaiderData(new GameProfile(null, "Turkey2349"), 10));
-
+		
+		//invasion pack testers
+		raidersList.put("Bacon_Donut", new RaiderData(new GameProfile(null, "Bacon_Donut"), 10));
+		raidersList.put("SlothMonster_", new RaiderData(new GameProfile(null, "SlothMonster_"), 10));
+		raidersList.put("GWSheridan", new RaiderData(new GameProfile(null, "GWSheridan"), 10));
+		raidersList.put("DatFailGamur", new RaiderData(new GameProfile(null, "DatFailGamur"), 10));
+		raidersList.put("darkphan", new RaiderData(new GameProfile(null, "darkphan"), 10));
+		raidersList.put("SinfulDeity", new RaiderData(new GameProfile(null, "SinfulDeity"), 10));
+		raidersList.put("Gooderness", new RaiderData(new GameProfile(null, "Gooderness"), 10));
+		raidersList.put("Vash505", new RaiderData(new GameProfile(null, "Vash505"), 10));
+		
+		//forge
+		raidersList.put("LexManos",  new RaiderData(new GameProfile(null, "LexManos"), 10));
+		raidersList.put("cpw11",  new RaiderData(new GameProfile(null, "cpw11"), 10));
+		
+		//modders
+		raidersList.put("ganymedes01",  new RaiderData(new GameProfile(null, "ganymedes01"), 10));
+		raidersList.put("iChun",  new RaiderData(new GameProfile(null, "iChun"), 10));
+		
+		//youtubers
+		raidersList.put("direwolf20",  new RaiderData(new GameProfile(null, "direwolf20"), 10));
+		
+		//ftb
+		raidersList.put("tfox83",  new RaiderData(new GameProfile(null, "tfox83"), 10));
+		raidersList.put("slowpoke101",  new RaiderData(new GameProfile(null, "slowpoke101"), 10));
+		
+		//mojang
+		raidersList.put("Notch",  new RaiderData(new GameProfile(null, "Notch"), 10));
+		raidersList.put("jeb_",  new RaiderData(new GameProfile(null, "jeb_"), 10));
+		raidersList.put("EvilSeph",  new RaiderData(new GameProfile(null, "EvilSeph"), 10));
+		raidersList.put("C418",  new RaiderData(new GameProfile(null, "C418"), 10));
+		//raidersList.put("Dinnerbone",  new RaiderData(new GameProfile(null, "Dinnerbone"), 10));
+		raidersList.put("carnalizer",  new RaiderData(new GameProfile(null, "carnalizer"), 10));
+		//raidersList.put("Grumm",  new RaiderData(new GameProfile(null, "Grumm"), 10));
 	}
+	
 	
 	// ServerSide call
 	public static RaiderData getRandomRaider()
@@ -337,6 +372,12 @@ public class RaiderManager
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public static void addYouTubers()
+	{
+		
 	}
 
 }

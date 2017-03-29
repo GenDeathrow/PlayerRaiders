@@ -57,7 +57,11 @@ public class ConfigHandler
 		PMSettings.factionsEnabled = config.getBoolean("Enable Factions", mobs, true, "If true Some Raiders can belong to a friendly/hostile faction. If false they are all hostile");
 		
 		PMSettings.daySpeedRestiction = config.getFloat("DayTime Speed Modifier", mobs, 0.4f, -1f, 2f, "Mulitply raiders speed during Daytime. 1 is normal speed.");
-		PMSettings.anyLightLvlSpawning = config.getBoolean("Spawn no light levels", mobs, true, "Raiders will spawn reguardless of light levels. Basically Daytime Spawning.");
+		
+		config.renameProperty(mobs, "Spawn no light levels", "Spawn in Daylight");
+		
+		PMSettings.anyLightLvlSpawning = config.getBoolean("Spawn in Daylight", mobs, true, "Raiders will spawn reguardless of light levels. Basically Daytime Spawning. False sets it to Vanilla Spawning rules");
+		PMSettings.torchStopSpawns = config.getBoolean("Torches/GlowStone Stop Spawning", mobs, true, "GlowStone and torches will still stop a 7x7x7 spawn area. If cant see sky. Only works with 'Spawn in Daylight' == true");
 		
 		// Mob AI stuff
 		PMSettings.leapAttackAI = config.getBoolean("Leap Attack", mobai, true, "Gives some Raiders the abilit to leap attack, small chance increases with each raid difficulty");
@@ -118,7 +122,11 @@ public class ConfigHandler
 			config.renameProperty(progCat, "Mob Difficulty Progression", "Raid Day Difficulty Progression");
 		}
 		  
-		PMSettings.dayDifficultyProgression = config.getInt("Raid Day Difficulty Progression", progCat, 5, 1, 100, "This is the Raid difficulty. Each set amount of days the mobs get harder(Raid Difficulty increases +1). Each x amount of days harder mobs have more of a chance to spawn its cumulative");
+		PMSettings.dayDifficultyProgression = getRaidDifficultyProgressions();
+		if(config.hasKey(progCat, "Raid Difficulty Day Progression"))
+		{
+			config.moveProperty(progCat, "Raid Difficulty Day Progression", remove.getName());
+		}
 		
 		String esmaddon = "esm_addon";
  		//ESM stuff
@@ -136,6 +144,11 @@ public class ConfigHandler
 			config.save();
 		
 
+	}
+	
+	public static int getRaidDifficultyProgressions()
+	{
+		return config.getInt("Raid Day Difficulty Progression", "Progessive Difficulty", 5, 1, 100, "This is the Raid difficulty. Each set amount of days the mobs get harder(Raid Difficulty increases +1). Each x amount of days harder mobs have more of a chance to spawn its cumulative");
 	}
 	
 	public static void preInit()

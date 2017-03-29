@@ -8,6 +8,7 @@ import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.ai.EntityAIMoveToBlock;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -29,24 +30,34 @@ public class EntityAIPyromaniac extends EntityAIMoveToBlock
   {
       super(theRaiderIn, speedIn, 16);
       this.theRaider = theRaiderIn;
+      this.setMutexBits(1);
      // this.runDelay = 1200;
   }
 
+  public boolean isInterruptible()
+  {
+      return false;
+  }
+  
   /**
    * Returns whether the EntityAIBase should begin execution.
    */
   public boolean shouldExecute()
   {
-      if (this.runDelay <= 0)
-      {
-          if (!this.theRaider.worldObj.getGameRules().getBoolean("mobGriefing"))
-          {
-              return false;
-          }
+	  
+	  if(this.theRaider.getHeldItemOffhand() != null && this.theRaider.getHeldItemOffhand().getItem() == Items.FLINT_AND_STEEL)
+	  {
+		  if (this.runDelay <= 0)
+		  {
+			  if (!this.theRaider.worldObj.getGameRules().getBoolean("mobGriefing"))
+			  {
+				  return false;
+			  }
 
-          this.currentTask = -1;
-          this.wantsToBurnStuff = true;
-      }
+			  this.currentTask = -1;
+			  this.wantsToBurnStuff = true;
+		  }
+	  }
 
       return super.shouldExecute();
   }
@@ -91,36 +102,36 @@ public class EntityAIPyromaniac extends EntityAIMoveToBlock
           Block block = iblockstate.getBlock();
           boolean flag = false;
           BlockPos burnPos = blockpos;
+          
           if (this.currentTask == 0)
           {
         	  try
         	  {
-              for(EnumFacing facing : EnumFacing.HORIZONTALS)
-              {
-              	block = worldIn.getBlockState(blockpos.offset(facing,2).up()).getBlock();
+        		  for(EnumFacing facing : EnumFacing.HORIZONTALS)
+        		  {
+        			  block = worldIn.getBlockState(blockpos.offset(facing,2).up()).getBlock();
               	
-              	if (block.getFlammability(worldIn, blockpos.offset(facing,2), EnumFacing.UP) > 0 && !(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass))
-              	{
-              		for(EnumFacing burnlocation : EnumFacing.VALUES)
-              		{
-              			burnPos = blockpos.offset(facing,2).up().offset(burnlocation);
-              		 	if(worldIn.getBlockState(burnPos).getBlock() == Blocks.AIR) // && worldIn.getBlockState(burnPos.down()).getBlock().isSideSolid(worldIn.getBlockState(burnPos.down()), worldIn, burnPos.down(), EnumFacing.UP)
-              		 	{
-              		 		flag = true;
-              		 		break;
-              		 	}
-
-              		}
-              		if(flag) break;
-              	}
-              }
+        			  if (block.getFlammability(worldIn, blockpos.offset(facing,2), EnumFacing.UP) > 0 && !(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass))
+        			  {
+        				  for(EnumFacing burnlocation : EnumFacing.VALUES)
+        				  {
+        					  burnPos = blockpos.offset(facing,2).up().offset(burnlocation);
+        					  if(worldIn.getBlockState(burnPos).getBlock() == Blocks.AIR) // && worldIn.getBlockState(burnPos.down()).getBlock().isSideSolid(worldIn.getBlockState(burnPos.down()), worldIn, burnPos.down(), EnumFacing.UP)
+        					  {
+        						  flag = true;
+        						  break;
+        					  }
+        					  
+        				  }
+        				  if(flag) break;
+        			  }
+        		  }
         	 }catch(Throwable e)
         	 {
         		 RaidersCore.logger.debug("Raider couldn't set block on fire..."+ e);
         		 flag = false;
         	 }
           }
-          
           
           if(flag)
           {
@@ -129,7 +140,7 @@ public class EntityAIPyromaniac extends EntityAIMoveToBlock
     			worldIn.setBlockState(burnPos, Blocks.FIRE.getDefaultState(), 11);
           }
           this.currentTask = -1;
-          this.runDelay = 2000;
+          this.runDelay = 600;
       }
   }
 
@@ -141,6 +152,7 @@ public class EntityAIPyromaniac extends EntityAIMoveToBlock
       Block block = null;
 	  
       boolean flag = false;
+      
       for(EnumFacing facing : EnumFacing.HORIZONTALS)
       {
       	block = worldIn.getBlockState(pos.offset(facing,2).up()).getBlock();

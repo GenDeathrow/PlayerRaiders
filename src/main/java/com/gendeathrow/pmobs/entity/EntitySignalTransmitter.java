@@ -2,11 +2,14 @@ package com.gendeathrow.pmobs.entity;
 
 import java.util.Random;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class EntitySignalTransmitter extends Entity
@@ -114,7 +117,11 @@ public class EntitySignalTransmitter extends Entity
 		int randX = this.rand.nextInt(18) - 9;
 		int randZ = this.rand.nextInt(18) - 9;
 		
-
+		
+		
+		IBlockState ground = this.worldObj.getGroundAboveSeaLevel(new BlockPos(this.posX + randX, 300, this.posZ + randZ));
+		
+		
 		EntityDropPod droppod = new EntityDropPod(this.worldObj);
 		droppod.setPosition(this.posX + randX, 300, this.posZ + randZ);
 		this.worldObj.spawnEntityInWorld(droppod);		
@@ -123,9 +130,10 @@ public class EntitySignalTransmitter extends Entity
 		EntityLiving raider = new EntityPlayerRaider(this.worldObj);
 		raider.onInitialSpawn(this.worldObj.getDifficultyForLocation(this.getPosition()),  (IEntityLivingData)null);
 		raider.hurtResistantTime = 60;
-		raider.setLocationAndAngles(droppod.posX, droppod.posY, droppod.posZ,raider.rotationYaw, 0.0F);
+		raider.setLocationAndAngles(this.posX, this.posY, this.posZ, raider.rotationYaw, 0.0F);
+		raider.enablePersistence();
 		
-		System.out.println(this.worldObj.spawnEntityInWorld(raider));	
+		this.worldObj.spawnEntityInWorld(raider);	
 		System.out.println(raider.getPosition().toString());
 
 		raider.startRiding(droppod, true);

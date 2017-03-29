@@ -103,6 +103,14 @@ public class EntityDropPod extends Entity
         	
         	if(despawnOnGround <= 0)
         		this.setDead();
+        	
+        	if(!this.getPassengers().isEmpty())
+        	{
+        		for(Entity passenger :this.getPassengers())
+        		{
+        			passenger.dismountRidingEntity();
+        		}
+        	}
         }
         
         if (!this.hasNoGravity())
