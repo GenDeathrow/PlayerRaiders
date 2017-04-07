@@ -22,6 +22,7 @@ import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
 import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 
 @SideOnly(Side.CLIENT)
@@ -89,6 +90,14 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 	@Override
 	public void doRender(EntityRaiderBase entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
+		if(!PMSettings.renderNameTags)
+		{
+			if(entity.getRaiderFaction() == EnumFaction.FRIENDLY)
+				this.NAME_TAG_RANGE = 64F;
+			else if(entity.getRaiderFaction() == EnumFaction.HOSTILE)
+				this.NAME_TAG_RANGE = 0;
+		}
+
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
 	    		super.doRender(entity, x, y, z, entityYaw, partialTicks);
 	        GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);

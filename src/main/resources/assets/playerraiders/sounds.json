@@ -108,5 +108,29 @@
 				"name" : "playerraiders:ambient/suspense"
 			}
 		]
+	},
+	"ambient.sonicboom" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "playerraiders:ambient/sonicboom"
+			}
+		]
+	},
+	"ambient.rocketambient" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "playerraiders:ambient/rocketambient"
+			}
+		]
+	},
+	"item.coms_beep" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "playerraiders:items/coms_beep"
+			}
+		]
 	}
 }

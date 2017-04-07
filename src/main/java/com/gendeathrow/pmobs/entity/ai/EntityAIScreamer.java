@@ -1,20 +1,10 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.HorseType;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 public class EntityAIScreamer  extends EntityAIBase{

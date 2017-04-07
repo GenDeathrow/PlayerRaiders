@@ -169,6 +169,11 @@ public class RaiderModel extends ModelBiped
 			this.leftArmPose = HoldingSkull;
 		}
 		
+		if(mainHand != null && mainHand.getItem().getRegistryName().toString().equals("lcrdrfs:laser_blaster"))
+		{
+			this.rightArmPose = HoldingSkull;
+		}
+		
     	if (((EntityRaiderBase)entitylivingbaseIn).getRaiderRole() == EnumRaiderRole.WITCH && ((EntityRaiderBase)entitylivingbaseIn).isArmsRaised())
         {
 			this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
@@ -222,6 +227,12 @@ public class RaiderModel extends ModelBiped
         {
         	this.bipedLeftArm.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
         	this.bipedLeftArm.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
+        }
+    	
+    	if (this.rightArmPose == HoldingSkull)
+        {
+        	this.bipedRightArm.rotateAngleY = -0.1F + this.bipedHead.rotateAngleY;
+        	this.bipedRightArm.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
         }
     	
     	if (entityIn instanceof EntityRaiderBase && ((EntityRaiderBase)entityIn).getRaiderRole() == EnumRaiderRole.TWEAKER && ((EntityRaiderBase)entityIn).isArmsRaised())

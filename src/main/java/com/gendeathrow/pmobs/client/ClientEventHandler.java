@@ -11,6 +11,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -20,10 +21,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.gendeathrow.pmobs.client.audio.CryingWitch;
+import com.gendeathrow.pmobs.client.audio.DropPodMoving;
 import com.gendeathrow.pmobs.client.data.KillCounter;
 import com.gendeathrow.pmobs.client.gui.RaidNotification;
 import com.gendeathrow.pmobs.common.SoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
@@ -65,10 +68,16 @@ public class ClientEventHandler
     			Minecraft.getMinecraft().getSoundHandler().playSound(new CryingWitch((EntityRangedAttacker) event.getEntity()));
     		}
     	}
+    	else if(event.getEntity() instanceof EntityDropPod)
+    	{    
+    		Minecraft.getMinecraft().getSoundHandler().playSound(new DropPodMoving((EntityDropPod) event.getEntity()));
+    	}
 	}
 
     boolean hasCheckedSkins = false;
   //
+    
+
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) 
     {

@@ -35,7 +35,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
@@ -47,7 +46,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.GuiScreenEvent.PotionShiftEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -122,7 +120,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 	{
 		super.initEntityAI();
 		
-		if(isRangedAttacker)
+		if(this.getRaiderRole() == EnumRaiderRole.RANGED)
 		{
 			this.tasks.addTask(1, new EntityAIAttackRanged(this, 1.25D, 20, 10.0F));
 		}
@@ -170,82 +168,82 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 	private int maxStrikes = 3;
 	private int strikes = 0;
 	
-	private void screamerAttack(EntityLivingBase target, float distanceFactor)
-	{
-		 if (!this.isDrinkingPotion())
-	     {
-			 
-			 if(fireballTick++ >= nxFireball )
-			 {
-				 nxFireball = this.getRNG().nextInt(2)+1;
-				 fireballTick = 0;
-				 double d0 = this.getDistanceSqToEntity(target); 
-				 double d1 = target.posX - this.posX;
-				 double d2 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (this.posY + (double)(this.height / 2.0F));
-				 double d3 = target.posZ - this.posZ;
-				 
-				 
-                 float f = MathHelper.sqrt_float(MathHelper.sqrt_double(d0)) * 0.5F;
-                 this.worldObj.playEvent((EntityPlayer)null, 1018, new BlockPos((int)this.posX, (int)this.posY, (int)this.posZ), 0);
-
-                 for (int i = 0; i < 1; ++i)
-                 {
-                     EntitySmallFireball entitysmallfireball = new EntitySmallFireball(this.worldObj, this, d1 + this.getRNG().nextGaussian() * (double)f, d2, d3 + this.getRNG().nextGaussian() * (double)f);
-                     entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) + 0.5D;
-                     this.worldObj.spawnEntityInWorld(entitysmallfireball);
-                 }
-                 
-                 
-				 //EntitySmallFireball entityfireball = new EntitySmallFireball(this.worldObj,this, d1, d2, d3);
-				 //this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_BLAZE_SHOOT, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
-				 //this.worldObj.spawnEntityInWorld(entityfireball);
-		            
-			 }
-			 else if(lightningAttack++ >= nxLightingAttack)
-			 {  
-			       if(strikes <= maxStrikes)
-			       {
-			    		   this.worldObj.addWeatherEffect(new EntityLightningBolt(this.worldObj, target.posX + getRandomPosition(), target.posY, target.posZ + getRandomPosition(), false));
-			    		   strikes++;
-			       }
-			       else
-			       {
-			    	   this.nxLightingAttack = this.getRNG().nextInt(10)+15;
-			    	   lightningAttack = 0;
-			    	   strikes = 0;
-			    	   maxStrikes = this.getRNG().nextInt(2)+1;
-			       }
-			 }
-			 else
-			 {
-	            double d0 = target.posY + (double)target.getEyeHeight() - 1.100000023841858D;
-	            double d1 = target.posX + target.motionX - this.posX;
-	            double d2 = d0 - this.posY;
-	            double d3 = target.posZ + target.motionZ - this.posZ;
-	            float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3);
-	            PotionType potiontype = PotionTypes.HARMING;
-
-	            if (f >= 8.0F && !target.isPotionActive(MobEffects.SLOWNESS))
-	            {
-	                potiontype = PotionTypes.SLOWNESS;
-	            }
-	            else if (target.getHealth() >= 8.0F && !target.isPotionActive(MobEffects.POISON))
-	            {
-	                potiontype = PotionTypes.POISON;
-	            }
-	            else if (f <= 3.0F && !target.isPotionActive(MobEffects.WEAKNESS) && this.rand.nextFloat() < 0.25F)
-	            {
-	                potiontype = PotionTypes.WEAKNESS;
-	            }
-
-	            EntityPotion entitypotion = new EntityPotion(this.worldObj, this, PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potiontype));
-	            entitypotion.rotationPitch -= 0.0F;
-	            entitypotion.setThrowableHeading(d1, d2 + (double)(f * 0.2F), d3, 0.75F, 8.0F);
-	            this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_WITCH_THROW, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
-	            this.worldObj.spawnEntityInWorld(entitypotion);
-			 }
-	     }
-	}
+//	private void screamerAttack(EntityLivingBase target, float distanceFactor)
+//	{
+//		 if (!this.isDrinkingPotion())
+//	     {
+//			 
+//			 if(fireballTick++ >= nxFireball )
+//			 {
+//				 nxFireball = this.getRNG().nextInt(2)+1;
+//				 fireballTick = 0;
+//				 double d0 = this.getDistanceSqToEntity(target); 
+//				 double d1 = target.posX - this.posX;
+//				 double d2 = target.getEntityBoundingBox().minY + (double)(target.height / 2.0F) - (this.posY + (double)(this.height / 2.0F));
+//				 double d3 = target.posZ - this.posZ;
+//				 
+//				 
+//                 float f = MathHelper.sqrt_float(MathHelper.sqrt_double(d0)) * 0.5F;
+//                 this.worldObj.playEvent((EntityPlayer)null, 1018, new BlockPos((int)this.posX, (int)this.posY, (int)this.posZ), 0);
+//
+//                 for (int i = 0; i < 1; ++i)
+//                 {
+//                     EntitySmallFireball entitysmallfireball = new EntitySmallFireball(this.worldObj, this, d1 + this.getRNG().nextGaussian() * (double)f, d2, d3 + this.getRNG().nextGaussian() * (double)f);
+//                     entitysmallfireball.posY = this.posY + (double)(this.height / 2.0F) + 0.5D;
+//                     this.worldObj.spawnEntityInWorld(entitysmallfireball);
+//                 }
+//                 
+//                 
+//				 //EntitySmallFireball entityfireball = new EntitySmallFireball(this.worldObj,this, d1, d2, d3);
+//				 //this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_BLAZE_SHOOT, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
+//				 //this.worldObj.spawnEntityInWorld(entityfireball);
+//		            
+//			 }
+//			 else if(lightningAttack++ >= nxLightingAttack)
+//			 {  
+//			       if(strikes <= maxStrikes)
+//			       {
+//			    		   this.worldObj.addWeatherEffect(new EntityLightningBolt(this.worldObj, target.posX + getRandomPosition(), target.posY, target.posZ + getRandomPosition(), false));
+//			    		   strikes++;
+//			       }
+//			       else
+//			       {
+//			    	   this.nxLightingAttack = this.getRNG().nextInt(10)+15;
+//			    	   lightningAttack = 0;
+//			    	   strikes = 0;
+//			    	   maxStrikes = this.getRNG().nextInt(2)+1;
+//			       }
+//			 }
+//			 else
+//			 {
+//	            double d0 = target.posY + (double)target.getEyeHeight() - 1.100000023841858D;
+//	            double d1 = target.posX + target.motionX - this.posX;
+//	            double d2 = d0 - this.posY;
+//	            double d3 = target.posZ + target.motionZ - this.posZ;
+//	            float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3);
+//	            PotionType potiontype = PotionTypes.HARMING;
+//
+//	            if (f >= 8.0F && !target.isPotionActive(MobEffects.SLOWNESS))
+//	            {
+//	                potiontype = PotionTypes.SLOWNESS;
+//	            }
+//	            else if (target.getHealth() >= 8.0F && !target.isPotionActive(MobEffects.POISON))
+//	            {
+//	                potiontype = PotionTypes.POISON;
+//	            }
+//	            else if (f <= 3.0F && !target.isPotionActive(MobEffects.WEAKNESS) && this.rand.nextFloat() < 0.25F)
+//	            {
+//	                potiontype = PotionTypes.WEAKNESS;
+//	            }
+//
+//	            EntityPotion entitypotion = new EntityPotion(this.worldObj, this, PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potiontype));
+//	            entitypotion.rotationPitch -= 0.0F;
+//	            entitypotion.setThrowableHeading(d1, d2 + (double)(f * 0.2F), d3, 0.75F, 8.0F);
+//	            this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_WITCH_THROW, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
+//	            this.worldObj.spawnEntityInWorld(entitypotion);
+//			 }
+//	     }
+//	}
 	
 	public int getRandomPosition()
 	{
@@ -315,6 +313,10 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
         	else 
         		this.setWitchPreCombat();
         }
+        else if(this.getRaiderRole().equals(EnumRaiderRole.RANGED))
+        {
+            this.tasks.addTask(1, this.aiArrowAttack);
+        }
     }
     
     public void writeEntityToNBT(NBTTagCompound compound)
@@ -342,6 +344,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     	{
     		this.isRangedAttacker = true;
     		this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
+    		
     		if(this.rand.nextDouble() < .05 + (this.difficultyManager.calculateProgressionDifficulty(.05) > .25 ? .25 : this.difficultyManager.calculateProgressionDifficulty(.05))) 
     		{
     			try
@@ -351,13 +354,11 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     			}catch(Exception e){ RaidersCore.logger.error(e); }
     		}
             this.tasks.addTask(1, this.aiArrowAttack);
-            //this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
             this.removeAllModifiers(SharedMonsterAttributes.MOVEMENT_SPEED);
             
     	}else if(this.getRaiderRole().equals(EnumRaiderRole.WITCH))
     	{
     		this.setWitchPreCombat();
-    		//this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
     		this.removeAllModifiers(SharedMonsterAttributes.MOVEMENT_SPEED);
     		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
     		this.setHealth(this.getMaxHealth());

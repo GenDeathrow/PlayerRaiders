@@ -44,20 +44,6 @@ public class EventHandler
     @SubscribeEvent
 	public void spawnEvent(LivingSpawnEvent.CheckSpawn event)
 	{
-//    	BlockPos blockpos = new BlockPos(event.getEntity());
-//    	IBlockState blockstate = event.getWorld().getBlockState(blockpos);
-//    	
-//    	if(event.getEntity() instanceof EntityRaiderBase && blockstate.getMaterial() == Material.LAVA)
-//    	{
-//    		System.out.println("found lava");
-//    		
-//    		event.setResult(Result.ALLOW);
-//    		
-//    	}
-//    	else System.out.println(blockstate.getMaterial().toString());
-    	
-    	
-    	
  		if((PMSettings.safeForaDay && event.getEntity() instanceof EntityMob &&  event.getWorld().getWorldTime() < 13000))
  		{
  			if(event.getEntity().posY > 50)
@@ -148,7 +134,6 @@ public class EventHandler
 			
 			if(event.getAddition() != null)
 			{
-//				System.out.println(event.getAddition().getAdditionalAI(event.getEntity()).getClass().getSimpleName());
 			
 				EnumRaiderRole raiderClass = raider.getRaiderRole();
 				
@@ -163,17 +148,14 @@ public class EventHandler
 					
 					if(raidflag)
 					{
-						//System.out.println("Denied ESM_EntityAIDemolition for under raid dificulty 1");
 						flag = true;
 					}
 					else if(raiderClass != EnumRaiderRole.NONE || raider.isHeroBrine() || raider.isChild())
 					{
-						//System.out.println("Class/Type: Denied ESM_EntityAIDemolition for "+ raider.getOwner() + ">>"+ raiderClass);
 						flag = true;
 					}
 					else if(!raider.getOwner().equalsIgnoreCase("Funwayguy") && holdingTnt && raider.getRNG().nextDouble() > PMSettings.esmDemoPercentage)
 					{
-						//System.out.println("Percentage: Denied ESM_EntityAIDemolition for "+ raider.getOwner() + ">>"+ raiderClass);
 						flag = true;
 					}
 					
@@ -185,7 +167,7 @@ public class EventHandler
 						{
 								raider.setHeldItem(EnumHand.OFF_HAND, new ItemStack(Items.FLINT_AND_STEEL));
 						}
-						else raider.setHeldItem(EnumHand.OFF_HAND, null);
+						else if(holdingTnt) raider.setHeldItem(EnumHand.OFF_HAND, null);
 
 					}
 				}

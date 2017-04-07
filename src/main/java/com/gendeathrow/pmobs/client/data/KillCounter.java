@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.gendeathrow.pmobs.client.ClientEventHandler;
+import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.util.Tools;
 
 public class KillCounter 
@@ -41,7 +42,19 @@ public class KillCounter
 			for(String line : split)
 			{
 				String[] lineSplit = line.split(":");
-				if(lineSplit.length > 1)  killcnt.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
+				if(lineSplit.length > 1)  
+				{
+					try
+					{
+						killcnt.put(lineSplit[0], Integer.parseInt(lineSplit[1]));
+					}
+					catch(NumberFormatException e)
+					{
+						RaidersCore.logger.error("Issue parsing Number in "+killcounterFile.getPath());
+						e.printStackTrace();
+					}
+					
+				}
 			}
 			
 

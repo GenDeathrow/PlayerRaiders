@@ -15,17 +15,9 @@ import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 public class DifficultyProgression 
 {
 	
-	public static double speedDifficulty = .035;
-		public static double speedDifficultyMax = .35;
-		public static double speedMIN = 0.1;
-		public static double speedMAX = .35;
-		
-	public static double healthDifficulty = .05;
-		
-		public static double healthIncrease = .05;
-		
-		protected EntityRaiderBase raider;
-		private Random rand;
+	
+	protected EntityRaiderBase raider;
+	private Random rand;
 	
 		
 	public DifficultyProgression(EntityRaiderBase raiderIn)
@@ -112,23 +104,28 @@ public class DifficultyProgression
     {  
     	if(raider.isChild() || raider.isHeroBrine() || (raider.getRaiderRole() != EnumRaiderRole.NONE || raider.getRaiderRole() != EnumRaiderRole.PYROMANIAC)) return;
     	
-    	if(rand.nextDouble() < calculateProgressionDifficulty(speedDifficulty, speedDifficultyMax))
+    	if(rand.nextDouble() < calculateProgressionDifficulty(PMSettings.SpeedPercentageIncrease, PMSettings.SpeedMaxPercentage))
     	{
-        	double speed = -0.05 + (.25- (-0.05)) * rand.nextDouble();
+    		double speedbase = 0.25;
+    		
+    		if(raider.getRaiderRole() == EnumRaiderRole.BRUTE)
+    			speedbase = .15;
+    			
+        	double speed = speedbase * rand.nextDouble();
             raider.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(EntityRaiderBase.SPEED_BOOST_ID, "Speed Bonus", speed , 0));
     	}
     }
     
     public void setHealthDifficulty(DifficultyInstance difficulty)
     {
-    	double healthChance = calculateProgressionDifficulty(healthDifficulty, 0.10D) + (difficulty.getClampedAdditionalDifficulty() * 0.015F);
+    	double healthChance = calculateProgressionDifficulty(PMSettings.BonusHealthPercentageIncrease, PMSettings.BonusHealthMaxPercentage) + (difficulty.getClampedAdditionalDifficulty() * 0.015F);
     	boolean addDefaultHealth = getRaidDifficulty()>= 1;
     	
     	double extraHealth = PMSettings.HealthMaxOut < 0 ? calculateProgressionDifficulty(PMSettings.HealthIncrease) : getRaidDifficulty() >= PMSettings.HealthMaxOut ? PMSettings.HealthIncrease * PMSettings.HealthMaxOut : calculateProgressionDifficulty(PMSettings.HealthIncrease);
     	
         if(this.rand.nextFloat() < healthChance)
         {
-        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 5.0D + 1.00D + extraHealth, 0));
+        	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 4.0D + 1.00D + extraHealth, 0));
         }
         else if(addDefaultHealth || raider.getRaiderRole() == EnumRaiderRole.WITCH)
         {

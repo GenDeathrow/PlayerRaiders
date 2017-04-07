@@ -78,13 +78,21 @@ public class PMSettings
 
 	public static int[] noSpawnDays;
 	
-	public static boolean anyLightLvlSpawning = true;
+	public static boolean shouldDaylightSpawm = true;
 
 	public static boolean veryHostile;
 
+//Progresion Difficulty
 	public static int HealthIncrease = 20;
-
 	public static int HealthMaxOut = -1;
+	public static double BonusHealthPercentageIncrease = 0.025F;
+	public static double BonusHealthMaxPercentage = 0.10F;
+	
+	public static double SpeedPercentageIncrease = 0.05F;
+	public static double SpeedMaxPercentage = 0.40F;
+	
+	
+	
 
 	public static int[] dimensions = new int[]{0};
 	

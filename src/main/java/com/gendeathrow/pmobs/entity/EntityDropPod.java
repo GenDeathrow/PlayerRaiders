@@ -1,31 +1,37 @@
 package com.gendeathrow.pmobs.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAnvil;
 import net.minecraft.block.BlockFalling;
-import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.google.common.collect.Lists;
 
 public class EntityDropPod extends Entity
 {
@@ -33,20 +39,20 @@ public class EntityDropPod extends Entity
     private boolean hurtEntities;
     private int fallHurtMax = 200;
     private float fallHurtAmount = 8.0F;
-    
-    
+
 	public EntityDropPod(World worldIn) 
 	{
 		super(worldIn);
 		
         this.preventEntitySpawning = true;
-        this.setSize(2F, 3.1f);
+        this.setSize(1.8F, 3.3f);
 	}
 
 	@Override
 	protected void entityInit() 
 	{
 	}
+
 
     @Nullable
     public AxisAlignedBB getCollisionBox(Entity entityIn)
@@ -80,22 +86,25 @@ public class EntityDropPod extends Entity
     @Override
     public boolean canBeCollidedWith()
     {
-        return !this.isDead;
+    	
+        return !this.isDead || !this.isAirBorne;
     }
 
     int despawnOnGround = 300;
     
+    boolean soundDrop = false;
     
     public void onUpdate()
     {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
+    	
+        if(this.fallDistance > 10)
+    	{
+        	soundDrop = true;
 
-        if (this.fallTime++ == 0)
-        {
-        	// on stops?
-        }
+    	}
         
         if(this.onGround)
         {
@@ -111,6 +120,12 @@ public class EntityDropPod extends Entity
         			passenger.dismountRidingEntity();
         		}
         	}
+        	
+        	if(this.soundDrop)
+        	{
+        		this.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 5F, 1F);
+        		this.soundDrop = false;
+        	}
         }
         
         if (!this.hasNoGravity())
@@ -125,23 +140,26 @@ public class EntityDropPod extends Entity
 
         if (!this.worldObj.isRemote)
         {
+            
+          	this.destroyBlocksInAABB(this.getCollisionBoundingBox().expand(2, 2, 2));
+          	
             BlockPos blockpos1 = new BlockPos(this);
 
             if (this.onGround)
             {
                 IBlockState iblockstate = this.worldObj.getBlockState(blockpos1);
 
-                if (this.worldObj.isAirBlock(new BlockPos(this.posX, this.posY - 0.009999999776482582D, this.posZ))) //Forge: Don't indent below.
-                if (BlockFalling.canFallThrough(this.worldObj.getBlockState(new BlockPos(this.posX, this.posY - 0.009999999776482582D, this.posZ))))
-                {
-                    this.onGround = false;
-                    return;
-                }
-
                 this.motionX *= 0.699999988079071D;
                 this.motionZ *= 0.699999988079071D;
                 this.motionY *= -0.5D;
             }
+            else
+            {
+            	this.HitEntitiesFalling(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(.25, .25, .25)));
+            }
+
+            
+            
         }
         
     	super.onUpdate();
@@ -153,6 +171,55 @@ public class EntityDropPod extends Entity
     {
         super.setDead();
     }
+    
+      
+    private boolean destroyBlocksInAABB(AxisAlignedBB p_70972_1_)
+    {
+        int i = MathHelper.floor_double(p_70972_1_.minX);
+        int j = MathHelper.floor_double(p_70972_1_.minY);
+        int k = MathHelper.floor_double(p_70972_1_.minZ);
+        int l = MathHelper.floor_double(p_70972_1_.maxX);
+        int i1 = MathHelper.floor_double(p_70972_1_.maxY);
+        int j1 = MathHelper.floor_double(p_70972_1_.maxZ);
+        boolean flag = false;
+        boolean flag1 = false;
+
+        for (int k1 = i; k1 <= l; ++k1)
+        {
+            for (int l1 = j; l1 <= i1; ++l1)
+            {
+                for (int i2 = k; i2 <= j1; ++i2)
+                {
+                    BlockPos blockpos = new BlockPos(k1, l1, i2);
+                    IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+                    Block block = iblockstate.getBlock();
+
+                    if (!block.isAir(iblockstate, this.worldObj, blockpos) && iblockstate.getMaterial() != Material.FIRE)
+                    {
+                    	if (block.canEntityDestroy(iblockstate, this.worldObj, blockpos, this))
+                        {
+                    		
+                            if (block.isReplaceable(this.worldObj, blockpos) || block.isLeaves(iblockstate, this.worldObj, blockpos) || block instanceof BlockLeaves || iblockstate.getMaterial() == Material.VINE)
+                            {
+                            	if(!BlockFalling.canFallThrough(iblockstate))
+                            		flag = this.worldObj.setBlockToAir(blockpos);
+                            }
+                            else
+                            {
+                                flag = true;
+                            }
+                        }
+                        else
+                        {
+                            flag = true;
+                        }
+                    }
+                }
+            }
+        }
+		return flag;
+    }
+
     
     @Override
     public boolean canBeRidden(Entity entityIn)
@@ -189,11 +256,9 @@ public class EntityDropPod extends Entity
         }
     }
     
-    
+    @Override
     public void fall(float distance, float damageMultiplier)
     {
-        if (this.hurtEntities)
-        {
             int i = MathHelper.ceiling_float_int(distance - 1.0F);
 
             if (i > 0)
@@ -203,23 +268,124 @@ public class EntityDropPod extends Entity
 
                 for (Entity entity : list)
                 {
-                    entity.attackEntityFrom(damagesource, (float)Math.min(MathHelper.floor_float((float)i * this.fallHurtAmount), this.fallHurtMax));
+                		damageHitEntity(entity, i);
                 }
 
             }
-        }
     }
 
+    private void damageHitEntity(Entity entity, float distance)
+    {
+        DamageSource damagesource = DamageSource.anvil;
+        
+        int i = MathHelper.ceiling_float_int(distance - 1.0F);
+
+        	if(entity instanceof EntityDropPod)
+        		entity.setDead();
+        	else if(!this.isRidingOrBeingRiddenBy(entity))
+        	{
+        		entity.attackEntityFrom(damagesource, (float)Math.min(MathHelper.floor_float((float)i * this.fallHurtAmount), this.fallHurtMax));
+        	}
+        		
+        	
+    }
     
+	private void HitEntitiesFalling(List<Entity> p_70970_1_)
+	{
+		double d0 = (this.getEntityBoundingBox().minX + this.getEntityBoundingBox().maxX) / 2.0D;
+		double d1 = (this.getEntityBoundingBox().minZ + this.getEntityBoundingBox().maxZ) / 2.0D;
+
+		for (Entity entity : p_70970_1_)
+		{
+			if (entity instanceof EntityLivingBase)
+			{
+				double d2 = entity.posX - d0;
+				double d3 = entity.posZ - d1;
+				double d4 = d2 * d2 + d3 * d3;
+				entity.addVelocity(d2 / d4 * 2D, 0.0D, d3 / d4 * 2D);
+				
+				damageHitEntity(entity, this.fallDistance);
+			}
+		}
+	}
+	
 	@Override
 	protected void readEntityFromNBT(NBTTagCompound compound) 
 	{
+		
 	}
 
 	@Override
 	protected void writeEntityToNBT(NBTTagCompound compound) 
 	{
+        compound.setInteger("Time", this.fallTime);
+        compound.setBoolean("HurtEntities", this.hurtEntities);
+        compound.setFloat("FallHurtAmount", this.fallHurtAmount);
+        compound.setInteger("FallHurtMax", this.fallHurtMax);
+	}
+	
+	
+	public static ArrayList<CalledDrop> dropPodqueue = new ArrayList<CalledDrop>();
+	
+	public int nextCall = 10;
+	private int nextPod = 0;
+	private int podMax = 4;
+	private boolean spawned = false;
+	private boolean spawning = false;
+	
+	@SubscribeEvent
+	public void onWorldTick(WorldTickEvent event)
+	{
+		
+		if(event.side == Side.SERVER)
+		{
+			
+			if(event.phase == Phase.END && event.type == Type.WORLD)
+			{
+				if(dropPodqueue.size() > 0)
+				{
 
+					CalledDrop call = dropPodqueue.get(0);
+					
+					if(call == null || call.raider == null || call.dropPod == null || call.raider.worldObj == null) return;
+					if(event.world == call.raider.worldObj && this.nextCall-- < 0)
+					{
+						event.world.spawnEntityInWorld(call.dropPod);
+						event.world.spawnEntityInWorld(call.raider);
+						call.raider.startRiding(call.dropPod);
+					
+						call.dropPod.playSound(com.gendeathrow.pmobs.common.SoundEvents.SONIC_BOOM,25, 1f);
+					
+						this.nextCall = event.world.rand.nextInt(10) + 5;
+						spawned = true;
+						dropPodqueue.remove(0);
+						spawned = false;
+					}
+				}
+			}
+		}
+	}
+	
+	public static void addDropPodtoQueue(EntityLivingBase rider, EntityDropPod dropPod)
+	{
+		CalledDrop drop = new CalledDrop(rider, dropPod);
+		
+		dropPodqueue.add(drop);
+		
+		//System.out.println("size "+ dropPodqueue.size());
+	}
+	
+	
+	public static class CalledDrop
+	{
+		EntityLivingBase raider;
+		EntityDropPod dropPod;
+		
+		public CalledDrop(EntityLivingBase raider, EntityDropPod dropPod)
+		{
+			this.raider = raider;
+			this.dropPod = dropPod;
+		}
 	}
 
 }

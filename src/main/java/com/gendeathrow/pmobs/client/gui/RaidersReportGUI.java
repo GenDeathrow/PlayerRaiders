@@ -70,10 +70,10 @@ public class RaidersReportGUI extends GuiScreen
 
 		//this.drawString(this.fontRendererObj, "Raid 1: "+ DiffProg.getRaidDifficulty(), 10, i * 2, Color.WHITE.getRGB());
 		
-		this.drawString(this.fontRendererObj, "Speed %/ Raiders: "+ DiffProg.calculateProgressionDifficulty(DiffProg.speedDifficulty, DiffProg.speedDifficultyMax), 10, i * 3, Color.WHITE.getRGB());
+		///this.drawString(this.fontRendererObj, "Speed %/ Raiders: "+ DiffProg.calculateProgressionDifficulty(DiffProg.speedDifficulty, DiffProg.speedDifficultyMax), 10, i * 3, Color.WHITE.getRGB());
 		
 		this.drawString(this.fontRendererObj, "Health %/ Raiders: ", 10, i * 4, Color.WHITE.getRGB());
-		this.drawString(this.fontRendererObj, "   Health Bonus %: "+ DiffProg.calculateProgressionDifficulty(DiffProg.healthDifficulty, 1) +"%", 10, i * 6, Color.WHITE.getRGB());
+		//this.drawString(this.fontRendererObj, "   Health Bonus %: "+ DiffProg.calculateProgressionDifficulty(DiffProg.healthDifficulty, 1) +"%", 10, i * 6, Color.WHITE.getRGB());
 		this.drawString(this.fontRendererObj, "   or Small Health Bonus %: 100% ", 10, i * 7, Color.WHITE.getRGB());
 		
 		

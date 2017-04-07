@@ -1,3 +1,5 @@
 entity.playerraiders.Raiders.name=Raider
 playerraiders.Raiders=Raiders
 entity.Raiders.name=Raider
+
+item.playerraiders.backup_transmitter.name=Mercenary Comm

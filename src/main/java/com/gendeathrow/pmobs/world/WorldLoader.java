@@ -6,6 +6,7 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerProfileCache;
+import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -24,6 +25,9 @@ public class WorldLoader
 	@SubscribeEvent
 	public void worldLoad(WorldEvent.Load event)
 	{
+
+		Raiders_WorldData.get(event.getWorld());
+		
 		if(!RaidersCore.proxy.isClient() || isLoaded) return;
 	
             if (!RaidersCore.proxy.isIntergratedServerRunning())
@@ -47,5 +51,7 @@ public class WorldLoader
 		if(event.getWorld().isRemote) return;
 
 		RaiderManager.Save();
+		
+		Raiders_WorldData.get(event.getWorld()).markDirty();
 	}
 }

@@ -8,6 +8,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DungeonHooks;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -27,6 +28,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.commands.common.CommonCommands;
 import com.gendeathrow.pmobs.common.SoundEvents;
+import com.gendeathrow.pmobs.common.capability.player.IPlayerData;
+import com.gendeathrow.pmobs.common.capability.player.PlayersData;
+import com.gendeathrow.pmobs.common.capability.player.PlayersDataStorage;
+import com.gendeathrow.pmobs.core.init.ModRecipes;
 import com.gendeathrow.pmobs.core.network.ClientUpdatePacket;
 import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
@@ -39,7 +44,7 @@ public class RaidersCore
 {
     public static final String MODID = "playerraiders";
     public static final String NAME = "Player Raiders";
-    public static final String VERSION = "1.3.5";
+    public static final String VERSION = "1.3.11";
     public static final String CHANNELNAME = "genraiders";
     
 	@Instance(MODID)
@@ -60,6 +65,8 @@ public class RaidersCore
     public void preinit(FMLPreInitializationEvent event)
     {
 		logger = event.getModLog();
+		
+		CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayersDataStorage(), PlayersData.class);
 		
     	EntityRegistry.registerModEntity(EntityPlayerRaider.class, "Raiders", 1, this, 80, 3, true, -3971048, -6191748);
     	EntityRegistry.registerModEntity(EntityDropPod.class, "DropPod", 2, this, 80, 1, true);
@@ -82,13 +89,14 @@ public class RaidersCore
     public void init(FMLInitializationEvent event)
     {
     	proxy.Init(event);
-    	
+
     	proxy.registerHandlers();
-    	
+   	
     	ConfigHandler.load();
     	
 		SoundEvents.register();
 		
+	
 		LootTableList.register(playerraidersloot);
 		
     	Biome[] biomes = new Biome[0];
@@ -120,6 +128,8 @@ public class RaidersCore
     	
     	ConfigHandler.PostLoad();
 
+    	ModRecipes.RegisterRecipes();
+    	
     	DungeonHooks.addDungeonMob(MODID +".Raiders", PMSettings.raidersSpawnerWeight); 
         	
     	if(PMSettings.removeVanillaSpawners)

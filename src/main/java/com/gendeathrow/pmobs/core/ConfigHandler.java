@@ -60,7 +60,7 @@ public class ConfigHandler
 		
 		config.renameProperty(mobs, "Spawn no light levels", "Spawn in Daylight");
 		
-		PMSettings.anyLightLvlSpawning = config.getBoolean("Spawn in Daylight", mobs, true, "Raiders will spawn reguardless of light levels. Basically Daytime Spawning. False sets it to Vanilla Spawning rules");
+		PMSettings.shouldDaylightSpawm = config.getBoolean("Spawn in Daylight", mobs, true, "Raiders will spawn reguardless of light levels. Basically Daytime Spawning. False sets it to Vanilla Spawning rules");
 		PMSettings.torchStopSpawns = config.getBoolean("Torches/GlowStone Stop Spawning", mobs, true, "GlowStone and torches will still stop a 7x7x7 spawn area. If cant see sky. Only works with 'Spawn in Daylight' == true");
 		
 		// Mob AI stuff
@@ -115,7 +115,13 @@ public class ConfigHandler
 		
 		PMSettings.HealthIncrease = config.getInt("Health Increase", progCat, 2, 10, 100, "Each point = Half a Heart.");
 		PMSettings.HealthMaxOut = config.getInt("Health Max Outs", progCat, -1, -1, 100, "Sets what Raid Difficulty the health will max out at(Does not mean max health). -1 Means there is no max Difficulty.");
-
+		
+		PMSettings.BonusHealthPercentageIncrease = config.get(progCat, "Health Bonus Health Percentage Increase", 0.025D, "Adds Percentage Chance for raider to gain bonus health to each Raid Difficulty IE. (0.05 * Raid 5 = 25%)").getDouble();
+		PMSettings.BonusHealthMaxPercentage = config.get(progCat, "Health Bonus Max Percentage", 0.10D, "Max Percentage of Raiders that can get bonus health based off (Health Bonus Health Percentage Increase)").getDouble(); 
+		
+		PMSettings.SpeedPercentageIncrease = config.get(progCat, "Speed Percentage Increase", 0.05D, "Adds Percentage Chance for raider to gain extra speed to each Raid Difficulty IE. (0.05 * Raid 5 = 25%)").getDouble();
+		PMSettings.SpeedMaxPercentage = config.get(progCat, "Speed Max Percentage", 0.40D, "Max Percentage of Raiders that can get speed increase based off (Speed Raid Increase)").getDouble(); 
+		
 		if(config.hasKey(mobs, "Mob Difficulty Progression"))
 		{
 			config.moveProperty(mobs, "Mob Difficulty Progression", progCat);
