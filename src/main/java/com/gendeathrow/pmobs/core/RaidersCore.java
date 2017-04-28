@@ -2,7 +2,9 @@ package com.gendeathrow.pmobs.core;
 
 import net.minecraft.command.ICommandManager;
 import net.minecraft.command.ServerCommandManager;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.storage.loot.LootTableList;
@@ -31,6 +33,7 @@ import com.gendeathrow.pmobs.common.SoundEvents;
 import com.gendeathrow.pmobs.common.capability.player.IPlayerData;
 import com.gendeathrow.pmobs.common.capability.player.PlayersData;
 import com.gendeathrow.pmobs.common.capability.player.PlayersDataStorage;
+import com.gendeathrow.pmobs.core.init.ModItems;
 import com.gendeathrow.pmobs.core.init.ModRecipes;
 import com.gendeathrow.pmobs.core.network.ClientUpdatePacket;
 import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
@@ -58,6 +61,16 @@ public class RaidersCore
 	public static CommonProxy proxy;
 	
 	public static SimpleNetworkWrapper network;
+	
+	public static CreativeTabs RaidersTab= new CreativeTabs("Raiders")
+	{
+		@Override
+		public Item getTabIconItem() 
+		{
+			return ModItems.backupTransmitter;
+		}
+	
+	};
 
     public static ResourceLocation playerraidersloot = new ResourceLocation(MODID, "entities/playerraiders");
     
@@ -106,7 +119,9 @@ public class RaidersCore
     		  boolean flag = true;
     		  
     		  if((BiomeDictionary.isBiomeOfType(biomeEntry, BiomeDictionary.Type.NETHER) && !PMSettings.spawnNether) || 
-    				  (BiomeDictionary.isBiomeOfType(biomeEntry, BiomeDictionary.Type.END) && !PMSettings.spawnEnd)){
+    			 (BiomeDictionary.isBiomeOfType(biomeEntry, BiomeDictionary.Type.END) && !PMSettings.spawnEnd)  ||
+    			 (BiomeDictionary.isBiomeOfType(biomeEntry, BiomeDictionary.Type.WATER)))			
+    		  {
     			  flag = false;
     		  }
     		  

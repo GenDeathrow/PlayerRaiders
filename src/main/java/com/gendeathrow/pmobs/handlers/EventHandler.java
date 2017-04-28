@@ -175,7 +175,13 @@ public class EventHandler
 				{
 					boolean flag = raider.getDifficultyProgession().getRaidDifficulty() < PMSettings.esmDigginRaidDiff;
 					
-					if(raider.isChild() || raiderClass != EnumRaiderRole.NONE || flag || raider.getRNG().nextFloat() > PMSettings.esmDiggingPercentage)
+					boolean hasPickaxe = (raider.getHeldItemMainhand() != null && raider.getHeldItemMainhand().getItem() == Items.IRON_PICKAXE); 
+					
+					boolean notAllowed = raider.isChild() || raiderClass != EnumRaiderRole.NONE;
+					
+					boolean notAllowed2 = raider.getRNG().nextFloat() > PMSettings.esmDiggingPercentage;
+					
+					if(flag || notAllowed || (!hasPickaxe && notAllowed2))
 					{
 						
 						if(raider.getHeldItemMainhand() != null && raider.getHeldItemMainhand().getItem() == Items.IRON_PICKAXE)

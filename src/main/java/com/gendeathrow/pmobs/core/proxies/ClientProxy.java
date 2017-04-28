@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.gendeathrow.pmobs.client.ClientEventHandler;
+import com.gendeathrow.pmobs.client.IItemColorHandler;
 import com.gendeathrow.pmobs.client.gui.RaidNotification;
 import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
@@ -53,8 +55,11 @@ public class ClientProxy extends CommonProxy
 	{
 		super.Init(event);
 		registerHandlers();
-		
+	
+		FMLClientHandler.instance().getClient().getItemColors().registerItemColorHandler(new IItemColorHandler(), ModItems.spawnEgg);
+
 		registerItemModel(ModItems.backupTransmitter);  
+		registerItemModel(ModItems.spawnEgg);  
 	}
 	
 	@Override

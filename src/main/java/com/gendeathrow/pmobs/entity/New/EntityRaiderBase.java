@@ -118,7 +118,7 @@ public class EntityRaiderBase extends EntityMob
     
     private String playerName;
     
-	private GameProfile playerProfile;
+	protected GameProfile playerProfile;
 	
 	private boolean skinErrored = false;
 	private long skinTimeOut = 0;
@@ -1133,7 +1133,7 @@ public class EntityRaiderBase extends EntityMob
 
 	    private static int lastHerobrineSpawn = 0;
 	    
-		private GameProfile randomSkin()
+		protected GameProfile randomSkin()
 		{
 			GameProfile profile;
 			
@@ -1332,6 +1332,8 @@ public class EntityRaiderBase extends EntityMob
 			
 			public void dropLoot(EntityRaiderBase raider)
 			{
+				if(this.drops == null) return;
+				
 				for(ItemDrop drop : this.drops)
 				{
 					if(drop.shouldDrop(raider.getRNG()))

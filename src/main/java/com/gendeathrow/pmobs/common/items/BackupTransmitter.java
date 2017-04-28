@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.Loader;
 import com.gendeathrow.pmobs.common.SoundEvents;
 import com.gendeathrow.pmobs.common.capability.player.IPlayerData;
 import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
+import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
@@ -40,7 +41,7 @@ public class BackupTransmitter extends Item
 	public BackupTransmitter()
 	{
 		super();
-		this.setCreativeTab(CreativeTabs.REDSTONE);
+		 this.setCreativeTab(RaidersCore.RaidersTab);
         this.setMaxStackSize(1);
 	}
 	

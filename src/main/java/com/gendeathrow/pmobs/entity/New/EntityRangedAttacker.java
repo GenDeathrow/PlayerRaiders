@@ -368,6 +368,8 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 		return livingdata;
     }
     
+    
+    
     public boolean preCombatSet = false;
     private boolean postCombatSet = false;
     

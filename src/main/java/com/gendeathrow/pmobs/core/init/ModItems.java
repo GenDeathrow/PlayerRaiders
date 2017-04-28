@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.gendeathrow.pmobs.common.items.BackupTransmitter;
+import com.gendeathrow.pmobs.common.items.SpecialSpawnEgg;
 import com.gendeathrow.pmobs.core.RaidersCore;
 
 public class ModItems 
@@ -16,10 +17,13 @@ public class ModItems
 	
 	//ITEMS
 	public static BackupTransmitter backupTransmitter = new BackupTransmitter();
+	public static Item spawnEgg = new SpecialSpawnEgg();
 	
 	public static void RegisterItems()
 	{
 		registerItem(ModItems.backupTransmitter, "backup_transmitter");
+		
+		registerItem(ModItems.spawnEgg, "raider_custom_egg");
 	}
 	
 	
