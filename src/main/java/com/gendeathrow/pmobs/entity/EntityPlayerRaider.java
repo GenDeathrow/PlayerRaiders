@@ -98,12 +98,7 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 	        if(!this.isHeroBrine() && !this.isChild())
 	        {
 	        	this.setRaiderRole(role);
-	        	
-	        	if(PMSettings.tweakerOnlyNight && this.worldObj.isDaytime() && this.getRaiderRole() == EnumRaiderRole.TWEAKER)
-	        	{
-	        		this.setRaiderRole(EnumRaiderRole.NONE);
-	        	}
-	        	
+
 	        	if(this.getRaiderRole().equals(EnumRaiderRole.TWEAKER))
 	        	{
 	        		this.setTweakerMelee(true);
@@ -114,8 +109,6 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 	        		this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(.7);
 	        		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.15);
 	        		this.stepHeight = 2F;
-	        		//Apparetnly this is side only
-	        		//this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeAllModifiers();
 	        		this.removeAllModifiers(SharedMonsterAttributes.MOVEMENT_SPEED);
 		        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7);
 		        	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Brute Health", 1.25, 2));
@@ -160,16 +153,11 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 	        
 
 	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) 
-	        {
 	        	this.setChild(true); 
-	        	//this.setFeatures(0);
-	        }
   
 	        
 	        if(!this.isChild() && (this.getRaiderRole() == EnumRaiderRole.NONE || this.getRaiderRole() == EnumRaiderRole.PYROMANIAC) && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
-	        {
 	        	this.setLeapAttack(true);
-	        }
 	        
 	        difficultyManager.setHealthDifficulty(difficulty);
 	        

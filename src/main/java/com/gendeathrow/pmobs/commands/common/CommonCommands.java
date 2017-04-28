@@ -3,14 +3,14 @@ package com.gendeathrow.pmobs.commands.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gendeathrow.pmobs.commands.Base_Command;
-
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+
+import com.gendeathrow.pmobs.commands.Base_Command;
 
 public class CommonCommands extends CommandBase
 {
@@ -20,6 +20,7 @@ public class CommonCommands extends CommandBase
 	{
 		coms.add(new AddNewPlayer());
 		coms.add(new UpdateTwitchWhitelist());
+		coms.add(new SetRaiderLevel());
 	}
 	
 	@Override
@@ -98,7 +99,7 @@ public class CommonCommands extends CommandBase
 			{
 				if(c.validArgs(args))
 				{
-					c.runCommand(this, sender, args);
+					c.runCommand(server, this, sender, args);
 					return;
 				} else
 				{
