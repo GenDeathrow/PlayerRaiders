@@ -1,3 +1,15 @@
 entity.playerraiders.Raiders.name=Angreifer
 playerraiders.Raiders=Angreifer
 entity.Raiders.name=Angreifer
+itemGroup.Raiders=Raiders
+
+entity.playerraiders.role.none=Keine Klasse
+entity.playerraiders.role.brute=Grobian
+entity.playerraiders.role.witch=Brüller
+entity.playerraiders.role.tweaker=Zwicker
+entity.playerraiders.role.ranged=Fernkämpfer
+entity.playerraiders.role.pyromaniac=Pyromane
+entity.playerraiders.role.friendly=Freundlich
+
+item.playerraiders.backup_transmitter.name=Söldnerverbindungsgerät
+item.playerraiders.raider_custom_egg.name=Erschaffe Angreifer
