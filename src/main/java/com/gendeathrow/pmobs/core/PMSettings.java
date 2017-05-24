@@ -115,5 +115,9 @@ public class PMSettings
 	public static boolean screamerFogOn = true;
 
 	public static boolean torchStopSpawns = true;
+
+	//Items
+	public static boolean dropSerum = true;
+	public static boolean dropTransmitter = true;
 	
 }

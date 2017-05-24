@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
@@ -47,13 +48,13 @@ public class AddNewPlayer extends Base_Command
 		else if(args.length == 4)
 		{
 			return new ArrayList<String>(){{add("10");}};
-		}
+		}  
 
 		return new ArrayList<String>();
 	}
 	
 	@Override
-	public void runCommand(CommandBase command, ICommandSender sender, String[] args)
+	public void runCommand(MinecraftServer server, CommandBase command, ICommandSender sender, String[] args)
 	{
 		
 		if(args.length < 3)

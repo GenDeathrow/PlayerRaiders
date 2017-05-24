@@ -2,6 +2,7 @@ package com.gendeathrow.pmobs.commands.common;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 
 import com.gendeathrow.pmobs.commands.Base_Command;
@@ -15,9 +16,9 @@ public class UpdateTwitchWhitelist extends Base_Command
 	{
 		return "reloadWhiteList";
 	}
-
+  
 	@Override
-	public void runCommand(CommandBase command, ICommandSender sender, String[] args) 
+	public void runCommand(MinecraftServer server, CommandBase command, ICommandSender sender, String[] args) 
 	{
 		RaiderManager.getTwitchSubscribers(true);
 		sender.addChatMessage(new TextComponentString("Updated Twitch Sub list"));

@@ -144,6 +144,16 @@ public class ConfigHandler
 		PMSettings.esmDiamondToolsRaidDiff = config.getInt("Digging Tools Diamond on Raid Difficulty", esmaddon, 2, 0, Integer.MAX_VALUE, "Sets on what Raid Difficulty you see diamond Tools");
 		PMSettings.esmDigginRaidDiff = config.getInt("Digging AI Raid Difficulty", esmaddon, 0, 0, Integer.MAX_VALUE, "Digging mobs wont start till x Raid Difficulty based of x amount of dayd set in 'Mob Difficulty Progression' ");
 		
+		
+		
+		
+		String items = "items";
+ 		//ESM stuff
+		PMSettings.dropSerum = config.getBoolean("Brutes Drop Serum Samples", items, true, "If false Brutes dont drop samples. THIS IS THE ONLY WAY TO GET THEM");
+		PMSettings.dropTransmitter = config.getBoolean("Drop Tramsmitter Part", items, true, "If false Raiders dont drop samples. THIS IS THE ONLY WAY TO GET THEM");
+
+		
+		
 		config.removeCategory(remove);
 		
 		if(config.hasChanged())

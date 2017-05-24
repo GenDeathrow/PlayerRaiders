@@ -1,0 +1,6 @@
+{
+	"parent": "item/generated",
+    "textures": {
+        "layer0": "playerraiders:items/brute_serum_sample"
+    }
+}

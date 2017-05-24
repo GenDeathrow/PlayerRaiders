@@ -96,6 +96,7 @@ public class EntityAIPyromaniac extends EntityAIBase
       {
     	  try
     	  {
+    		  
     		  RayTraceResult rayTrace = theRaider.worldObj.rayTraceBlocks(new Vec3d(theRaider.posX, theRaider.posY + theRaider.getEyeHeight(), theRaider.posZ), new Vec3d(blockpos$mutableblockpos.getX() + 0.5, blockpos$mutableblockpos.getY() + 0.5, blockpos$mutableblockpos.getZ() + 0.5));
 
     		  if(rayTrace.typeOfHit == Type.BLOCK)
@@ -103,8 +104,8 @@ public class EntityAIPyromaniac extends EntityAIBase
     			  BlockPos pos = rayTrace.getBlockPos().offset(rayTrace.sideHit);
     		  
     			  Block block = theRaider.worldObj.getBlockState(rayTrace.getBlockPos()).getBlock();
-    		  
-    			  if (block.getFlammability(this.theRaider.worldObj, rayTrace.getBlockPos(), rayTrace.sideHit) > 0 && !(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass))
+    			  
+    			  if (block.isFlammable(this.theRaider.worldObj, rayTrace.getBlockPos(), rayTrace.sideHit) && !(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass))
     			  {
     				  if (theRaider.worldObj.isAirBlock(pos))
     				  {
@@ -119,7 +120,8 @@ public class EntityAIPyromaniac extends EntityAIBase
     		  }
     	  }catch(Throwable e)
      	 {
-     		 RaidersCore.logger.debug("Raider couldn't set block on fire..."+ e);
+    		  //Caused an 8GB file.. no good...
+     		// RaidersCore.logger.debug("Raider couldn't set block on fire..."+ e);
      	 }
       }
   }

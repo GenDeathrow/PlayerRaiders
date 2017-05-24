@@ -59,7 +59,10 @@ public class ClientProxy extends CommonProxy
 		FMLClientHandler.instance().getClient().getItemColors().registerItemColorHandler(new IItemColorHandler(), ModItems.spawnEgg);
 
 		registerItemModel(ModItems.backupTransmitter);  
-		registerItemModel(ModItems.spawnEgg);  
+		registerItemModel(ModItems.spawnEgg);
+		registerItemModel(ModItems.bruteSerum);  
+		registerItemModel(ModItems.bruteSerumSample);  
+		registerItemModel(ModItems.satTransmitterPart);  
 	}
 	
 	@Override

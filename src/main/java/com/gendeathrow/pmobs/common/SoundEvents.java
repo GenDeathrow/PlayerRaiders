@@ -21,6 +21,7 @@ public class SoundEvents
 	public static SoundEvent SONIC_BOOM;
 	public static SoundEvent ROCKET_AMBIENT;
 	public static SoundEvent COMS_BEEP;
+	public static SoundEvent SERUM_ANGER; 
 	
 	public static void register()
 	{
@@ -38,6 +39,8 @@ public class SoundEvents
 		ResourceLocation locationsonicRocket = new ResourceLocation(RaidersCore.MODID, "ambient.rocketambient");
 		ResourceLocation locationcombeep = new ResourceLocation(RaidersCore.MODID, "item.coms_beep");
 		
+		ResourceLocation locationserumAnger = new ResourceLocation(RaidersCore.MODID, "item.serum_anger");
+		
 		
 		RAIDERS_SAY = new SoundEvent(locationSay);
 		RAIDERS_HURT = new SoundEvent(locationHurt);
@@ -50,6 +53,7 @@ public class SoundEvents
 		SONIC_BOOM = new SoundEvent(locationsonicBoom);
 		ROCKET_AMBIENT = new SoundEvent(locationsonicRocket);
 		COMS_BEEP = new SoundEvent(locationcombeep);
+		SERUM_ANGER = new SoundEvent(locationserumAnger);
 		
 		GameRegistry.register(SoundEvents.RAIDERS_SAY, locationSay);
 		GameRegistry.register(SoundEvents.RAIDERS_LAUGH, locationlaugh);
@@ -62,6 +66,7 @@ public class SoundEvents
 		GameRegistry.register(SoundEvents.SONIC_BOOM, locationsonicBoom);
 		GameRegistry.register(SoundEvents.ROCKET_AMBIENT, locationsonicRocket);
 		GameRegistry.register(SoundEvents.COMS_BEEP, locationcombeep);
+		GameRegistry.register(SoundEvents.SERUM_ANGER, locationserumAnger);
 
 	}
 }

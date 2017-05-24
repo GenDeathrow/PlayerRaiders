@@ -19,11 +19,19 @@ public class ModRecipes
 				"RPR", 
 				"ICI", 
 				"IEI",
-				'C', Items.COMPASS,
+				'C', ModItems.satTransmitterPart,
 				'R', Items.REPEATER,
 				'P', Items.COMPARATOR,
 				'E', Items.EMERALD,
 				'I', Items.IRON_INGOT);
+		
+
+		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.bruteSerum), new Object[] {
+			new ItemStack(ModItems.bruteSerumSample),
+			new ItemStack(ModItems.bruteSerumSample),
+			new ItemStack(ModItems.bruteSerumSample),
+			new ItemStack(ModItems.bruteSerumSample)});
+		
 
 	}
 	

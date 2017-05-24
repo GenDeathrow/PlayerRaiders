@@ -132,5 +132,18 @@
 				"name" : "playerraiders:items/coms_beep"
 			}
 		]
+	},
+	"item.serum_anger" : {
+		"category":"player",
+		"sounds" :  [
+			"playerraiders:items/serum/anger_1",
+			"playerraiders:items/serum/anger_2",
+			"playerraiders:items/serum/anger_3",
+			"playerraiders:items/serum/anger_4",
+			"playerraiders:items/serum/anger_5",
+			"playerraiders:items/serum/anger_6",
+			"playerraiders:items/serum/anger_7",
+			"playerraiders:items/serum/anger_8"
+		]
 	}
 }

@@ -176,6 +176,7 @@ public class BackupTransmitter extends Item
 		
 		raider.setRaiderFaction(EnumFaction.FRIENDLY);
 		raider.setRaiderRole(EnumRaiderRole.NONE);
+		raider.setLeftHanded(false);
 		
 		raider.setLocationAndAngles(droppod.posX, droppod.posY, droppod.posZ, raider.rotationYaw, 0.0F);
 		

@@ -69,6 +69,7 @@ import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.core.ConfigHandler.ItemDrop;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.core.init.ModItems;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
 import com.gendeathrow.pmobs.entity.ai.EntityAIShootLaser;
@@ -771,6 +772,23 @@ public class EntityRaiderBase extends EntityMob
 				this.worldObj.spawnEntityInWorld(skull);
 			}
 			
+			if(PMSettings.dropSerum && this.getRaiderRole() == EnumRaiderRole.BRUTE && this.getRNG().nextDouble() <= 0.10)
+			{
+				this.entityDropItem(new ItemStack(ModItems.bruteSerumSample), 0.0f);
+			}
+			
+			boolean flag = false;
+
+			if(this.getRaiderRole() == EnumRaiderRole.NONE  && this.getRNG().nextDouble() <= 0.02)
+				flag = true;
+			else if(this.getRaiderRole() == EnumRaiderRole.WITCH && this.getRNG().nextDouble() <= 0.35)
+				flag = true;
+
+			
+			if(flag && PMSettings.dropTransmitter)
+				this.entityDropItem(new ItemStack(ModItems.satTransmitterPart), 0.0f);
+			
+			
 			this.getRaiderRole().dropLoot(this);
 		}
 		super.dropLoot(wasRecentlyHit, lootingModifier, source);
@@ -1139,15 +1157,23 @@ public class EntityRaiderBase extends EntityMob
 			
 			int herobineLastCheck = Raiders_WorldData.INSTANCE != null ? Raiders_WorldData.INSTANCE.getLastHerobrineSighting() : 0;
 			
-			if(herobineLastCheck == this.getDifficultyProgession().getDay() || this.getDifficultyProgession().getDay() < 2)
+			
+
+			if(herobineLastCheck == this.getDifficultyProgession().getDay() || this.getDifficultyProgession().getDay() < 3)
 			{
-				while((profile = RaiderManager.getRandomRaider().getProfile()).getName().equalsIgnoreCase("Herobrine"));
+				
+				do{
+					 profile = RaiderManager.getRandomRaider().getProfile();
+				}while(profile.getName().equalsIgnoreCase("Herobrine"));
 			}
 			else
 			{
 				profile = RaiderManager.getRandomRaider().getProfile();
-				if(profile == RaiderManager.getRaiderProfile("herobrine")) Raiders_WorldData.INSTANCE.setLastHerobrineSighting(this.getDifficultyProgession().getDay());
 			}
+			
+			if(profile == RaiderManager.getRaiderProfile("herobrine")) 
+				Raiders_WorldData.INSTANCE.setLastHerobrineSighting(this.getDifficultyProgession().getDay());
+
 			return profile;
 		}
 		
