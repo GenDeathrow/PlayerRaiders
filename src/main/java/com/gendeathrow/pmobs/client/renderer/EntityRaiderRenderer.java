@@ -32,8 +32,6 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 
 	private final ModelBiped defaultModel;
 	    
-	private static ResourceLocation DEFAULT = new ResourceLocation("textures/entity/steve.png");
-
 	private static HashMap<String, ResourceLocation> SkinsCache = new HashMap<String, ResourceLocation>();
 	    //private final List<LayerRenderer<EntityPlayerBase>> defaultLayers;  
 	    

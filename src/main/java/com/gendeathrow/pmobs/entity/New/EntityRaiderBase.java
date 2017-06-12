@@ -1356,12 +1356,34 @@ public class EntityRaiderBase extends EntityMob
 				else return true;
 			}
 			
+			
+			public void setLoot(ArrayList<ItemDrop> dropsIn)
+			{
+				this.drops = dropsIn;
+			}
+			
+			public void setWeight(int weigthIn)
+			{
+				this.weight = weigthIn;
+			}
+			
+			public void setStartDiff(int diffIn)
+			{
+				this.startDifficulty = diffIn;
+			}
+			
+			
 			public void dropLoot(EntityRaiderBase raider)
 			{
-				if(this.drops == null) return;
+				if(this.drops == null) 
+				{
+					return;
+				}
 				
 				for(ItemDrop drop : this.drops)
 				{
+					if(drop == null) continue;
+					
 					if(drop.shouldDrop(raider.getRNG()))
 					{
 						raider.entityDropItem(drop.getStack(raider.getRNG()), 0.0f);

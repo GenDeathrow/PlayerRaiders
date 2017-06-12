@@ -79,9 +79,9 @@ public class BruteSerumHandler
     	}else if(!isSerumActive(event.player) && event.player.eyeHeight == 2.5F)
     	{
     		event.player.eyeHeight = event.player.getDefaultEyeHeight();
-    		if(event.player.stepHeight > 0)
+    		if(event.player.stepHeight > 0.6F)
     		{
-    			event.player.stepHeight = 0;
+    			event.player.stepHeight = 0.6F;
     		}
     			
             isNormalSize = true;
