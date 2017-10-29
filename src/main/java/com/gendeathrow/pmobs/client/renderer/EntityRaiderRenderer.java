@@ -4,6 +4,11 @@ package com.gendeathrow.pmobs.client.renderer;
 
 import java.util.HashMap;
 
+import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
+import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.entity.EntityRaider;
+
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
@@ -18,15 +23,8 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
-import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-
 @SideOnly(Side.CLIENT)
-public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase> 
+public class EntityRaiderRenderer extends RenderBiped<EntityRaider> 
 {
 	public static final Factory FACTORY = new Factory();
 
@@ -41,20 +39,11 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 	{
 		super(renderManager, new RaiderModel(0F), 0.5F);
 		
-		this.defaultModel = this.modelBipedMain;
+		this.defaultModel = this.getMainModel();
 		this.addLayer(new LayerBipedArmor(this));
 		this.addLayer(new LayerHeldItem(this));
 		this.addLayer(new LayerArrow(this));
 	        
-//	        this.addLayer(new LayerBipedArmor(this)
-//	        {
-//	            protected void initArmor()
-//	            {
-//	                this.modelLeggings = new RaiderModel(0.5F);
-//	                this.modelArmor = new RaiderModel(1.0F);
-//	            }
-//	        });
-//	        
         if(!PMSettings.renderNameTags) 
         {
         	this.NAME_TAG_RANGE = 0;
@@ -80,20 +69,20 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 		return (RaiderModel)super.getMainModel();
 	}
 
-	protected ResourceLocation getEntityTexture(EntityRaiderBase entity) 
+	protected ResourceLocation getEntityTexture(EntityRaider entity) 
 	{
 		return entity.getLocationSkin() == null ? DefaultPlayerSkin.getDefaultSkinLegacy() : entity.getLocationSkin();
 	}
 	
 	@Override
-	public void doRender(EntityRaiderBase entity, double x, double y, double z, float entityYaw, float partialTicks)
+	public void doRender(EntityRaider entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		if(!PMSettings.renderNameTags)
 		{
-			if(entity.getRaiderFaction() == EnumFaction.FRIENDLY)
-				this.NAME_TAG_RANGE = 64F;
-			else if(entity.getRaiderFaction() == EnumFaction.HOSTILE)
-				this.NAME_TAG_RANGE = 0;
+//			if(entity.getRaiderFaction() == EnumFaction.FRIENDLY)
+//				this.NAME_TAG_RANGE = 64F;
+//			else if(entity.getRaiderFaction() == EnumFaction.HOSTILE)
+//				this.NAME_TAG_RANGE = 0;
 		}
 
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
@@ -106,21 +95,15 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase>
 	 * Allows the render to do state modifications necessary before the model is rendered.
 	 */
 	@Override
-	protected void preRenderCallback(EntityRaiderBase entitylivingbaseIn, float partialTickTime)
+	protected void preRenderCallback(EntityRaider entitylivingbaseIn, float partialTickTime)
 	{
-	        if (entitylivingbaseIn.getRaiderRole() == EnumRaiderRole.BRUTE)
-	        {  
-	            float f = 1.0625F;
-	            GlStateManager.scale(1.5F, 1.5F, 1.5F);
-	        }
-	        
 		super.preRenderCallback(entitylivingbaseIn, partialTickTime);
 	}
 	    
-	public static class Factory implements IRenderFactory<EntityRaiderBase> 
+	public static class Factory implements IRenderFactory<EntityRaider> 
 	{
 		@Override
-		public Render<? super EntityRaiderBase> createRenderFor(RenderManager manager) 
+		public Render<? super EntityRaider> createRenderFor(RenderManager manager) 
 		{
 			return new EntityRaiderRenderer(manager);
 		}

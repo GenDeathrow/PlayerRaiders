@@ -22,16 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+import org.apache.logging.log4j.Level;
+
+import com.gendeathrow.pmobs.core.RaidersMain;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.oredict.OreDictionary;
-
-import org.apache.logging.log4j.Level;
-	
-
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 	public class Tools 
 	{
@@ -222,61 +221,61 @@ import com.google.gson.JsonObject;
 				return true;
 			}catch(Exception e)
 			{
-				RaidersCore.logger.log(Level.ERROR, e);
+				RaidersMain.logger.log(Level.ERROR, e);
 				return false;
 			}
 		}
 		
 		
-		public static String getItemInfo(String[] args, String itemID, ItemStack stack)
-		{
-
-			String ore = "";
-			String nbt = "";
-			
-			if(args.length > 1)
-			{
-			
-				boolean flag1 = false;
-				boolean flag2 = false;
-				boolean flag3 = false;
-				
-				for(String arg : args)
-				{
-
-					if(arg.toLowerCase().trim().equals("<>") && !flag1)
-					{
-						itemID = "<"+ itemID+">";
-						flag1 = true;
-					}
-					else if(arg.toLowerCase().trim().equals("ore")  && !flag2)
-					{
-						ore += " Ores:[";
-						boolean f = false;
-						for(int id : OreDictionary.getOreIDs(stack))
-						{
-							ore += (!f ? " ore:" : " | ore:")+ OreDictionary.getOreName(id);
-							f = true;
-						}
-						ore += "]";
-						flag2 = true;
-					}
-					else if(arg.toLowerCase().trim().equals("nbt") && !flag3)
-					{
-						NBTTagCompound nbtdata = stack.getTagCompound();
-					
-						nbt += " NBT:";
-						if(nbtdata != null)
-						{
-							nbt += " "+ new GsonBuilder().create().toJson(NBTConverter.NBTtoJSON_Compound(nbtdata, new JsonObject()));
-						}
-						else nbt += " {NBT Null}";
-						flag3 = true;
-					}
-				}
-			
-			}
-			return itemID + ore + nbt +  System.getProperty("line.separator");
-		}
+//		public static String getItemInfo(String[] args, String itemID, ItemStack stack)
+//		{
+//
+//			String ore = "";
+//			String nbt = "";
+//			
+//			if(args.length > 1)
+//			{
+//			
+//				boolean flag1 = false;
+//				boolean flag2 = false;
+//				boolean flag3 = false;
+//				
+//				for(String arg : args)
+//				{
+//
+//					if(arg.toLowerCase().trim().equals("<>") && !flag1)
+//					{
+//						itemID = "<"+ itemID+">";
+//						flag1 = true;
+//					}
+//					else if(arg.toLowerCase().trim().equals("ore")  && !flag2)
+//					{
+//						ore += " Ores:[";
+//						boolean f = false;
+//						for(int id : OreDictionary.getOreIDs(stack))
+//						{
+//							ore += (!f ? " ore:" : " | ore:")+ OreDictionary.getOreName(id);
+//							f = true;
+//						}
+//						ore += "]";
+//						flag2 = true;
+//					}
+//					else if(arg.toLowerCase().trim().equals("nbt") && !flag3)
+//					{
+//						NBTTagCompound nbtdata = stack.getTagCompound();
+//					
+//						nbt += " NBT:";
+//						if(nbtdata != null)
+//						{
+//							nbt += " "+ new GsonBuilder().create().toJson(NBTConverter.NBTtoJSON_Compound(nbtdata, new JsonObject()));
+//						}
+//						else nbt += " {NBT Null}";
+//						flag3 = true;
+//					}
+//				}
+//			
+//			}
+//			return itemID + ore + nbt +  System.getProperty("line.separator");
+//		}
 
 }

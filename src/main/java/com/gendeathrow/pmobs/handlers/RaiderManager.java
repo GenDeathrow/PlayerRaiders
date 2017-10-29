@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,14 +12,12 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.util.WeightedRandom;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import com.gendeathrow.pmobs.core.ConfigHandler;
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.util.Tools;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -30,6 +27,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.util.WeightedRandom;
 
 public class RaiderManager 
 {
@@ -192,11 +191,11 @@ public class RaiderManager
 	            }
 	            catch (IOException ioexception)
 	            {
-	                RaidersCore.logger.error((String)("Couldn\'t read Raiders file " + raiderFile), (Throwable)ioexception);
+	            	RaidersMain.logger.error((String)("Couldn\'t read Raiders file " + raiderFile), (Throwable)ioexception);
 	            }
 	            catch (JsonParseException jsonparseexception)
 	            {
-	            	RaidersCore.logger.error((String)("Couldn\'t parse Raiders file " + raiderFile), (Throwable)jsonparseexception);
+	            	RaidersMain.logger.error((String)("Couldn\'t parse Raiders file " + raiderFile), (Throwable)jsonparseexception);
 	            }
 	        }
 	        else saveRaiderFile();
@@ -217,7 +216,7 @@ public class RaiderManager
 	        }
 	        catch (IOException ioexception)
 	        {
-	            RaidersCore.logger.error((String)"Couldn\'t save stats", (Throwable)ioexception);
+	        	RaidersMain.logger.error((String)"Couldn\'t save stats", (Throwable)ioexception);
 	        }finally 
 	        {
 	        	IOUtils.closeQuietly(fo);
@@ -271,13 +270,13 @@ public class RaiderManager
 	                	}
 	                	else
 	                	{
-	                		RaidersCore.logger.warn("Raider already exist in " + raiderFile + ":" + (String)entry.getKey());
+	                		RaidersMain.logger.warn("Raider already exist in " + raiderFile + ":" + (String)entry.getKey());
 	                	}
 	                	
 	                }
 	                else
 	                {
-	                	RaidersCore.logger.warn("Invalid Raider in " + raiderFile + ": Don\'t know what " + (String)entry.getKey() + " is");
+	                	RaidersMain.logger.warn("Invalid Raider in " + raiderFile + ": Don\'t know what " + (String)entry.getKey() + " is");
 	                }
 	            }
 

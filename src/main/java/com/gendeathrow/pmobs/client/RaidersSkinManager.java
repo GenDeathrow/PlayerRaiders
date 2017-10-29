@@ -1,12 +1,22 @@
 package com.gendeathrow.pmobs.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.gendeathrow.pmobs.core.RaidersMain;
+import com.gendeathrow.pmobs.entity.EntityRaiderBase;
+import com.gendeathrow.pmobs.handlers.RaiderData;
+import com.gendeathrow.pmobs.handlers.RaiderManager;
+import com.google.common.collect.Iterables;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.authlib.properties.Property;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -15,18 +25,6 @@ import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.handlers.RaiderData;
-import com.gendeathrow.pmobs.handlers.RaiderManager;
-import com.google.common.collect.Iterables;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.properties.Property;
 
 public class RaidersSkinManager 
 {
@@ -77,7 +75,6 @@ public class RaidersSkinManager
 						RaiderData raider = raidersdata.get(0);
 
 						raider.setProfile(TileEntitySkull.updateGameprofile(raider.getProfile()));
-						//raider.setProfile(setupProfiles(raider.getProfile()));
 						
 						try 
 						{
@@ -113,13 +110,9 @@ public class RaidersSkinManager
 					{
 						EntityRaiderBase raider = raiders.get(0);
 
-						//boolean flag = profileCache.getUsernames() != null ? (Arrays.asList(profileCache.getUsernames()).contains(raider.getOwner())) : false;
-						
 						raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
-						//raider.setPlayerProfile(setupProfiles(raider.getPlayerProfile()));
+
 						raider.setProfileUpdated(true);
-						
-						//RaiderManager.setRaiderProfile(raider.getOwner(), raider.getPlayerProfile());
 						
 						try 
 						{
@@ -146,16 +139,7 @@ public class RaidersSkinManager
 	
 	public static void cacheSkin(GameProfile profile)
 	{
-		
 		profile = TileEntitySkull.updateGameprofile(profile);
-		
-		//setupProfiles(profile);
-	
-//		if(!INSTANCE.cachedSkins.containsKey(profile.getName()))
-//		{
-//			
-//		}
-		
 	}
 	
 	public static GameProfile setupProfiles(GameProfile input)
@@ -222,6 +206,7 @@ public class RaidersSkinManager
     	return resourcelocation;
     }
 
+    
 	private static List<String> badraiders = new ArrayList<String>();
 	public static void addToBadList(String owner) 
 	{
@@ -229,7 +214,7 @@ public class RaidersSkinManager
 		if(!badraiders.contains(owner))
 		{
 			badraiders.add(owner);
-			RaidersCore.logger.error("Could not Get this players profile."+ owner +" Added to the Naughty List");
+			RaidersMain.logger.error("Could not Get this players profile."+ owner +" Added to the Naughty List");
 		}
 		// TODO Auto-generated method stub
 		

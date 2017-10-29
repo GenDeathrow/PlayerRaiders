@@ -4,19 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.apache.logging.log4j.Level;
+
+import com.gendeathrow.pmobs.handlers.RaiderManager;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
-
-import org.apache.logging.log4j.Level;
-
-import com.gendeathrow.pmobs.client.data.KillCounter;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-import com.gendeathrow.pmobs.handlers.EquipmentManager;
-import com.gendeathrow.pmobs.handlers.RaiderManager;
-import com.typesafe.config.ConfigSyntax;
 
 public class ConfigHandler 
 {
@@ -32,7 +28,7 @@ public class ConfigHandler
 	private static ConfigCategory remove = new ConfigCategory("remove");
 	public static void load()
 	{
-		RaidersCore.logger.log(Level.INFO, "Loading Configs...");  
+		RaidersMain.logger.log(Level.INFO, "Loading Configs...");  
 		
 		PMSettings.noSpawnDays = config.get(config.CATEGORY_GENERAL, "No Spawn Days", new int[0], "Certain days that raiders dont spawn").getIntList();
 		
@@ -77,9 +73,10 @@ public class ConfigHandler
 			PMSettings.bruteWeight = config.get(classes, "Brute Weight", 7).getInt(7);
 			PMSettings.bruteDrops =  ItemDrop.getArrayItemDrops(config.get(classes, "Brute Drops", new String[0]).getStringList());
 			PMSettings.bruteStartDiff = config.get(classes, "Brute Start Difficulty", 0).getInt(0);			
-			EnumRaiderRole.BRUTE.setLoot(PMSettings.bruteDrops);
-			EnumRaiderRole.BRUTE.setWeight(PMSettings.bruteWeight);
-			EnumRaiderRole.BRUTE.setStartDiff(PMSettings.bruteStartDiff);
+			//TODO
+			//EnumRaiderRole.BRUTE.setLoot(PMSettings.bruteDrops);
+			//EnumRaiderRole.BRUTE.setWeight(PMSettings.bruteWeight);
+			//EnumRaiderRole.BRUTE.setStartDiff(PMSettings.bruteStartDiff);
 			
 		// ModName:ItemID:meta:qty:chance
 
@@ -88,23 +85,30 @@ public class ConfigHandler
 			PMSettings.tweakerOnlyNight = config.get(classes, "Tweakers Only at Night", false).getBoolean();
 			PMSettings.tweakerDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Tweakers Drops", new String[0]).getStringList());
 			PMSettings.tweakerStartDiff = config.get(classes, "Tweakers Start Difficulty", 0).getInt(0);
-			EnumRaiderRole.TWEAKER.setLoot(PMSettings.tweakerDrops);
-			EnumRaiderRole.TWEAKER.setWeight(PMSettings.tweakerWeight);
-			EnumRaiderRole.TWEAKER.setStartDiff(PMSettings.tweakerStartDiff);
+			
+			//TODO
+			//EnumRaiderRole.TWEAKER.setLoot(PMSettings.tweakerDrops);
+			//EnumRaiderRole.TWEAKER.setWeight(PMSettings.tweakerWeight);
+			//EnumRaiderRole.TWEAKER.setStartDiff(PMSettings.tweakerStartDiff);
 			
 			PMSettings.pyroClass = config.getBoolean("Pyromaniac Class Enabled", classes, true, "Adds Pyromaniacs to the mix, they will seek out blocks to catch fire. small chance increases with each raid difficulty");
 			PMSettings.pyroWeight = config.get(classes, "Pyromaniac Weight", 4).getInt(4);
 			PMSettings.pyroDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Pyromaniac Drops", new String[0]).getStringList());
 			PMSettings.pyroStartDiff = config.get(classes, "Pyromaniac Start Difficulty", 0).getInt(0);
-			EnumRaiderRole.PYROMANIAC.setLoot(PMSettings.pyroDrops);
-			EnumRaiderRole.PYROMANIAC.setWeight(PMSettings.pyroWeight);
-			EnumRaiderRole.PYROMANIAC.setStartDiff(PMSettings.pyroStartDiff);
+
+			//TODO
+			//EnumRaiderRole.PYROMANIAC.setLoot(PMSettings.pyroDrops);
+			//EnumRaiderRole.PYROMANIAC.setWeight(PMSettings.pyroWeight);
+			//EnumRaiderRole.PYROMANIAC.setStartDiff(PMSettings.pyroStartDiff);
+			
 			
 			
 			PMSettings.noneWeight = config.get(classes, "No Class Weight", 80).getInt(80);
 			PMSettings.noneDrops = ItemDrop.getArrayItemDrops(config.get(classes, "No Class Drops", new String[0], "No Class is a normal raider").getStringList());
-			EnumRaiderRole.NONE.setLoot(PMSettings.noneDrops);
-			EnumRaiderRole.NONE.setWeight(PMSettings.noneWeight);
+
+			//TODO
+			//EnumRaiderRole.NONE.setLoot(PMSettings.noneDrops);
+			//EnumRaiderRole.NONE.setWeight(PMSettings.noneWeight);
 
 			String[] screamerDrops = new String[3];
 			screamerDrops[0] = Items.EXPERIENCE_BOTTLE.getRegistryName().toString() +":0:3:1";
@@ -116,18 +120,21 @@ public class ConfigHandler
 			PMSettings.screamerDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Screamer Drops", screamerDrops).getStringList());
 			PMSettings.screamerStartDiff = config.get(classes, "Screamer Start Difficulty", 0).getInt(0);
 			PMSettings.screamerFogOn = config.get(classes, "Screamer Fog", true).getBoolean(true);
-			EnumRaiderRole.WITCH.setLoot(PMSettings.screamerDrops);
-			EnumRaiderRole.WITCH.setWeight(PMSettings.screamerWeight);
-			EnumRaiderRole.WITCH.setStartDiff(PMSettings.screamerStartDiff);
+
+			//TODO
+			//EnumRaiderRole.WITCH.setLoot(PMSettings.screamerDrops);
+			//EnumRaiderRole.WITCH.setWeight(PMSettings.screamerWeight);
+			//EnumRaiderRole.WITCH.setStartDiff(PMSettings.screamerStartDiff);
 			
 			
 			PMSettings.rangerClass = config.getBoolean("Ranger Class Enabled", classes, true, "Adds Ranger to the mix, These guys are Bow wielding maniacs.");
 			PMSettings.rangerWeight = config.get(classes, "Ranger Weight", 10).getInt(10);
 			PMSettings.rangerDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Ranger Drops", new String[0]).getStringList());
 			PMSettings.rangerStartDiff = config.get(classes, "Ranger Start Difficulty", 1).getInt(1);
-			EnumRaiderRole.RANGED.setLoot(PMSettings.rangerDrops);
-			EnumRaiderRole.RANGED.setWeight(PMSettings.screamerWeight);
-			EnumRaiderRole.RANGED.setStartDiff(PMSettings.screamerStartDiff);
+			//TODO
+			//EnumRaiderRole.RANGED.setLoot(PMSettings.rangerDrops);
+			//EnumRaiderRole.RANGED.setWeight(PMSettings.screamerWeight);
+			//EnumRaiderRole.RANGED.setStartDiff(PMSettings.screamerStartDiff);
 			
 		// Progression Difficulty stats
 		String progCat = "Progessive Difficulty";
@@ -205,12 +212,13 @@ public class ConfigHandler
 	public static void PostLoad()
 	{
 		RaiderManager.readRaiderFile();
-		
-		EquipmentManager.readEquipmentFile();
+
+		//TODO
+		//EquipmentManager.readEquipmentFile();
 		
 		// Load Kill Counter
-		
-		KillCounter.initilize();
+		//TODO
+		//KillCounter.initilize();
 	}
 	
 	public static class ItemDrop

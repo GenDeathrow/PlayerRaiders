@@ -9,13 +9,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.EnumHelper;
-
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 public class RaiderModel extends ModelBiped
 {
@@ -31,8 +25,6 @@ public class RaiderModel extends ModelBiped
     public ModelRenderer bipedRightLegwear;
     public ModelRenderer bipedBodyWear;
 //    private final ModelRenderer bipedCape;
-//    private final ModelRenderer bipedDeadmau5Head;
-//    private final boolean smallArms;
 	
 	
 	public RaiderModel(float modelSize) 
@@ -94,10 +86,6 @@ public class RaiderModel extends ModelBiped
             this.bipedLeftLeg.render(scale);
             this.bipedHeadwear.render(scale);
             
-//            this.bipedLeftLegwear.render(scale);
-//            this.bipedRightLegwear.render(scale);
-//            this.bipedLeftArmwear.render(scale);
-//            this.bipedRightArmwear.render(scale);
             this.bipedBodyWear.render(scale);
         }
         else
@@ -107,14 +95,6 @@ public class RaiderModel extends ModelBiped
                 GlStateManager.translate(0.0F, 0.2F, 0.0F);
             }
 
-            
-//    		boolean witchActive = entityIn instanceof EntityRangedAttacker && ((EntityRangedAttacker) entityIn).isWitchActive();
-//
-//    		if (!witchActive && ((EntityRaiderBase) entityIn).getRaiderRole() == EnumRaiderRole.WITCH)
-//            {
-//    			 GlStateManager.translate(0.0F, 0.25F, 0.0F);
-//            }
-            
             this.bipedHead.render(scale);
             this.bipedBody.render(scale);
             this.bipedRightArm.render(scale);
@@ -140,30 +120,6 @@ public class RaiderModel extends ModelBiped
 		ItemStack mainHand = entitylivingbaseIn.getHeldItem(EnumHand.MAIN_HAND);
 		ItemStack offHand = entitylivingbaseIn.getHeldItem(EnumHand.OFF_HAND);
 
-		if (mainHand != null && mainHand.getItem() == Items.BOW && ((EntityRangedAttacker)entitylivingbaseIn).isSwingingArms())
-		{
-			if (entitylivingbaseIn.getPrimaryHand() == EnumHandSide.RIGHT)
-			{
-				this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
-			}
-			else
-			{
-				this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
-			}
-		}
-		
-		if (mainHand != null && ((EntityRaiderBase)entitylivingbaseIn).getRaiderRole() == EnumRaiderRole.BRUTE && ((EntityRangedAttacker)entitylivingbaseIn).isSwingingArms())
-		{
-			if (entitylivingbaseIn.getPrimaryHand() == EnumHandSide.RIGHT)
-			{
-				this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
-			}
-			else
-			{
-				this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
-			}
-		}
-		
 		if(offHand != null && offHand.getItem() == Items.SKULL)
 		{
 			this.leftArmPose = HoldingSkull;
@@ -174,17 +130,6 @@ public class RaiderModel extends ModelBiped
 			this.rightArmPose = HoldingSkull;
 		}
 		
-    	if (((EntityRaiderBase)entitylivingbaseIn).getRaiderRole() == EnumRaiderRole.WITCH && ((EntityRaiderBase)entitylivingbaseIn).isArmsRaised())
-        {
-			this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
-			this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
-			
-			for (int i = 0; i < 10; ++i)
-			{
-				entitylivingbaseIn.worldObj.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, entitylivingbaseIn.posX + (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * (double)entitylivingbaseIn.width, entitylivingbaseIn.posY + entitylivingbaseIn.getRNG().nextDouble() * (double)entitylivingbaseIn.height - 0.25D, entitylivingbaseIn.posZ + (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * (double)entitylivingbaseIn.width, (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * 2.0D, -entitylivingbaseIn.getRNG().nextDouble(), (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * 2.0D, new int[0]);
-			}
-        }
-		
 		super.setLivingAnimations(entitylivingbaseIn, p_78086_2_, p_78086_3_, partialTickTime);
 	}
 	
@@ -192,36 +137,8 @@ public class RaiderModel extends ModelBiped
 	@Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
-		boolean witchActive = entityIn instanceof EntityRangedAttacker && ((EntityRangedAttacker) entityIn).isWitchActive();
-        
-		if (!witchActive && ((EntityRaiderBase) entityIn).getRaiderRole() == EnumRaiderRole.WITCH)
-        {
-			 GlStateManager.translate(0.0F, 0.25F, 0.0F);
-        }
-		
+	
     	super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
-
-//        if (entityIn.isSneaking())
-//        {
-//            this.bipedCape.rotationPointY = 2.0F;
-//        }
-//        else
-//        {
-//            this.bipedCape.rotationPointY = 0.0F;
-//        }
-    	
-        if (!witchActive && ((EntityRaiderBase) entityIn).getRaiderRole() == EnumRaiderRole.WITCH)
-        {
-            this.bipedRightArm.rotateAngleX += -((float)Math.PI / 5F);
-            this.bipedLeftArm.rotateAngleX += -((float)Math.PI / 5F);
-            this.bipedRightLeg.rotateAngleX = -1.4137167F;
-            this.bipedRightLeg.rotateAngleY = ((float)Math.PI / 10F);
-            this.bipedRightLeg.rotateAngleZ = 0.07853982F;
-            this.bipedLeftLeg.rotateAngleX = -1.4137167F;
-            this.bipedLeftLeg.rotateAngleY = -((float)Math.PI / 10F);
-            this.bipedLeftLeg.rotateAngleZ = -0.07853982F;
-        }
-        
         
     	if (this.leftArmPose == HoldingSkull)
         {
@@ -235,40 +152,18 @@ public class RaiderModel extends ModelBiped
         	this.bipedRightArm.rotateAngleX = -((float)Math.PI / 2F) + this.bipedHead.rotateAngleX;
         }
     	
-    	if (entityIn instanceof EntityRaiderBase && ((EntityRaiderBase)entityIn).getRaiderRole() == EnumRaiderRole.TWEAKER && ((EntityRaiderBase)entityIn).isArmsRaised())
-        {
-             
-        	this.bipedLeftArm.rotateAngleX += -((float)Math.PI / 1F);
-        	this.bipedLeftArm.rotateAngleY -= -((float)Math.PI / .75F);
-        	this.bipedLeftArm.rotateAngleZ += 1.25;
-            
-        	this.bipedRightArm.rotateAngleX -= -((float)Math.PI / 1F);
-        	this.bipedRightArm.rotateAngleY -= -((float)Math.PI / .75F); 
-        	this.bipedRightArm.rotateAngleZ -= 1.25;
-
-        }
-    	
-    	
-    	//copyModelAngles(this.bipedHead, this.bipedHeadwear);
-//    	copyModelAngles(this.bipedLeftLeg, this.bipedLeftLegwear);
-//        copyModelAngles(this.bipedRightLeg, this.bipedRightLegwear);
-//        copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);
-//        copyModelAngles(this.bipedRightArm, this.bipedRightArmwear);
-//        copyModelAngles(this.bipedBody, this.bipedBodyWear);
-    	
     }
 	
-	
-    public void setInvisible(boolean invisible)
+	@Override
+    public void setVisible(boolean visible)
     {
-        super.setInvisible(invisible);
-        this.bipedLeftArmwear.showModel = invisible;
-        this.bipedRightArmwear.showModel = invisible;
-        this.bipedLeftLegwear.showModel = invisible;
-        this.bipedRightLegwear.showModel = invisible;
-        this.bipedBodyWear.showModel = invisible;
+        super.setVisible(visible);
+        this.bipedLeftArmwear.showModel = visible;
+        this.bipedRightArmwear.showModel = visible;
+        this.bipedLeftLegwear.showModel = visible;
+        this.bipedRightLegwear.showModel = visible;
+        this.bipedBodyWear.showModel = visible;
 //        this.bipedCape.showModel = invisible;
-//        this.bipedDeadmau5Head.showModel = invisible;
     }
     
     
