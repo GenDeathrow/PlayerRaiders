@@ -1,6 +1,9 @@
 package com.gendeathrow.pmobs.core.proxies;
 
+import com.gendeathrow.pmobs.client.renderer.EntityBruteRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
+import com.gendeathrow.pmobs.entity.EntityBrute;
 import com.gendeathrow.pmobs.entity.EntityRaider;
 
 import net.minecraft.block.Block;
@@ -42,6 +45,7 @@ public class ClientProxy extends CommonProxy
 	public void Init(FMLInitializationEvent event) 
 	{
 		super.Init(event);
+		
 //		registerHandlers();
 //	
 //		FMLClientHandler.instance().getClient().getItemColors().registerItemColorHandler(new IItemColorHandler(), ModItems.spawnEgg);
@@ -80,7 +84,11 @@ public class ClientProxy extends CommonProxy
 	public void registerRenderers()
 	{
 		
-		RenderingRegistry.registerEntityRenderingHandler(EntityRaider.class, EntityRaiderRenderer.FACTORY);
+		RegisterEntities.RegisterRenderers();
+		
+		//RenderingRegistry.registerEntityRenderingHandler(EntityRaider.class, EntityRaiderRenderer.FACTORY);
+		
+
 //		
 //		RenderingRegistry.registerEntityRenderingHandler(HiredRaider.class, HiredRaiderRenderer.FACTORY);
 //		

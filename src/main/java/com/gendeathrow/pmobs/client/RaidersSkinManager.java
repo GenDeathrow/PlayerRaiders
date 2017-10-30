@@ -31,33 +31,31 @@ public class RaidersSkinManager
 	public static PlayerProfileCache profileCache;
 	public static MinecraftSessionService sessionService;
 	
-	//public final HashMap<String, ResourceLocation> cachedSkins = new HashMap<String, ResourceLocation>();
 	public final HashMap<String, ResourceLocation> cachedSkins = new HashMap<String, ResourceLocation>();
+	
 	public static final RaidersSkinManager INSTANCE = new RaidersSkinManager();
 	
+	private static Thread thread2;
+
+	private static List<RaiderData> raidersdata = new ArrayList<RaiderData>();	
 	
-	
+	/**
+	 *  Run thur the Raiders list and Cache the Skin's localy
+	 *  
+	 */
 	public static void cacheSkins()
 	{
-	
 		Iterator<RaiderData> raidersList = RaiderManager.getAllRaiders().values().iterator();
 		
 		while(raidersList.hasNext())
-		{
 			updateProfile(raidersList.next());
-		}
-		
-		
 	}
 	
 	
-	private static Thread thread;
-	
-	private static Thread thread2;
-	private static List<EntityRaiderBase> raiders = new ArrayList<EntityRaiderBase>();
-	
-	private static List<RaiderData> raidersdata = new ArrayList<RaiderData>();
-	
+	/**
+	 * 
+	 * @param raiderInfo
+	 */
 	public static void updateProfile(RaiderData raiderInfo) {
 
 		
@@ -78,12 +76,14 @@ public class RaidersSkinManager
 						
 						try 
 						{
-							//System.out.println("Getting Profile "+ raider.getOwnerName());
+							System.out.println("Getting Profile "+ raider.getOwnerName() +" - "+ raider.getProfile().getId().toString());
 							Thread.sleep(300);
+							
 						} catch (InterruptedException e) 
 						{
 							e.printStackTrace();
 						}
+
 						
 						raidersdata.remove(0);
 					}
@@ -93,130 +93,86 @@ public class RaidersSkinManager
 			thread2.start();
 		}
 	}
-	
-	public static void updateProfile(EntityRaiderBase raider) 
-	{
-		
-		if(!badraiders.contains(raider.getOwner())) raiders.add(raider);
 
-		if (thread == null || thread.getState() == Thread.State.TERMINATED) {
-			thread = new Thread(new Runnable() 
-			{
-
-				@Override
-				public void run() {
-					
-					while (!raiders.isEmpty()) 
-					{
-						EntityRaiderBase raider = raiders.get(0);
-
-						raider.setPlayerProfile(TileEntitySkull.updateGameprofile(raider.getPlayerProfile()));
-
-						raider.setProfileUpdated(true);
-						
-						try 
-						{
-							System.out.println("->"+ raider.getOwner());
-							//if(!flag)
-							//{
-							
-							
-								Thread.sleep(250);
-							//}
-						} catch (InterruptedException e) 
-						{
-							e.printStackTrace();
-						}
-						
-						raiders.remove(0);
-					}
-				}
-			});
-
-			thread.start();
-		}
-	}
-	
-	public static void cacheSkin(GameProfile profile)
-	{
-		profile = TileEntitySkull.updateGameprofile(profile);
-	}
-	
-	public static GameProfile setupProfiles(GameProfile input)
-	{
-        if (input != null && !StringUtils.isNullOrEmpty(input.getName()))
-        {
-            if (input.isComplete() && input.getProperties().containsKey("textures"))
-            {
-                return input;
-            }
-            else if (RaidersSkinManager.INSTANCE.profileCache != null && RaidersSkinManager.sessionService != null)
-            {
-            	GameProfile gameprofile;
-                gameprofile = RaidersSkinManager.INSTANCE.profileCache.getGameProfileForUsername(input.getName());
-
-                if (gameprofile == null)
-                {
-                    return input;
-                }
-                else
-                {
-                    Property property = (Property)Iterables.getFirst(gameprofile.getProperties().get("textures"), null);
-                    
-                    if (property == null)
-                    {
-                    	gameprofile = RaidersSkinManager.sessionService.fillProfileProperties(gameprofile, true);
-                    }
-                    property = (Property)Iterables.getFirst(gameprofile.getProperties().get("textures"), null);
-                    
-                    return gameprofile;
-                }
-            }
-            else
-            {
-                return input;
-            }
-        }
-        else
-        {
-            return input;
-        }
-	}
-	
-		
-    public ResourceLocation cacheRaidersSkins(GameProfile gameprofile)
-    {
-    	gameprofile = RaidersSkinManager.INSTANCE.profileCache.getGameProfileForUsername(gameprofile.getName());
-		ResourceLocation resourcelocation = DefaultPlayerSkin.getDefaultSkinLegacy();
-		
-		if(gameprofile != null)
-		{
-               Map<Type, MinecraftProfileTexture> map = Minecraft.getMinecraft().getSkinManager().loadSkinFromCache(gameprofile);
-
-               if (map.containsKey(Type.SKIN))
-               {
-            	     resourcelocation = Minecraft.getMinecraft().getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
-               }
-               else
-               {
-                   UUID uuid = EntityPlayer.getUUID(gameprofile);
-                   resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
-               }
- 		}
-    	return resourcelocation;
-    }
-
-    
 	private static List<String> badraiders = new ArrayList<String>();
 	public static void addToBadList(String owner) 
 	{
-		
 		if(!badraiders.contains(owner))
 		{
 			badraiders.add(owner);
 			RaidersMain.logger.error("Could not Get this players profile."+ owner +" Added to the Naughty List");
 		}
-		// TODO Auto-generated method stub
-		
 	}
+	
+	
+	/**
+	 * Download players skin from mojang
+	 * @return
+	 */
+	@SuppressWarnings(value = { "unchecked" })
+    public static ResourceLocation DownloadPlayersSkin(EntityRaiderBase raider){
+		ResourceLocation resourcelocation =  DefaultPlayerSkin.getDefaultSkinLegacy();
+		
+        if (raider.getPlayerProfile() != null)
+        {
+            Minecraft minecraft = Minecraft.getMinecraft();
+            Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(raider.getPlayerProfile());
+
+            if (map.containsKey(Type.SKIN))
+            {
+                resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
+            }
+            else
+            {
+                UUID uuid = EntityPlayer.getUUID(raider.getPlayerProfile());
+                resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
+            }
+        }
+        
+        
+        
+//		if (raider.getPlayerProfile() != null && raider.getPlayerProfile().getName() != null) 
+//		{
+//			Minecraft minecraft = Minecraft.getMinecraft();
+//			
+//            Property property = (Property)Iterables.getFirst(raider.getPlayerProfile().getProperties().get("textures"), null);
+//
+//            if ((raider.profileset == true && property == null ))
+//            {
+//            	return resourcelocation;
+//            }
+//            else if(raider.profileset = false)
+//            {
+//            	return resourcelocation;
+//            }
+//            
+//            
+//			Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(RaiderManager.getRaiderProfile(raider.getOwner()));
+//
+//			if (map.containsKey(Type.SKIN))
+//			{
+//				resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
+//			}
+//		}
+//		else
+//		{
+//			if(RaiderManager.getRaiderProfile(raider.getOwner()) != null)
+//			{
+//				//raider.setPlayerProfile(RaiderManager.getRaiderProfile(raider.getOwner()));
+//			}
+//			else
+//			{
+//				raider.setPlayerProfile(RaiderManager.getRaiderProfile(raider.getOwner()));
+//				
+//				raider.updateProfile(raider);
+//				
+//				RaiderManager.setRaiderProfile(raider.getOwner());
+//			
+//			}
+//		}
+		
+		return resourcelocation;
+    	
+    }
+	
 }

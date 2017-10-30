@@ -1,16 +1,13 @@
 package com.gendeathrow.pmobs.core;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Random;
 
 import org.apache.logging.log4j.Level;
 
+import com.gendeathrow.pmobs.common.CustomItemDrop;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
@@ -30,9 +27,9 @@ public class ConfigHandler
 	{
 		RaidersMain.logger.log(Level.INFO, "Loading Configs...");  
 		
-		PMSettings.noSpawnDays = config.get(config.CATEGORY_GENERAL, "No Spawn Days", new int[0], "Certain days that raiders dont spawn").getIntList();
+		PMSettings.noSpawnDays = config.get(Configuration.CATEGORY_GENERAL, "No Spawn Days", new int[0], "Certain days that raiders dont spawn").getIntList();
 		
-		PMSettings.whitelists = config.getStringList("WhiteLists", config.CATEGORY_GENERAL, new String[0], "Meant for Twitch/Other sub whitelist. # One whitelist link per line. Example: http://whitelist.twitchapps.com/list.php?id=12345 [default: ]");
+		PMSettings.whitelists = config.getStringList("WhiteLists", Configuration.CATEGORY_GENERAL, new String[0], "Meant for Twitch/Other sub whitelist. # One whitelist link per line. Example: http://whitelist.twitchapps.com/list.php?id=12345 [default: ]");
 
 		
 		PMSettings.raidersSpawnWeight = config.getInt("SpawnWeight", mobs, 10, 1, 1000, "Weight of Raiders spawning");
@@ -71,7 +68,7 @@ public class ConfigHandler
 		config.addCustomCategoryComment(classes, "Edit Class Specific options. Adding Drops Example: 'ModID:Item:Meta:Qty:Chance(0.01 - 1)'");
 			PMSettings.bruteClass = config.getBoolean("Brute Class Enabled", classes, true, "Adds Brute to the mix. They are slower, bigger, extra health, and hit alot harder");
 			PMSettings.bruteWeight = config.get(classes, "Brute Weight", 7).getInt(7);
-			PMSettings.bruteDrops =  ItemDrop.getArrayItemDrops(config.get(classes, "Brute Drops", new String[0]).getStringList());
+			PMSettings.bruteDrops =  CustomItemDrop.getArrayItemDrops(config.get(classes, "Brute Drops", new String[0]).getStringList());
 			PMSettings.bruteStartDiff = config.get(classes, "Brute Start Difficulty", 0).getInt(0);			
 			//TODO
 			//EnumRaiderRole.BRUTE.setLoot(PMSettings.bruteDrops);
@@ -83,7 +80,7 @@ public class ConfigHandler
 			PMSettings.tweakersClass = config.getBoolean("Tweakers Class Enabled", classes, true, "Adds Tweakers to the mix. They are a lot faster,and have lower health");
 			PMSettings.tweakerWeight = config.get(classes,"Tweakers Weight", 5).getInt(5);
 			PMSettings.tweakerOnlyNight = config.get(classes, "Tweakers Only at Night", false).getBoolean();
-			PMSettings.tweakerDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Tweakers Drops", new String[0]).getStringList());
+			PMSettings.tweakerDrops = CustomItemDrop.getArrayItemDrops(config.get(classes, "Tweakers Drops", new String[0]).getStringList());
 			PMSettings.tweakerStartDiff = config.get(classes, "Tweakers Start Difficulty", 0).getInt(0);
 			
 			//TODO
@@ -93,7 +90,7 @@ public class ConfigHandler
 			
 			PMSettings.pyroClass = config.getBoolean("Pyromaniac Class Enabled", classes, true, "Adds Pyromaniacs to the mix, they will seek out blocks to catch fire. small chance increases with each raid difficulty");
 			PMSettings.pyroWeight = config.get(classes, "Pyromaniac Weight", 4).getInt(4);
-			PMSettings.pyroDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Pyromaniac Drops", new String[0]).getStringList());
+			PMSettings.pyroDrops = CustomItemDrop.getArrayItemDrops(config.get(classes, "Pyromaniac Drops", new String[0]).getStringList());
 			PMSettings.pyroStartDiff = config.get(classes, "Pyromaniac Start Difficulty", 0).getInt(0);
 
 			//TODO
@@ -104,7 +101,7 @@ public class ConfigHandler
 			
 			
 			PMSettings.noneWeight = config.get(classes, "No Class Weight", 80).getInt(80);
-			PMSettings.noneDrops = ItemDrop.getArrayItemDrops(config.get(classes, "No Class Drops", new String[0], "No Class is a normal raider").getStringList());
+			PMSettings.noneDrops = CustomItemDrop.getArrayItemDrops(config.get(classes, "No Class Drops", new String[0], "No Class is a normal raider").getStringList());
 
 			//TODO
 			//EnumRaiderRole.NONE.setLoot(PMSettings.noneDrops);
@@ -117,7 +114,7 @@ public class ConfigHandler
 
 			PMSettings.screamerClass = config.getBoolean("Screamer Class Enabled", classes, true, "Adds Screamer to the mix, A type of witch class");
 			PMSettings.screamerWeight = config.get(classes, "Screamer Weight", 2).getInt(2);
-			PMSettings.screamerDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Screamer Drops", screamerDrops).getStringList());
+			PMSettings.screamerDrops = CustomItemDrop.getArrayItemDrops(config.get(classes, "Screamer Drops", screamerDrops).getStringList());
 			PMSettings.screamerStartDiff = config.get(classes, "Screamer Start Difficulty", 0).getInt(0);
 			PMSettings.screamerFogOn = config.get(classes, "Screamer Fog", true).getBoolean(true);
 
@@ -129,7 +126,7 @@ public class ConfigHandler
 			
 			PMSettings.rangerClass = config.getBoolean("Ranger Class Enabled", classes, true, "Adds Ranger to the mix, These guys are Bow wielding maniacs.");
 			PMSettings.rangerWeight = config.get(classes, "Ranger Weight", 10).getInt(10);
-			PMSettings.rangerDrops = ItemDrop.getArrayItemDrops(config.get(classes, "Ranger Drops", new String[0]).getStringList());
+			PMSettings.rangerDrops = CustomItemDrop.getArrayItemDrops(config.get(classes, "Ranger Drops", new String[0]).getStringList());
 			PMSettings.rangerStartDiff = config.get(classes, "Ranger Start Difficulty", 1).getInt(1);
 			//TODO
 			//EnumRaiderRole.RANGED.setLoot(PMSettings.rangerDrops);
@@ -219,73 +216,6 @@ public class ConfigHandler
 		// Load Kill Counter
 		//TODO
 		//KillCounter.initilize();
-	}
-	
-	public static class ItemDrop
-	{
-		String itemID;
-		int metaID;
-		double chance;
-		int qty;
-		
-		public ItemDrop(String itemID, int metaID, double chance, int qty)
-		{
-			this.itemID = itemID;
-			this.metaID = metaID;
-			this.chance = chance;
-			this.qty = qty;
-		}
-		
-		public static ArrayList<ItemDrop> getArrayItemDrops(String[] itemList)
-		{
-			ArrayList<ItemDrop> drops = new ArrayList<ItemDrop>();
-			for(String item : itemList)
-			{
-				try
-				{
-					drops.add(getItemDrop(item));
-				}
-				catch(NumberFormatException e)
-				{
-					e.printStackTrace();
-				}
-			}
-			return drops;
-		}
-		
-		public Item getItem()
-		{
-			return Item.getByNameOrId(this.itemID);
-		}
-		
-		public int getMeta()
-		{
-			return this.metaID;
-		}
-		
-		public static ItemDrop getItemDrop(String data) throws NumberFormatException
-		{
-			
-			String[] split = data.split(":");
-
-			String itemID = split[0]+":"+split[1];
-			int metaID = Integer.parseInt(split[2]);
-			double chance= Double.parseDouble(split[4]);
-			int qty = Integer.parseInt(split[3]);
-			
-
-			return new ItemDrop(itemID, metaID,chance,qty);
-		}
-		
-		public boolean shouldDrop(Random rand)
-		{
-			return rand.nextDouble() <= this.chance;
-		}
-		
-		public ItemStack getStack(Random rand)
-		{
-			return new ItemStack(Item.getByNameOrId(this.itemID), this.qty > 1 ? rand.nextInt(this.qty-1)+1 : this.qty, this.metaID);
-		}
 	}
 	
 	

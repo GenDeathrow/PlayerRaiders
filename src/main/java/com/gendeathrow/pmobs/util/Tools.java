@@ -25,12 +25,7 @@ import java.util.Scanner;
 import org.apache.logging.log4j.Level;
 
 import com.gendeathrow.pmobs.core.RaidersMain;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.oredict.OreDictionary;
 
 	public class Tools 
 	{
@@ -154,32 +149,32 @@ import net.minecraftforge.oredict.OreDictionary;
 			return new String(encoded, encoding);
 		}
 		
-		 public static String sendJsonHttpPost(String url, JsonObject postData) throws IOException
-		    {
-		    	URL object=new URL(url);
-		    	HttpURLConnection con = (HttpURLConnection) object.openConnection();
-		    	con.setDoOutput(true);
-		    	con.setDoInput(true);
-		    	con.setRequestProperty("Content-Type", "application/json"); 
-		    	con.setRequestProperty("Accept", "application/json");
-		    	con.setRequestMethod("POST");
+		public static String sendJsonHttpPost(String url, JsonObject postData) throws IOException
+		{
+			URL object=new URL(url);
+			HttpURLConnection con = (HttpURLConnection) object.openConnection();
+			con.setDoOutput(true);
+			con.setDoInput(true);
+			con.setRequestProperty("Content-Type", "application/json"); 
+			con.setRequestProperty("Accept", "application/json");
+			con.setRequestMethod("POST");
+			
+			con.getOutputStream().write(postData.toString().getBytes());
 
-		    	con.getOutputStream().write(postData.toString().getBytes());
-
-		    	BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		        StringBuilder stringBuilder = new StringBuilder();
-		   
-		        String line = null;
-		        while ((line = reader.readLine()) != null)
-		        {
-		          stringBuilder.append(line + "\n");
-		          System.out.println(line);
-		        }
+			BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			StringBuilder stringBuilder = new StringBuilder();
+			
+			String line = null;
+			while ((line = reader.readLine()) != null)
+			{
+				stringBuilder.append(line + "\n");
+				System.out.println(line);
+			}
 		    	
-		        con.connect();
+			con.connect();
 		        
-		        return stringBuilder.toString();
-		    }
+			return stringBuilder.toString();
+		}
 		 
 	    public static void sendpost() throws IOException
 	    {

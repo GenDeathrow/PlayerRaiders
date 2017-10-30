@@ -2,7 +2,10 @@ package com.gendeathrow.pmobs.core;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
+import com.gendeathrow.pmobs.entity.EntityBrute;
 import com.gendeathrow.pmobs.entity.EntityRaider;
 
 import net.minecraft.entity.EnumCreatureType;
@@ -48,11 +51,11 @@ public class RaidersMain
 		logger = event.getModLog();
 		
     	proxy.preInit(event);
-
+    	
+    	RegisterEntities.RegisterEntities();
+    	
+    	proxy.registerHandlers();
 		
-	  	EntityRegistry.registerModEntity(new ResourceLocation(MODID, "raider"), EntityRaider.class, "Raider", 1, this, 80, 3, true, -3971048, -6191748);
-	  	 
-	  	
        	RaidersMain.network = NetworkRegistry.INSTANCE.newSimpleChannel(RaidersMain.CHANNELNAME);
     }
     
@@ -62,40 +65,18 @@ public class RaidersMain
     {
     	proxy.Init(event);
 
-    	proxy.registerHandlers();
+    	RegisterEntities.RegisterSpawns();
+    	RegisterEntities.RegisterSpawners();
     	
-    	
+		RaidersSoundEvents.register();
 		
-    	Biome[] biomes = new Biome[0];
-    	
-     	  for (Biome biomeEntry : ForgeRegistries.BIOMES.getValues()) 
-    	  {
-    		  boolean flag = true;
-    		  
-    		  if((BiomeDictionary.hasType(biomeEntry, BiomeDictionary.Type.NETHER) && !PMSettings.spawnNether) || 
-    			 (BiomeDictionary.hasType(biomeEntry, BiomeDictionary.Type.END) && !PMSettings.spawnEnd)  ||
-    			 (BiomeDictionary.hasType(biomeEntry, BiomeDictionary.Type.WATER)))			
-    		  {
-    			  flag = false;
-    		  }
-    		  
-    		  if (flag)
-    		  {
-    			  biomes = ArrayUtils.add(biomes,biomeEntry);
-    		  }
-    	  }
-       	
-    	RaidersMain.logger.info("Added "+ biomes.length +" biomes to Raiders spawn list.");
-    	EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn,EnumCreatureType.MONSTER, biomes);
-
+ 
     }
     
     @EventHandler
     public void postinit(FMLPostInitializationEvent event)
     {
     	proxy.postInit(event);
-    	
-       	DungeonHooks.addDungeonMob(new ResourceLocation(MODID ,"raiders"), PMSettings.raidersSpawnerWeight); 
-        
+          
     }
 }

@@ -2,7 +2,7 @@ package com.gendeathrow.pmobs.core;
 
 import java.util.ArrayList;
 
-import com.gendeathrow.pmobs.core.ConfigHandler.ItemDrop;
+import com.gendeathrow.pmobs.common.CustomItemDrop;
 
 public class PMSettings 
 {
@@ -22,7 +22,7 @@ public class PMSettings
 	
 	public static boolean sprintersOnlyNight = false; 
 
-	public static boolean renderOverlays = true;
+	public static boolean renderOverlays = false;
 
 	public static String[] whitelists;
 	
@@ -69,12 +69,12 @@ public class PMSettings
 	
 	public static float daySpeedRestiction = 0.60F;
 
-	public static ArrayList<ItemDrop> screamerDrops;
-	public static ArrayList<ItemDrop> tweakerDrops;
-	public static ArrayList<ItemDrop> pyroDrops;
-	public static ArrayList<ItemDrop> noneDrops;
-	public static ArrayList<ItemDrop> bruteDrops;
-	public static ArrayList<ItemDrop> rangerDrops;
+	public static ArrayList<CustomItemDrop> screamerDrops;
+	public static ArrayList<CustomItemDrop> tweakerDrops;
+	public static ArrayList<CustomItemDrop> pyroDrops;
+	public static ArrayList<CustomItemDrop> noneDrops;
+	public static ArrayList<CustomItemDrop> bruteDrops;
+	public static ArrayList<CustomItemDrop> rangerDrops;
 
 	public static int[] noSpawnDays;
 	

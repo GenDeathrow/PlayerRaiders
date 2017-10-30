@@ -43,53 +43,6 @@ public class RaiderManager
 	
 	private static boolean markDirty = false;
 	
-	static
-	{
-		//cool kids
-		raidersList.put("Gen_Deathrow", new RaiderData(new GameProfile(null, "Gen_Deathrow"), 10));
-		raidersList.put("Funwayguy", new RaiderData(new GameProfile(null, "Funwayguy"), 10));
-		raidersList.put("Darkosto", new RaiderData(new GameProfile(null, "Darkosto"), 10));
-		raidersList.put("Kashdeya", new RaiderData(new GameProfile(null, "Kashdeya"), 10));
-		raidersList.put("TheMattaBase", new RaiderData(new GameProfile(null, "TheMattaBase"), 10));
-		raidersList.put("Jsl7", new RaiderData(new GameProfile(null, "Jsl7"), 10));
-		raidersList.put("Turkey2349", new RaiderData(new GameProfile(null, "Turkey2349"), 10));
-		
-		//invasion pack testers
-		raidersList.put("Bacon_Donut", new RaiderData(new GameProfile(null, "Bacon_Donut"), 10));
-		raidersList.put("SlothMonster_", new RaiderData(new GameProfile(null, "SlothMonster_"), 10));
-		raidersList.put("GWSheridan", new RaiderData(new GameProfile(null, "GWSheridan"), 10));
-		raidersList.put("DatFailGamur", new RaiderData(new GameProfile(null, "DatFailGamur"), 10));
-		raidersList.put("darkphan", new RaiderData(new GameProfile(null, "darkphan"), 10));
-		raidersList.put("SinfulDeity", new RaiderData(new GameProfile(null, "SinfulDeity"), 10));
-		raidersList.put("Gooderness", new RaiderData(new GameProfile(null, "Gooderness"), 10));
-		raidersList.put("Vash505", new RaiderData(new GameProfile(null, "Vash505"), 10));
-		
-		//forge
-		raidersList.put("LexManos",  new RaiderData(new GameProfile(null, "LexManos"), 10));
-		raidersList.put("cpw11",  new RaiderData(new GameProfile(null, "cpw11"), 10));
-		
-		//modders
-		raidersList.put("ganymedes01",  new RaiderData(new GameProfile(null, "ganymedes01"), 10));
-		raidersList.put("iChun",  new RaiderData(new GameProfile(null, "iChun"), 10));
-		
-		//youtubers
-		raidersList.put("direwolf20",  new RaiderData(new GameProfile(null, "direwolf20"), 10));
-		
-		//ftb
-		raidersList.put("tfox83",  new RaiderData(new GameProfile(null, "tfox83"), 10));
-		raidersList.put("slowpoke101",  new RaiderData(new GameProfile(null, "slowpoke101"), 10));
-		
-		//mojang
-		raidersList.put("Notch",  new RaiderData(new GameProfile(null, "Notch"), 10));
-		raidersList.put("jeb_",  new RaiderData(new GameProfile(null, "jeb_"), 10));
-		raidersList.put("EvilSeph",  new RaiderData(new GameProfile(null, "EvilSeph"), 10));
-		raidersList.put("C418",  new RaiderData(new GameProfile(null, "C418"), 10));
-		//raidersList.put("Dinnerbone",  new RaiderData(new GameProfile(null, "Dinnerbone"), 10));
-		raidersList.put("carnalizer",  new RaiderData(new GameProfile(null, "carnalizer"), 10));
-		//raidersList.put("Grumm",  new RaiderData(new GameProfile(null, "Grumm"), 10));
-	}
-	
-	
 	// ServerSide call
 	public static RaiderData getRandomRaider()
 	{
@@ -151,7 +104,6 @@ public class RaiderManager
 		if(!raidersList.containsKey(ownerName))
 		{
 			raidersList.put(ownerName,  new RaiderData(new GameProfile(null, ownerName), weight));
-			//System.out.println(raidersList.size());
 			markDirty = true;
 		}
 	}
@@ -182,9 +134,7 @@ public class RaiderManager
 	                raidersList.clear();
 
 	                raidersList.putAll(parseJson(FileUtils.readFileToString(raiderFile)));
-
-	                //raiderWeighted.addAll(raidersList.values());
-	                
+                
 	                permanentRaiders();
 	                
 	                getTwitchSubscribers();
@@ -248,31 +198,22 @@ public class RaiderManager
 	                	
 	                	int weight = 10;
 	                	
+	                	UUID uuid = null;
+	                	
 	                	if(playerData.has("weight"))
-	                	{
 	                		weight = playerData.get("weight").getAsInt();
-	                	}
 
-	                	//System.out.println(playerOwner);
-	                	GameProfile playerProfile = new GameProfile((UUID)null,playerOwner);
-
+	                	if(playerData.has("uuid"))
+	                		uuid = UUID.fromString(playerData.get("uuid").getAsString());
+	                				
+	                	GameProfile playerProfile = new GameProfile(uuid, playerOwner);
+	                	
 	                	RaiderData raiderData = new RaiderData(playerProfile, weight);
 	                	
-//	                	if(RaidersCore.proxy.isClient()) 
-//	                	{
-//	                		RaidersCore.logger.info("updateing profile: "+ playerOwner);
-	                			//RaidersSkinManager.updateProfile(raiderData);
-//	                	}
 	                	if(!map.containsKey(playerOwner))
-	                	{
 	                		map.put(playerOwner, raiderData);
-	                		
-	                	}
 	                	else
-	                	{
 	                		RaidersMain.logger.warn("Raider already exist in " + raiderFile + ":" + (String)entry.getKey());
-	                	}
-	                	
 	                }
 	                else
 	                {
@@ -294,9 +235,13 @@ public class RaiderManager
 	            if (((RaiderData)entry.getValue()) != null)
 	            {
 	                JsonObject jsonobject1 = new JsonObject();
-	 
+	                
+	                if(entry.getValue().getProfile().getId() != null)
+	                	jsonobject1.addProperty("uuid", entry.getValue().getProfile().getId().toString());
+	                
 	                jsonobject1.addProperty("weight", (Number)Integer.valueOf(entry.getValue().itemWeight));
-
+	                
+	                
 	                jsonobject.add(((String)entry.getKey()), jsonobject1);
 	            }
 	            else
@@ -358,6 +303,8 @@ public class RaiderManager
 	private static void parseTwitchSubsWhiteList(File file) throws IOException
 	{
 		FileReader input = new FileReader(file);
+		
+		@SuppressWarnings("resource")
 		BufferedReader bufRead = new BufferedReader(input);
 		String myLine = null;
 
@@ -373,10 +320,51 @@ public class RaiderManager
 		}
 	}
 	
-	
-	public static void addYouTubers()
+	static
 	{
+		//cool kids
+		raidersList.put("Gen_Deathrow", new RaiderData(new GameProfile(UUID.fromString("4412cc00-65de-43ff-b19a-10e0ec64cc4a"), "Gen_Deathrow"), 10));
+		raidersList.put("Funwayguy", new RaiderData(new GameProfile(UUID.fromString("c9ecb54c-6f87-485d-b0e1-0e7f8c777d56"), "Funwayguy"), 10));
+		raidersList.put("Darkosto", new RaiderData(new GameProfile(UUID.fromString("10755ea6-9721-467a-8b5c-92adf689072c"), "Darkosto"), 10));
+		raidersList.put("Kashdeya", new RaiderData(new GameProfile(UUID.fromString("e49c3c38-a516-4252-ba19-c2b24ff39987"), "Kashdeya"), 10));
+		raidersList.put("TheMattaBase", new RaiderData(new GameProfile(UUID.fromString("44ba40ef-fd8a-446f-834b-5aea42119c92"), "TheMattaBase"), 10));
+		raidersList.put("Jsl7", new RaiderData(new GameProfile(UUID.fromString("94c04938-0f86-4960-a175-e3413a07fe8b"), "Jsl7"), 10));
+		raidersList.put("Turkey2349", new RaiderData(new GameProfile(UUID.fromString("276130dd-8c9a-4814-8328-2578f034e422"), "Turkey2349"), 10));
 		
+		//invasion pack testers
+		raidersList.put("Bacon_Donut", new RaiderData(new GameProfile(UUID.fromString("024a0d05-3e3e-4ec5-b394-6e1a22d23fdc"), "Bacon_Donut"), 10));
+		raidersList.put("SlothMonster_", new RaiderData(new GameProfile(UUID.fromString("d2f772cb-80a4-47bd-820d-94b24bb3cccb"), "SlothMonster_"), 10));
+		raidersList.put("GWSheridan", new RaiderData(new GameProfile(UUID.fromString("84680660-1372-4890-9935-88272138173d"), "GWSheridan"), 10));
+		raidersList.put("DatFailGamur", new RaiderData(new GameProfile(UUID.fromString("29fa9b6c-8eb5-4544-87fb-5be8effbcf70"), "DatFailGamur"), 10));
+		raidersList.put("darkphan", new RaiderData(new GameProfile(UUID.fromString("cf1f2cfc-1a85-40a6-aaf4-a17355ac6579"), "darkphan"), 10));
+		raidersList.put("SinfulDeity", new RaiderData(new GameProfile(UUID.fromString("2ca3e953-c572-4c68-99b4-9d950fe7f580"), "SinfulDeity"), 10));
+		raidersList.put("Gooderness", new RaiderData(new GameProfile(UUID.fromString("de6721e7-23b4-42ec-95c0-e4c976c7fa85"), "Gooderness"), 10));
+		raidersList.put("Vash505", new RaiderData(new GameProfile(UUID.fromString("89215ee6-ae53-4d53-b524-86da50000a8f"), "Vash505"), 10));
+		
+		//forge
+		raidersList.put("LexManos",  new RaiderData(new GameProfile(UUID.fromString("d3cf097a-438f-4523-b770-ec11e13ecc32"), "LexManos"), 10));
+		raidersList.put("cpw11",  new RaiderData(new GameProfile(UUID.fromString("59af7399-5544-4990-81f1-c8f2263b00e5"), "cpw11"), 10));
+		
+		//modders
+		raidersList.put("ganymedes01",  new RaiderData(new GameProfile(UUID.fromString("539c3716-ce9a-4ba5-9721-310e755abe5c"), "ganymedes01"), 10));
+		raidersList.put("iChun",  new RaiderData(new GameProfile(UUID.fromString("0b7509f0-2458-4160-9ce1-2772b9a45ac2"), "iChun"), 10));
+		
+		//youtubers
+		raidersList.put("direwolf20",  new RaiderData(new GameProfile(UUID.fromString("bbb87dbe-690f-4205-bdc5-72ffb8ebc29d"), "direwolf20"), 10));
+		
+		//ftb
+		raidersList.put("tfox83",  new RaiderData(new GameProfile(UUID.fromString("0e205074-25d8-4703-b989-8323b1a35faa"), "tfox83"), 10));
+		raidersList.put("slowpoke101",  new RaiderData(new GameProfile(UUID.fromString("d2839efc-727a-4263-97ce-3c73cdee5013"), "slowpoke101"), 10));
+		
+		//mojang
+		raidersList.put("Notch",  new RaiderData(new GameProfile(UUID.fromString("069a79f4-44e9-4726-a5be-fca90e38aaf5"), "Notch"), 10));
+		raidersList.put("jeb_",  new RaiderData(new GameProfile(UUID.fromString("853c80ef-3c37-49fd-aa49-938b674adae6"), "jeb_"), 10));
+		raidersList.put("EvilSeph",  new RaiderData(new GameProfile(UUID.fromString("020242a1-7b94-4179-9eff-511eea1221da"), "EvilSeph"), 10));
+		raidersList.put("C418",  new RaiderData(new GameProfile(UUID.fromString("0b8b2245-8018-456c-945d-4282121e1b1e"), "C418"), 10));
+		//raidersList.put("Dinnerbone",  new RaiderData(new GameProfile(null, "Dinnerbone"), 10));
+		raidersList.put("carnalizer",  new RaiderData(new GameProfile(UUID.fromString("f96f3d63-fc7f-46a7-9643-86eb0b3d66cb"), "carnalizer"), 10));
+		//raidersList.put("Grumm",  new RaiderData(new GameProfile(null, "Grumm"), 10));
 	}
+	
 
 }

@@ -1,7 +1,8 @@
-package com.gendeathrow.pmobs.util;
+package com.gendeathrow.pmobs.common;
 
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.EntityRaiderBase;
+import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 
 //Factions Enum Class 
 public enum EnumFaction

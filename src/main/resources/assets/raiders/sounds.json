@@ -1,0 +1,149 @@
+{
+	"mob.raiders.say" : {
+		"category":"hostile",
+		"sounds" : [
+			"raiders:mob/raiders/grunt1",
+			"raiders:mob/raiders/grunt2",
+			"raiders:mob/raiders/grunt3",
+			"raiders:mob/raiders/grunt4",
+			"raiders:mob/raiders/grunt5",
+			"raiders:mob/raiders/grunt6",
+			"raiders:mob/raiders/grunt7",
+			"raiders:mob/raiders/grunt8",
+			"raiders:mob/raiders/grunt9",
+			"raiders:mob/raiders/grunt10",
+			"raiders:mob/raiders/grunt11",
+			"raiders:mob/raiders/grunt12",
+			"random/burp"
+		]
+	},
+	"mob.raiders.hurt" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "raiders:mob/raiders/grunt1",
+				"pitch" : 2 
+			},
+			{
+				"name" : "raiders:mob/raiders/grunt2",
+				"pitch" : 2
+			},
+			{
+				"name" : "raiders:mob/raiders/grunt3",
+				"pitch" : 2
+			},
+			{
+				"name" : "raiders:mob/raiders/grunt4",
+				"pitch" : 2
+			}
+		]
+	},
+	"mob.raiders.laugh" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "raiders:mob/raiders/laugh01",
+				"pitch" : 2 
+			},
+			{
+				"name" : "raiders:mob/raiders/laugh01",
+				"pitch" : 1
+			},
+			{
+				"name" : "raiders:mob/raiders/laugh02",
+				"pitch" : 1
+			},
+			{
+				"name" : "raiders:mob/raiders/laugh02",
+				"pitch" : 2
+			}
+		]
+	},
+	"mob.raiders.brutelaugh" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "raiders:mob/raiders/brute_laugh-01",
+				"pitch" : 1
+			},
+			{
+				"name" : "raiders:mob/raiders/brute_laugh-02",
+				"pitch" : 1
+			},
+			{
+				"name" : "raiders:mob/raiders/brute_laugh-03",
+				"pitch" : 1
+			}
+		]
+	},
+	"mob.raiders.scream" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "raiders:mob/raiders/scream"
+			}
+		]
+	},
+	"mob.raiders.screamerscream" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "raiders:mob/raiders/screamer_scream"
+			}
+		]
+	},
+	"mob.raiders.screamercry" : {
+		"category":"hostile",
+		"sounds" : [
+			{
+				"name" : "raiders:mob/raiders/screamer_cry",
+				"stream": true
+			}
+		]
+	},
+	"ambient.raiddayboom" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "raiders:ambient/suspense"
+			}
+		]
+	},
+	"ambient.sonicboom" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "raiders:ambient/sonicboom"
+			}
+		]
+	},
+	"ambient.rocketambient" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "raiders:ambient/rocketambient"
+			}
+		]
+	},
+	"item.coms_beep" : {
+		"category":"master",
+		"sounds" : [
+			{
+				"name" : "raiders:items/coms_beep"
+			}
+		]
+	},
+	"item.serum_anger" : {
+		"category":"player",
+		"sounds" :  [
+			"raiders:items/serum/anger_1",
+			"raiders:items/serum/anger_2",
+			"raiders:items/serum/anger_3",
+			"raiders:items/serum/anger_4",
+			"raiders:items/serum/anger_5",
+			"raiders:items/serum/anger_6",
+			"raiders:items/serum/anger_7",
+			"raiders:items/serum/anger_8"
+		]
+	}
+}
