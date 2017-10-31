@@ -4,12 +4,15 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.gendeathrow.pmobs.client.renderer.EntityBruteRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
+import com.gendeathrow.pmobs.client.renderer.EntityWitchRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.entity.EntityBrute;
 import com.gendeathrow.pmobs.entity.EntityRaider;
+import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
 
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -22,21 +25,25 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class RegisterEntities {
 	
+	static int nextID = 1;
 	public static void RegisterEntities() {
 		
-	  	//EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "raider"), EntityRaider.class, "Raider", 1, RaidersMain.instance, 80, 3, true, -3971048, -6191748);
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "brute"), EntityBrute.class, "Brute", 1, RaidersMain.instance, 80, 3, true, -3971048, 0);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "raider"), EntityRaider.class, "raider", 1, RaidersMain.instance, 80, 3, true, -3971048, 15677239);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "brute"),  EntityBrute.class, "brute", 2, RaidersMain.instance, 80, 3, true, -3971048, 1310720);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "witch"),  EntityRaiderWitch.class, "witch", 3, RaidersMain.instance, 80, 3, true, -3971048, 971165);
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public static void RegisterRenderers() {
-		//RenderingRegistry.registerEntityRenderingHandler(EntityRaider.class, EntityRaiderRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityRaider.class, EntityRaiderRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityBrute.class, EntityBruteRenderer::new);
+		RenderingRegistry.registerEntityRenderingHandler(EntityRaiderWitch.class, EntityWitchRenderer::new);
 	}
 	
 	public static void RegisterSpawners() {
 	  	
-       //	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"raiders"), PMSettings.raidersSpawnerWeight); 
+      	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"raiders"), PMSettings.raidersSpawnerWeight); 
+      	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"brute"), PMSettings.raidersSpawnerWeight);
 
 	}
 	
@@ -62,8 +69,9 @@ public class RegisterEntities {
      	
 	   	RaidersMain.logger.info("Added "+ biomes.length +" biomes to Raiders spawn list.");
   	
-	   	//EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn,EnumCreatureType.MONSTER, biomes);
+	   	EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn,EnumCreatureType.MONSTER, biomes);
 	   	EntityRegistry.addSpawn(EntityBrute.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn,EnumCreatureType.MONSTER, biomes);
+	   	EntityRegistry.addSpawn(EntityRaiderWitch.class, 3, 1, 1,EnumCreatureType.MONSTER, biomes);
 
 	}
 

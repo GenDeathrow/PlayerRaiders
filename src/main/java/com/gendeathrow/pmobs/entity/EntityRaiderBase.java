@@ -1,5 +1,6 @@
 package com.gendeathrow.pmobs.entity;
 
+import java.util.Calendar;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -9,40 +10,48 @@ import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.common.EnumFaction;
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.ai.EntityAIStealFarmland;
-import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.gendeathrow.pmobs.storage.InventoryStroageModifiable;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -56,6 +65,7 @@ public class EntityRaiderBase extends EntityMob{
     public static final UUID DAY_SPEED_MODIFIER_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D838");
     public static final UUID SPEED_OFFSET_ID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D839");
 
+    private static final DataParameter<Boolean> ARMS_RAISED = EntityDataManager.<Boolean>createKey(EntityRaiderBase.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String> SKIN_VARIANT = EntityDataManager.<String>createKey(EntityRaiderBase.class, DataSerializers.STRING);
     private static final DataParameter<Integer> RAIDER_FACTION = EntityDataManager.<Integer>createKey(EntityRaiderBase.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> OVERLAY_VARIANT = EntityDataManager.<Integer>createKey(EntityRaiderBase.class, DataSerializers.VARINT);
@@ -92,6 +102,7 @@ public class EntityRaiderBase extends EntityMob{
 		this.getDataManager().register(SKIN_VARIANT, "Steve");
         this.getDataManager().register(RAIDER_FACTION, Integer.valueOf(0));
         this.getDataManager().register(OVERLAY_VARIANT,Integer.valueOf(0));
+        this.getDataManager().register(ARMS_RAISED, Boolean.valueOf(false));
 	}
 	
 	@Override
@@ -104,23 +115,61 @@ public class EntityRaiderBase extends EntityMob{
 	        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(3.0D);
 	        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10);
 	}
-	
-	@Override
-	public void onLivingUpdate()
-	{
-		super.onLivingUpdate();
-	}
 
     @Override
 	protected void initEntityAI() {
     	super.initEntityAI();
     	
         this.tasks.addTask(0, new EntityAISwimming(this));
-        //this.tasks.addTask(4, new EntityAIOpenDoor(this, false));
-        //this.tasks.addTask(4, new EntityAIStealItemInv(this, 1.0D, 10));
         this.tasks.addTask(2, new EntityAIMoveTowardsRestriction(this, 1.0D));
-        //this.tasks.addTask(7, new EntityAIStealFarmland(this, 0.6D));
+	}
+    
+    
+	@Override
+	public void onLivingUpdate()
+	{
+		super.onLivingUpdate();
+	}
 
+	// Raider attacks Target
+	public boolean attackEntityAsMob(Entity entityIn)
+	{
+		boolean hasHitTarget = super.attackEntityAsMob(entityIn);
+
+		if (hasHitTarget){
+			int i = this.world.getDifficulty().getDifficultyId();
+			if (this.getHeldItemMainhand() == null && this.isBurning() && this.rand.nextFloat() < (float)i * 0.3F)
+				entityIn.setFire(2 * i);
+		}
+
+		return hasHitTarget;
+	}
+	
+	/**
+	 * Called when the raider gets attacked.
+	 */
+    public boolean attackEntityFrom(DamageSource source, float amount){
+		
+    	if (super.attackEntityFrom(source, amount)){
+			EntityLivingBase entitylivingbase = null;
+			
+			if (source.getTrueSource() instanceof EntityLivingBase){
+				entitylivingbase = (EntityLivingBase)source.getTrueSource();
+			}
+
+			int i = MathHelper.floor(this.posX);
+			int j = MathHelper.floor(this.posY);
+			int k = MathHelper.floor(this.posZ);
+			
+			if(entitylivingbase != null && this.getRNG().nextInt(2) == 0){
+				this.setAttackTarget((EntityLivingBase)entitylivingbase);
+			}
+
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
     
     @Override
@@ -129,14 +178,44 @@ public class EntityRaiderBase extends EntityMob{
     		
     		livingdata = super.onInitialSpawn(difficulty, livingdata);
 	        
+	        float f = difficulty.getClampedAdditionalDifficulty();
+	        
 	        GameProfile gameprofile = getRandomPlayerSkin();
 	        
+	        ((PathNavigateGround)this.getNavigator()).setEnterDoors(true);
+
+	        ((PathNavigateGround)this.getNavigator()).setBreakDoors(true);
+	        
+	        this.setAlwaysRenderNameTag(false);
+	  	 
 	        this.setOwner(gameprofile.getName());
 	        
 	        this.setRandomFeatures(); 
 	        
 	        this.setCustomNameTag(gameprofile.getName());
 	        
+	        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).applyModifier(new AttributeModifier("Random spawn bonus", this.rand.nextDouble() * 0.05000000074505806D, 0));
+	                
+	        double d0 = this.rand.nextDouble() * 1.5D * (double)f;
+	        if (d0 > 1.0D)
+	            this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).applyModifier(new AttributeModifier("Random zombie-spawn bonus", d0, 2));
+	        
+	        
+	        this.setEquipmentBasedOnDifficulty(difficulty);
+	        
+	        this.setEnchantmentBasedOnDifficulty(difficulty);
+	        
+	        if (this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null)
+	        {
+	            Calendar calendar = this.world.getCurrentDate();
+
+	            if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31 && this.rand.nextFloat() < 0.25F)
+	            {
+	                this.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(this.rand.nextFloat() < 0.1F ? Blocks.LIT_PUMPKIN : Blocks.PUMPKIN));
+	                this.inventoryArmorDropChances[EntityEquipmentSlot.HEAD.getIndex()] = 0.0F;
+	            }
+	        }
+
 	        return livingdata;
 	}
     
@@ -198,6 +277,13 @@ public class EntityRaiderBase extends EntityMob{
         return this.raidersInventory;
     }
     
+    public void setArmsRaised(boolean armsRaised) {
+        this.getDataManager().set(ARMS_RAISED, Boolean.valueOf(armsRaised));
+    }
+
+    public boolean isArmsRaised() {
+        return ((Boolean)this.getDataManager().get(ARMS_RAISED)).booleanValue();
+    }
     
     @Override
     public void readEntityFromNBT(NBTTagCompound compound)
@@ -230,6 +316,119 @@ public class EntityRaiderBase extends EntityMob{
 
         compound.setInteger("faction", this.getRaiderFaction().ordinal());
     }
+    
+    @Override
+    public void onDeath(DamageSource cause) {
+    	super.onDeath(cause);
+    	
+    	for(int i = 0; i < this.raidersInventory.getSlots(); i++) {
+    		
+    		ItemStack stack = this.raidersInventory.getStackInSlot(i);
+    		
+    		if(stack != null) {
+    			EntityItem entity = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
+    			this.world.spawnEntity(entity);
+    		}
+    	}
+    }
+    
+    protected int getExperiencePoints(EntityPlayer player) {
+        if (this.isChild()) {
+            this.experienceValue = (int)((float)this.experienceValue * 0.5F);
+        }
+        
+        if(this.getDifficultyProgession().getRaidDifficulty() > 0) {
+        	this.experienceValue = this.experienceValue + this.getRNG().nextInt(this.getDifficultyProgession().getRaidDifficulty());
+        }
+
+        return super.getExperiencePoints(player);
+    }
+    
+    @Override
+    protected float getWaterSlowDown() {
+        return .9F;
+    }
+    
+    @Override
+    public int getMaxSpawnedInChunk() {
+        return 4;
+    }
+    
+    @Override
+    public boolean getCanSpawnHere() {
+    	if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL) 
+    		return false;
+    	
+    	return this.isValidLightLevel();
+    }
+    
+    @Override
+    protected boolean isValidLightLevel() {
+     	if(PMSettings.shouldDaylightSpawm) {
+     		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
+     		if (this.world.getLightFor(EnumSkyBlock.BLOCK, blockpos) >= 8) {
+     			return false;
+     		}
+     		return true;
+    	}
+     	else
+     		return super.isValidLightLevel();
+    }
+    
+    
+    //TODO
+    @Override
+	public void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
+	{
+		if(source.getTrueSource() != null && source.getTrueSource() instanceof EntityPlayer)
+		{
+			double dropit = this.rand.nextDouble();
+			
+			if( dropit < (.025)) //lootingModifier*0.025 + 
+			{
+				ItemStack stack = new ItemStack(Items.SKULL, 1, 3);
+				
+				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
+
+				stack.getTagCompound().setString("SkullOwner", this.getOwner());
+
+				EntityItem skull = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
+				
+				this.world.spawnEntity(skull);
+			}
+			
+//			if(PMSettings.dropSerum && this.getRaiderRole() == EnumRaiderRole.BRUTE && this.getRNG().nextDouble() <= 0.10)
+//			{
+//				this.entityDropItem(new ItemStack(ModItems.bruteSerumSample), 0.0f);
+//			}
+//			
+//			boolean flag = false;
+//
+//			if(this.getRaiderRole() == EnumRaiderRole.NONE  && this.getRNG().nextDouble() <= 0.02)
+//				flag = true;
+//			else if(this.getRaiderRole() == EnumRaiderRole.WITCH && this.getRNG().nextDouble() <= 0.35)
+//				flag = true;
+//
+//			
+//			if(flag && PMSettings.dropTransmitter)
+//				this.entityDropItem(new ItemStack(ModItems.satTransmitterPart), 0.0f);
+//			
+//			
+//			this.getRaiderRole().dropLoot(this);
+		}
+		super.dropLoot(wasRecentlyHit, lootingModifier, source);
+	}
+    
+	@Override
+    public boolean isNotColliding() {
+        return this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
+    }
+	
+	//TODO
+    protected boolean canDespawn() {
+    //	if(this.getRidingEntity() instanceof EntityDropPod) return false;
+        return super.canDespawn();
+    }  
     
     @Override
 	protected SoundEvent getHurtSound() {

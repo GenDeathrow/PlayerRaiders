@@ -59,7 +59,8 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaider>
 	{
 		return (RaiderModel)super.getMainModel();
 	}
-
+	
+	@Override
 	protected ResourceLocation getEntityTexture(EntityRaider entity) 
 	{
 		return entity.getLocationSkin();

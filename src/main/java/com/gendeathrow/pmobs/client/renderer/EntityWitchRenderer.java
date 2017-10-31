@@ -1,38 +1,29 @@
 package com.gendeathrow.pmobs.client.renderer;
 
-
-
 import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
+import com.gendeathrow.pmobs.client.model.renderer.RaiderWitchModel;
 import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.EntityBrute;
-import com.gendeathrow.pmobs.entity.EntityRaider;
+import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
-public class EntityBruteRenderer extends RenderBiped<EntityBrute> 
+public class EntityWitchRenderer  extends RenderBiped<EntityRaiderWitch> 
 {
-	public static final Factory FACTORY = new Factory();
-
 	private final ModelBiped defaultModel;
 	    
 	private boolean flag = false;
 	    
-	public EntityBruteRenderer(RenderManager renderManager)
+	public EntityWitchRenderer(RenderManager renderManager)
 	{
-		super(renderManager, new RaiderModel(0F), 0.5F);
+		super(renderManager, new RaiderWitchModel(0F), 0.5F);
 		
 		this.defaultModel = this.getMainModel();
 		this.addLayer(new LayerBipedArmor(this));
@@ -58,13 +49,14 @@ public class EntityBruteRenderer extends RenderBiped<EntityBrute>
 		return (RaiderModel)super.getMainModel();
 	}
 
-	protected ResourceLocation getEntityTexture(EntityBrute entity) 
+	@Override
+	protected ResourceLocation getEntityTexture(EntityRaiderWitch entity) 
 	{
 		return entity.getLocationSkin();
 	}
 	
 	@Override
-	public void doRender(EntityBrute entity, double x, double y, double z, float entityYaw, float partialTicks)
+	public void doRender(EntityRaiderWitch entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		if(!PMSettings.renderNameTags)
 		{
@@ -84,18 +76,8 @@ public class EntityBruteRenderer extends RenderBiped<EntityBrute>
 	 * Allows the render to do state modifications necessary before the model is rendered.
 	 */
 	@Override
-	protected void preRenderCallback(EntityBrute entitylivingbaseIn, float partialTickTime)
+	protected void preRenderCallback(EntityRaiderWitch entitylivingbaseIn, float partialTickTime)
 	{
-        GlStateManager.scale(1.5F, 1.5F, 1.5F);
+		super.preRenderCallback(entitylivingbaseIn, partialTickTime);
 	}
-	    
-	public static class Factory implements IRenderFactory<EntityBrute> 
-	{
-		@Override
-		public Render<? super EntityBrute> createRenderFor(RenderManager manager) 
-		{
-			return new EntityBruteRenderer(manager);
-		}
-	}
-		
 }

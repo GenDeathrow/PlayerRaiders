@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -18,6 +20,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
@@ -63,20 +66,29 @@ public class EntityBrute extends EntityRaiderBase{
     		return livingdata;
     }
     
+	// Raider attacks Target
+    @Override
+	public boolean attackEntityAsMob(Entity entityIn) {
+		boolean hasHitTarget = super.attackEntityAsMob(entityIn);
+		if (hasHitTarget){
+			if(entityIn instanceof EntityLivingBase){
+				((EntityLivingBase)entityIn).knockBack(entityIn, 1, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
+			}
+		}
+		return hasHitTarget;
+	}
     
-    public void setBrute()
-    {
+    public void setBrute() {
     	this.setBruteSize();
     }
     
-    public void setBruteSize()
-    {
+    public void setBruteSize() {
     	this.multiplySize(1.5F);
     }
     
-	protected SoundEvent getAmbientSound()
-	{
-		if(this.getRNG().nextDouble() < .45) return RaidersSoundEvents.RAIDERS_BRUTE_LAUGH;
+	protected SoundEvent getAmbientSound() {
+		if(this.getRNG().nextDouble() < .45) 
+			return RaidersSoundEvents.RAIDERS_BRUTE_LAUGH;
 		else return RaidersSoundEvents.RAIDERS_SAY;
 	}
     
