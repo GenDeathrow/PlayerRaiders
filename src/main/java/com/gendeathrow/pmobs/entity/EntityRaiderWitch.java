@@ -27,8 +27,6 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
     
     public final EntityAIScreamerAttack aiScreamerAttack = new EntityAIScreamerAttack(this);
     
-    
-    
 	public EntityRaiderWitch(World worldIn) {
 		super(worldIn);
 	}
@@ -47,36 +45,34 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
 	
 	
     //TODO
-    public void setWitchCombat()
-    {
-    	
+    public void setWitchCombat() {
+    	this.setWitchActive(true);
     }
     
     
-    public void setAggressive(boolean aggressive)
-    {
+    public void setAggressive(boolean aggressive)  {
         this.getDataManager().set(IS_AGGRESSIVE, Boolean.valueOf(aggressive));
     }
     
-    public void setWitchActive(boolean active)
-    {
+    public void setWitchActive(boolean active) {
     	this.getDataManager().set(IS_ACTIVE, Boolean.valueOf(active));
     }
 
-    public boolean isWitchActive()
-    {
+    public boolean isWitchActive() {
     	 return ((Boolean)this.getDataManager().get(IS_ACTIVE)).booleanValue();
     }
     
-    public boolean isDrinkingPotion()
-    {
+    public boolean isDrinkingPotion() {
         return ((Boolean)this.getDataManager().get(IS_AGGRESSIVE)).booleanValue();
     }
 	
 	
-	
-    public class EntityAILookDepressed extends EntityAIBase
-    {
+	/** 
+	 * Used to make the witch sit and look at the ground.
+	 * 
+	 * @author GenDeathrow
+	 */
+    public class EntityAILookDepressed extends EntityAIBase {
         /** The entity that is looking idle. */
         private final EntityLiving idleEntity;
         /** X offset to look at */
@@ -86,8 +82,7 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
         /** A decrementing tick that stops the entity from being idle once it reaches 0. */
         private int idleTime;
 
-        public EntityAILookDepressed(EntityLiving entitylivingIn)
-        {
+        public EntityAILookDepressed(EntityLiving entitylivingIn) {
             this.idleEntity = entitylivingIn;
             this.setMutexBits(3);
         }
@@ -95,24 +90,21 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
         /**
          * Returns whether the EntityAIBase should begin execution.
          */
-        public boolean shouldExecute()
-        {
+        public boolean shouldExecute() {
             return true;//this.idleEntity.getRNG().nextFloat() < 0.02F;
         }
 
         /**
          * Returns whether an in-progress EntityAIBase should continue executing
          */
-        public boolean continueExecuting()
-        {
+        public boolean continueExecuting() {
             return this.idleTime >= 0;
         }
 
         /**
          * Execute a one shot task or start executing a continuous task
          */
-        public void startExecuting()
-        {
+        public void startExecuting() {
             this.lookX = this.idleEntity.getRNG().nextInt(3) - 2;
             this.lookZ = this.idleEntity.getRNG().nextInt(3) - 2;
             this.idleTime = 100 + this.idleEntity.getRNG().nextInt(100);
@@ -121,8 +113,7 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
         /**
          * Updates the task
          */
-        public void updateTask()
-        {
+        public void updateTask() {
             --this.idleTime;
             this.idleEntity.getLookHelper().setLookPosition(this.idleEntity.posX + this.lookX, this.idleEntity.posY - 2 , this.idleEntity.posZ + this.lookZ, (float)this.idleEntity.getHorizontalFaceSpeed(), (float)this.idleEntity.getVerticalFaceSpeed());
         }

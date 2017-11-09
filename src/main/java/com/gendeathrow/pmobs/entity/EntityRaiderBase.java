@@ -30,6 +30,7 @@ import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityVillager;
@@ -124,12 +125,52 @@ public class EntityRaiderBase extends EntityMob{
         this.tasks.addTask(2, new EntityAIMoveTowardsRestriction(this, 1.0D));
 	}
     
+    /**
+     * Will the raider walking speed be reduced in daylight?
+     * @return
+     */
+    public boolean isDaylightSpeedReduced() {
+    	return true;
+    }
     
 	@Override
-	public void onLivingUpdate()
-	{
+	public void onLivingUpdate() {
+		
+		IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+
+		if(!this.isChild()&& this.getRaiderFaction() != EnumFaction.FRIENDLY) {
+			if(this.world.isDaytime() && isDaylightSpeedReduced()) {
+				if(!iattributeinstance.hasModifier(DAY_SPEED_MODIFIER))	{
+					iattributeinstance.applyModifier(DAY_SPEED_MODIFIER);
+				}
+
+			}
+			else{
+				if(iattributeinstance.hasModifier(DAY_SPEED_MODIFIER)){
+					iattributeinstance.removeModifier(DAY_SPEED_MODIFIER);
+				}
+			}
+		}
+
 		super.onLivingUpdate();
 	}
+	
+    @Override
+    protected void updateEquipmentIfNeeded(EntityItem itemEntity)
+    {
+    	super.updateEquipmentIfNeeded(itemEntity);
+    	
+        if (!itemEntity.isDead && !this.world.isRemote)
+        {
+        	for(int i = 0; i < this.getRaidersInventory().getSlots(); i++)
+        	{
+        		ItemStack returnStack = this.getRaidersInventory().insertItem(i, itemEntity.getItem(), false);
+  			
+        		if(returnStack.isEmpty()) itemEntity.setDead();
+        		else itemEntity.setItem(returnStack);
+        	}
+        }
+    }
 
 	// Raider attacks Target
 	public boolean attackEntityAsMob(Entity entityIn)
@@ -318,6 +359,37 @@ public class EntityRaiderBase extends EntityMob{
     }
     
     @Override
+    public boolean isOnSameTeam(Entity entityIn)
+    {
+    	if(entityIn instanceof EntityPlayer && this.getRaiderFaction() == EnumFaction.FRIENDLY)
+    	{
+    		return true;
+    	}
+    	else if(entityIn instanceof EntityRaiderBase)
+    	{
+    		return this.getRaiderFaction() == ((EntityRaiderBase) entityIn).getRaiderFaction();
+    	}
+    	else return this.isOnScoreboardTeam(entityIn.getTeam());
+    }
+    
+    @Override
+    public boolean canAttackClass(Class entity) 
+    {
+    	if(EntityPlayer.class.isAssignableFrom(entity))
+    		return true;
+    	else if(PMSettings.veryHostile && EntityMob.class.isAssignableFrom(entity))
+    		return true;
+    	else if(this.getClass().isAssignableFrom(entity))
+    		return true;
+    	else if(EntityMob.class.isAssignableFrom(entity))
+    		return false;
+    	else if (EntityLiving.class.isAssignableFrom(entity))
+    		return true;
+    	
+    	return false;
+    }
+    
+    @Override
     public void onDeath(DamageSource cause) {
     	super.onDeath(cause);
     	
@@ -332,6 +404,7 @@ public class EntityRaiderBase extends EntityMob{
     	}
     }
     
+    @Override
     protected int getExperiencePoints(EntityPlayer player) {
         if (this.isChild()) {
             this.experienceValue = (int)((float)this.experienceValue * 0.5F);

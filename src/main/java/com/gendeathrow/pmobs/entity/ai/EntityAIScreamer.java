@@ -15,8 +15,7 @@ public class EntityAIScreamer  extends EntityAIBase{
    private boolean triggered = false;
    
    
-   public EntityAIScreamer(EntityRaiderWitch raiderIn)
-   {
+   public EntityAIScreamer(EntityRaiderWitch raiderIn) {	
 	   super();
 	   
 	   this.raider = raiderIn;
@@ -24,8 +23,7 @@ public class EntityAIScreamer  extends EntityAIBase{
    }
    
       
-   public boolean shouldExecute()
-   {
+   public boolean shouldExecute() {
        return this.raider.world.isAnyPlayerWithinRangeAt(this.raider.posX, this.raider.posY, this.raider.posZ, 10.0D) || this.triggered;
    }
    
@@ -38,14 +36,11 @@ public class EntityAIScreamer  extends EntityAIBase{
    /**
     * Updates the task
     */
-   public void updateTask()
-   {
+   public void updateTask() {
        DifficultyInstance difficultyinstance = this.raider.world.getDifficultyForLocation(new BlockPos(this.raider));
 
-       if(strikes <= maxStrikes)
-       {
-    	   if(ticks == 0 || (ticks % 2 == 0 && this.raider.getRNG().nextInt(2) == 1) || ticks % 4 == 0)
-    	   {
+       if(strikes <= maxStrikes) {
+    	   if(ticks == 0 || (ticks % 2 == 0 && this.raider.getRNG().nextInt(2) == 1) || ticks % 4 == 0) {
     		   if(!hasScreamed)
     			   this.raider.playSound(RaidersSoundEvents.RAIDERS_WITCH_SCREAM, 3, 1); 
 
@@ -67,14 +62,12 @@ public class EntityAIScreamer  extends EntityAIBase{
        ticks++;
    }
    
-   public int getRandomPosition()
-   {
+   public int getRandomPosition() {
 	   return raider.getRNG().nextInt(20) - 10;
    }
    
    
-   void createBarrier(int x0, int y0, int radius)
-   {
+   void createBarrier(int x0, int y0, int radius) {
        int x = radius;
        int y = 0;
        int err = 0;

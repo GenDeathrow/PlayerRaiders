@@ -38,13 +38,11 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
 	private ArrayList<BlockPos> checked = new ArrayList<BlockPos>();
 	private int targetChance;
 	
-	public EntityAIStealItemInv(EntityRaiderBase raider, double speedIn) 
-	{
+	public EntityAIStealItemInv(EntityRaiderBase raider, double speedIn) {
 		this(raider, speedIn, 10);
 	}
 	
-	public EntityAIStealItemInv(EntityRaiderBase raider, double speedIn, int chance) 
-	{
+	public EntityAIStealItemInv(EntityRaiderBase raider, double speedIn, int chance) {
 		super(raider, speedIn, 16);
 		this.raider = raider;
 		this.targetChance = chance;
@@ -53,66 +51,55 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
 	/**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute()
-    {
-        if (this.targetChance > 0 && this.raider.getRNG().nextInt(this.targetChance) <= 1)
-        {
+    public boolean shouldExecute() {
+        if (this.targetChance > 0 && this.raider.getRNG().nextInt(this.targetChance) <= 1) {
             return false;
         }
         
-        if (this.runDelay <= 0)
-        {
-            if (!this.raider.world.getGameRules().getBoolean("mobGriefing"))
-            {
+        if (this.runDelay <= 0){
+            if (!this.raider.world.getGameRules().getBoolean("mobGriefing")) {
                 return false;
             }
             this.currentTask = -1;
-
         }
 
         return super.shouldExecute();
     }
 
-    public boolean shouldContinueExecuting()
-    {
+    public boolean shouldContinueExecuting() {
         return this.currentTask >= 0 && !hasStolen && super.shouldContinueExecuting();
     }
     
     /**
      * Execute a one shot task or start executing a continuous task
      */
-    public void startExecuting()
-    {
+    public void startExecuting() {
         super.startExecuting();
     }
 
     /**
      * Resets the task
      */
-    public void resetTask()
-    {
+    public void resetTask() {
         super.resetTask();
     }
 
     /**
      * Updates the task
      */
-    public void updateTask()
-    {
+    public void updateTask() {
         super.updateTask();
         
         this.raider.getLookHelper().setLookPosition((double)this.destinationBlock.getX() + 0.5D, (double)(this.destinationBlock.getY() + 1), (double)this.destinationBlock.getZ() + 0.5D, 10.0F, (float)this.raider.getVerticalFaceSpeed());
 
-        if (this.raider.getDistanceSqToCenter(this.destinationBlock) < 1.0D)
-        {
+        if (this.raider.getDistanceSqToCenter(this.destinationBlock) < 1.0D) {
             World world = this.raider.world;
             BlockPos blockpos = this.destinationBlock;
             IBlockState iblockstate = null;
             Block block;
             TileEntity te = null;
             
-            for(EnumFacing facing : EnumFacing.HORIZONTALS)
-            {
+            for(EnumFacing facing : EnumFacing.HORIZONTALS) {
             	te = world.getTileEntity(blockpos.offset(facing));
             	
             	if(te == null) continue;
@@ -124,8 +111,7 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
             }
             
             
-            if(iblockstate == null || te == null) 
-            {
+            if(iblockstate == null || te == null) {
             	this.runDelay = 10;
             	return;
             }
@@ -134,20 +120,15 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
             
             InventoryStroageModifiable radiersInv = this.raider.getRaidersInventory();
             
- 
-            
-            if(te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP))
-            {
+            if(te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP)) {
             	chestInventory = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
             	
                 ItemStack stealItem = null;
                 int slot = 0;
                 boolean flag = false;
           
-                for (int i = 0; i < chestInventory.getSlots(); ++i)
-                {
-                	if(shouldStealItem(stealItem, chestInventory.getStackInSlot(i)))
-                	{
+                for (int i = 0; i < chestInventory.getSlots(); ++i) {
+                	if(shouldStealItem(stealItem, chestInventory.getStackInSlot(i))) {
                 		stealItem = chestInventory.getStackInSlot(i);
                 		slot = i;
                 	}

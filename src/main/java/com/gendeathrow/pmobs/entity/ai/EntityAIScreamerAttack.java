@@ -53,10 +53,9 @@ public class EntityAIScreamerAttack extends EntityAIBase
     /**
      * Returns whether the EntityAIBase should begin execution.
      */
-    public boolean shouldExecute()
-    {
+    public boolean shouldExecute() {
         EntityLivingBase entitylivingbase = this.raider.getAttackTarget();
-        return entitylivingbase != null && entitylivingbase.isEntityAlive();
+        return entitylivingbase != null && raider.isWitchActive() == true && entitylivingbase.isEntityAlive();
     }
 
     /**
