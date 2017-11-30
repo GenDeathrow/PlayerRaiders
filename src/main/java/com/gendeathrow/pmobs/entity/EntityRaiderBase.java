@@ -80,9 +80,9 @@ public class EntityRaiderBase extends EntityMob{
 	private float raiderWidth = 0.6F;
 	private float raiderHeight = 1.95F;
 	
-	protected final EntityAINearestAttackableTarget attackPlayerAI = new EntityAINearestAttackableTarget(this, EntityPlayer.class, true);
-	protected final EntityAINearestAttackableTarget attackVillagerAI =  new EntityAINearestAttackableTarget(this, EntityVillager.class, false);
-	protected final EntityAINearestAttackableTarget attackLivingAI = new EntityAINearestAttackableTarget(this, EntityLiving.class, true);
+	protected final EntityAINearestAttackableTarget<EntityPlayer> attackPlayerAI = new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, true);
+	protected final EntityAINearestAttackableTarget<EntityVillager> attackVillagerAI =  new EntityAINearestAttackableTarget<EntityVillager>(this, EntityVillager.class, false);
+	protected final EntityAINearestAttackableTarget<EntityLiving> attackLivingAI = new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, true);
 	    
 	protected final EntityAIWatchClosest watchClosestAI =  new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F);
 	protected final EntityAIWander wanderAI = new EntityAIWander(this, 1.0D);

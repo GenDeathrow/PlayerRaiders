@@ -1,11 +1,16 @@
 package com.gendeathrow.pmobs.entity.ai;
 
+import java.util.List;
+
 import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityPotion;
 import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.init.Items;
@@ -13,6 +18,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.PotionTypes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.math.BlockPos;
@@ -27,6 +33,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
     private int fireBallCoolDown = 55;
     private int lightingCoolDown = 100;
     private int potionCooldown = 20;
+    private int pushBackCooldown = 20;
     
 	
     private int lightningAttack = 0;
@@ -47,7 +54,11 @@ public class EntityAIScreamerAttack extends EntityAIBase
     public EntityAIScreamerAttack(EntityRaiderWitch raider)
     {
         this.raider = raider;
-        this.setMutexBits(3);
+    }
+    
+    public boolean isInterruptible()
+    {
+        return false;
     }
 
     /**
@@ -55,7 +66,8 @@ public class EntityAIScreamerAttack extends EntityAIBase
      */
     public boolean shouldExecute() {
         EntityLivingBase entitylivingbase = this.raider.getAttackTarget();
-        return entitylivingbase != null && raider.isWitchActive() == true && entitylivingbase.isEntityAlive();
+        
+        return entitylivingbase != null && raider.isWitchActive() && entitylivingbase.isEntityAlive();
     }
 
     /**
@@ -89,6 +101,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
     	this.fireBallCoolDown--;
     	this.lightingCoolDown--;
     	this.potionCooldown--;
+    	this.pushBackCooldown--;
         
         EntityLivingBase entitylivingbase = this.raider.getAttackTarget();
         double d0 = this.raider.getDistanceSqToEntity(entitylivingbase);
@@ -161,24 +174,15 @@ public class EntityAIScreamerAttack extends EntityAIBase
         {
             this.raider.getLookHelper().setLookPositionWithEntity(entitylivingbase, 30.0F, 30.0F);
         }
-        
-
-//        if (d0 < 4.0D)
-//        {
-//            if (this.attackTime <= 0)
-//            {
-//                this.attackTime = 20;
-//                this.raider.attackEntityAsMob(entitylivingbase);
-//            }
-//
-//            this.raider.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
-//        }
-//        else 
         if (d0 < maxAttackDistance)
         {
         	if(this.attackTime <= 0)
         	{
-        		if(this.fireBallCoolDown <= 6)
+        		if(this.pushBackCooldown <= 0)
+        		{
+        			this.PushBackAttack(entitylivingbase);
+        		}
+        		else if(this.fireBallCoolDown <= 6)
         		{
         			this.FireBallAttack(entitylivingbase, d0);
         		}
@@ -247,6 +251,52 @@ public class EntityAIScreamerAttack extends EntityAIBase
 
     }
     
+    private void PushBackAttack(EntityLivingBase target) {
+		
+    	List<Entity> entities = this.raider.world.getEntitiesWithinAABBExcludingEntity(this.raider, this.raider.getEntityBoundingBox().grow(10.0D, 3.0D, 10.0D));
+    	
+    	System.out.println("cast push back");
+    	
+    	if(!entities.isEmpty())
+    	{
+     	
+        	this.raider.setArmsRaised(true);
+        	
+    		double d0 = (this.raider.getEntityBoundingBox().minX + this.raider.getEntityBoundingBox().maxX) / 2.0D;
+    		double d1 = (this.raider.getEntityBoundingBox().minZ + this.raider.getEntityBoundingBox().maxZ) / 2.0D;
+		
+    		for (Entity entity : entities)
+    		{
+    			System.out.println("pushed back: "+ entity.getName());
+    			
+    			
+    	   		this.raider.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 1, 1.0F + (this.raider.world.rand.nextFloat() - this.raider.world.rand.nextFloat()) * 0.4F);
+     	   		this.raider.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 1, 1.0F + (this.raider.world.rand.nextFloat() - this.raider.world.rand.nextFloat()) * 0.4F);
+     	   		this.raider.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 1, 1.0F + (this.raider.world.rand.nextFloat() - this.raider.world.rand.nextFloat()) * 0.4F);
+
+    	   		
+//    			if(entity instanceof EntityLivingBase){
+//    				((EntityLivingBase)entity).knockBack(entity, 1, (double)MathHelper.sin(this.raider.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this..rotationYaw * 0.017453292F)));
+//    			}
+    			
+    			
+    			double d2 = entity.posX - d0;
+				double d3 = entity.posZ - d1;
+				double d4 = d2 * d2 + d3 * d3;
+				entity.addVelocity(d2 / d4 * 4.0D, 0.2333333D, d3 / d4 * 4.0D);
+				
+				if(entity instanceof EntityPlayerMP)
+					((EntityPlayerMP) entity).connection.sendPacket(new SPacketEntityVelocity(entity));
+    		}
+    		
+    		this.pushBackCooldown = 60 + (this.raider.getRNG().nextInt(30) - this.raider.getRNG().nextInt(15));
+    		
+    	 	this.attackTime = 30;
+    	}
+    	
+
+    }
+    
     
     private void LightingAttack(EntityLivingBase target,  double d0)
     {
@@ -294,6 +344,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
         entitypotion.setThrowableHeading(d1, d2 + (double)(f * 0.2F), d3, 0.75F, 8.0F);
         this.raider.world.playSound((EntityPlayer)null, this.raider.posX, this.raider.posY, this.raider.posZ, SoundEvents.ENTITY_WITCH_THROW, this.raider.getSoundCategory(), 1.0F, 0.8F + this.raider.getRNG().nextFloat() * 0.4F);
         this.raider.world.spawnEntity(entitypotion);
+        this.potionCooldown = 60 + (this.raider.getRNG().nextInt(15) - this.raider.getRNG().nextInt(10));
         this.attackTime = 60;
     }
     

@@ -57,7 +57,7 @@ public class EntityAIScreamer  extends EntityAIBase{
        }
        else if(strikes >= maxStrikes)
        {
-    	   this.raider.setWitchCombat();
+    	   this.raider.setWitchActive(true);
        }
        ticks++;
    }
