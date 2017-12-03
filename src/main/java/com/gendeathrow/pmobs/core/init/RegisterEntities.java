@@ -3,12 +3,14 @@ package com.gendeathrow.pmobs.core.init;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.gendeathrow.pmobs.client.renderer.EntityBruteRenderer;
+import com.gendeathrow.pmobs.client.renderer.EntityPyroRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityTwitcherRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityWitchRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.entity.EntityBrute;
+import com.gendeathrow.pmobs.entity.EntityPyromaniac;
 import com.gendeathrow.pmobs.entity.EntityRaider;
 import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
 import com.gendeathrow.pmobs.entity.EntityTwitcher;
@@ -29,10 +31,11 @@ public class RegisterEntities {
 	static int nextID = 1;
 	public static void Register() {
 		
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "raider"), EntityRaider.class, "raider", 1, RaidersMain.instance, 80, 3, true, -3971048, 15677239);
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "brute"),  EntityBrute.class, "brute", 2, RaidersMain.instance, 80, 3, true, -3971048, 1310720);
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "witch"),  EntityRaiderWitch.class, "witch", 3, RaidersMain.instance, 80, 3, true, -3971048, 971165);
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "twitcher"),  EntityTwitcher.class, "twitcher", 3, RaidersMain.instance, 80, 3, true, -3971048, 971165);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "raider"), EntityRaider.class, "raider", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 15677239);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "brute"),  EntityBrute.class, "brute", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 1310720);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "witch"),  EntityRaiderWitch.class, "witch", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 971165);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "twitcher"),  EntityTwitcher.class, "twitcher", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 971165);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "pyromaniac"),  EntityPyromaniac.class, "pyromaniac", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 971165);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -41,7 +44,7 @@ public class RegisterEntities {
 		RenderingRegistry.registerEntityRenderingHandler(EntityBrute.class, EntityBruteRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityTwitcher.class, EntityTwitcherRenderer::new);
 		RenderingRegistry.registerEntityRenderingHandler(EntityRaiderWitch.class, EntityWitchRenderer::new);
-
+		RenderingRegistry.registerEntityRenderingHandler(EntityPyromaniac.class, EntityPyroRenderer::new);
 	}
 	
 	public static void RegisterSpawners() {
@@ -49,6 +52,7 @@ public class RegisterEntities {
       	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"raiders"), PMSettings.raidersSpawnerWeight); 
       	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"brute"), PMSettings.raidersSpawnerWeight);
       	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"twitcher"), PMSettings.raidersSpawnerWeight);
+      	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"pyromaniac"), PMSettings.raidersSpawnerWeight);
 
 	}
 	
@@ -78,6 +82,7 @@ public class RegisterEntities {
 	   	EntityRegistry.addSpawn(EntityBrute.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
 	   	EntityRegistry.addSpawn(EntityRaiderWitch.class, 3, 1, 1, EnumCreatureType.MONSTER, biomes);
 	   	EntityRegistry.addSpawn(EntityTwitcher.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   	EntityRegistry.addSpawn(EntityPyromaniac.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
 
 	}
 

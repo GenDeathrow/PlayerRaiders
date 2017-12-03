@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
@@ -72,7 +73,14 @@ public class EntityRaider extends EntityRaiderBase{
     		return livingdata;
     }
 	
-	
+    @Override
+    public boolean isEntityInvulnerable(DamageSource source)
+    {
+    	if(source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE) return true;
+    	
+    	return super.isEntityInvulnerable(source);
+    }
+    
     @Override
     public float getEyeHeight()
     {

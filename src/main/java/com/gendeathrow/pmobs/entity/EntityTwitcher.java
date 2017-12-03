@@ -2,6 +2,7 @@ package com.gendeathrow.pmobs.entity;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
 
 import net.minecraft.entity.IEntityLivingData;
@@ -13,6 +14,7 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
@@ -50,6 +52,28 @@ public class EntityTwitcher extends EntityRaiderBase{
         	
     		return livingdata;
     }
+    
+    private int ScreamTick = 1200;
+	@Override
+	public void onLivingUpdate()
+	{
+		super.onLivingUpdate();
+		
+		
+		if(this.getAttackTarget() != null)
+		{
+			if(ScreamTick++ > 250 && this.canEntityBeSeen(this.getAttackTarget()))
+			{
+				this.world.playSound(null, this.getPosition(), RaidersSoundEvents.RAIDERS_SCREAM, SoundCategory.HOSTILE, 2.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
+				this.ScreamTick = this.getRNG().nextInt(100);
+			}
+			if(!this.isSprinting()) 
+				this.setSprinting(true);
+		}else
+			if(this.isSprinting()) 
+				this.setSprinting(false);
+		
+	}
     
   
 }

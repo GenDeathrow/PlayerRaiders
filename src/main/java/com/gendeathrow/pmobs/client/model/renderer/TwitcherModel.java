@@ -21,7 +21,8 @@ public class TwitcherModel extends RaiderModel{
 	@Override
 	public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
 	{
-		
+		super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+
 		boolean twitcherActive = entityIn instanceof EntityTwitcher && ((EntityRaiderBase)entityIn).isArmsRaised();
     
     	if (twitcherActive)
@@ -37,7 +38,6 @@ public class TwitcherModel extends RaiderModel{
 
         }
     	
-		super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
 
 	}
 
