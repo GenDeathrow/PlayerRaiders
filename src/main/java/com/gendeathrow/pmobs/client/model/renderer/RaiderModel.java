@@ -13,8 +13,6 @@ import net.minecraftforge.common.util.EnumHelper;
 
 public class RaiderModel extends ModelBiped
 {
-
-	private ModelBiped modelDirt;
 	
 	public static final ArmPose HoldingSkull  = EnumHelper.addEnum(ArmPose.class, "HOLDING_SKULL", new Class<?>[]{});
 	public static final ArmPose TwitcherArms = EnumHelper.addEnum(ArmPose.class, "TWITCHERS_ARMS", new Class<?>[]{});

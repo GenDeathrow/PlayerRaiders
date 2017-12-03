@@ -1,17 +1,12 @@
 package com.gendeathrow.pmobs.core.proxies;
 
-import com.gendeathrow.pmobs.client.renderer.EntityBruteRenderer;
-import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
-import com.gendeathrow.pmobs.entity.EntityBrute;
-import com.gendeathrow.pmobs.entity.EntityRaider;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;

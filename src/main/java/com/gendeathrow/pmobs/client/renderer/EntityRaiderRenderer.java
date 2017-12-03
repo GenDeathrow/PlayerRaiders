@@ -9,22 +9,18 @@ import com.gendeathrow.pmobs.entity.EntityRaider;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class EntityRaiderRenderer extends RenderBiped<EntityRaider> 
 {
-	public static final Factory FACTORY = new Factory();
-
 	private final ModelBiped defaultModel;
 	    
 	private boolean flag = false;
@@ -88,14 +84,5 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaider>
 	{
 		super.preRenderCallback(entitylivingbaseIn, partialTickTime);
 	}
-	    
-	public static class Factory implements IRenderFactory<EntityRaider> 
-	{
-		@Override
-		public Render<? super EntityRaider> createRenderFor(RenderManager manager) 
-		{
-			return new EntityRaiderRenderer(manager);
-		}
-	}
-		
+
 }

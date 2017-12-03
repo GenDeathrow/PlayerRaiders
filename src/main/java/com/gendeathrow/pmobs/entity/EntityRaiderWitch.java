@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
-import com.gendeathrow.pmobs.entity.ai.EntityAIScreamer;
-import com.gendeathrow.pmobs.entity.ai.EntityAIScreamerAttack;
+import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitch;
+import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitchAttack;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -60,9 +60,9 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
 
 	protected void initEntityAI(){
 		super.initEntityAI();
-        this.tasks.addTask(0, new EntityAIScreamer(this));  
+        this.tasks.addTask(0, new EntityAIRaiderWitch(this));  
         this.tasks.addTask(9, new EntityAILookDepressed(this));
-        this.tasks.addTask(1, new EntityAIScreamerAttack(this));
+        this.tasks.addTask(1, new EntityAIRaiderWitchAttack(this));
 	}
 	
 	@Override

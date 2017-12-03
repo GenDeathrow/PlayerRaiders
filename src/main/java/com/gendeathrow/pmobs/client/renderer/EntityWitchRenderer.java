@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.util.ResourceLocation;
 
-public class EntityWitchRenderer  extends RenderBiped<EntityRaiderWitch> 
+public class EntityWitchRenderer extends RenderBiped<EntityRaiderWitch> 
 {
 	private final ModelBiped defaultModel;
 	    

@@ -8,14 +8,14 @@ import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
 
-public class EntityAIScreamer  extends EntityAIBase{
+public class EntityAIRaiderWitch  extends EntityAIBase{
 
    private EntityRaiderWitch raider;
    private int maxStrikes = 0;
    private boolean triggered = false;
    
    
-   public EntityAIScreamer(EntityRaiderWitch raiderIn) {	
+   public EntityAIRaiderWitch(EntityRaiderWitch raiderIn) {	
 	   super();
 	   
 	   this.raider = raiderIn;

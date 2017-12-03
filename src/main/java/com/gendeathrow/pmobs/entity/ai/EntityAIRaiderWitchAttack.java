@@ -8,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityPotion;
@@ -24,7 +23,7 @@ import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
-public class EntityAIScreamerAttack extends EntityAIBase
+public class EntityAIRaiderWitchAttack extends EntityAIBase
 {
     private final EntityRaiderWitch raider;
     private int attackStep;
@@ -51,7 +50,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
     
     private int armAnimation = 20;
     
-    public EntityAIScreamerAttack(EntityRaiderWitch raider)
+    public EntityAIRaiderWitchAttack(EntityRaiderWitch raider)
     {
         this.raider = raider;
     }
@@ -178,7 +177,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
         {
         	if(this.attackTime <= 0)
         	{
-        		if(this.pushBackCooldown <= 0)
+        		if(this.pushBackCooldown <= 0 && d0 <= 10)
         		{
         			this.PushBackAttack(entitylivingbase);
         		}
@@ -274,11 +273,6 @@ public class EntityAIScreamerAttack extends EntityAIBase
      	   		this.raider.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 1, 1.0F + (this.raider.world.rand.nextFloat() - this.raider.world.rand.nextFloat()) * 0.4F);
      	   		this.raider.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 1, 1.0F + (this.raider.world.rand.nextFloat() - this.raider.world.rand.nextFloat()) * 0.4F);
 
-    	   		
-//    			if(entity instanceof EntityLivingBase){
-//    				((EntityLivingBase)entity).knockBack(entity, 1, (double)MathHelper.sin(this.raider.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this..rotationYaw * 0.017453292F)));
-//    			}
-    			
     			
     			double d2 = entity.posX - d0;
 				double d3 = entity.posZ - d1;
@@ -289,7 +283,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
 					((EntityPlayerMP) entity).connection.sendPacket(new SPacketEntityVelocity(entity));
     		}
     		
-    		this.pushBackCooldown = 60 + (this.raider.getRNG().nextInt(30) - this.raider.getRNG().nextInt(15));
+    		this.pushBackCooldown = 100 + (this.raider.getRNG().nextInt(30) - this.raider.getRNG().nextInt(15));
     		
     	 	this.attackTime = 30;
     	}

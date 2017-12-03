@@ -1,18 +1,9 @@
 package com.gendeathrow.pmobs.core;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
-import com.gendeathrow.pmobs.entity.EntityBrute;
-import com.gendeathrow.pmobs.entity.EntityRaider;
 
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.DungeonHooks;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -22,8 +13,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 @Mod(modid = RaidersMain.MODID, name=RaidersMain.NAME, version = RaidersMain.VERSION, dependencies="after:BiomesOPlenty", acceptedMinecraftVersions="[1.11.2]")
 public class RaidersMain
@@ -52,7 +41,7 @@ public class RaidersMain
 		
     	proxy.preInit(event);
     	
-    	RegisterEntities.RegisterEntities();
+    	RegisterEntities.Register();
     	
     	proxy.registerHandlers();
 		

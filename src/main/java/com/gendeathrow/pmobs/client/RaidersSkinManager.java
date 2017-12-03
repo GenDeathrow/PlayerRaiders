@@ -11,12 +11,9 @@ import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.entity.EntityRaiderBase;
 import com.gendeathrow.pmobs.handlers.RaiderData;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
-import com.google.common.collect.Iterables;
-import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
-import com.mojang.authlib.properties.Property;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -24,7 +21,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.management.PlayerProfileCache;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringUtils;
 
 public class RaidersSkinManager 
 {

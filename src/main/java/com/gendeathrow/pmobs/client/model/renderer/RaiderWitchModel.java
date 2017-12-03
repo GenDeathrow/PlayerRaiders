@@ -7,8 +7,6 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 
 public class RaiderWitchModel extends RaiderModel{
@@ -20,19 +18,18 @@ public class RaiderWitchModel extends RaiderModel{
 	
 	
 	@Override
-	public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float p_78086_2_, float p_78086_3_, float partialTickTime)
+	public void setLivingAnimations(EntityLivingBase entityIn, float p_78086_2_, float p_78086_3_, float partialTickTime)
 	{
-		this.rightArmPose = ModelBiped.ArmPose.EMPTY;
-		this.leftArmPose = ModelBiped.ArmPose.EMPTY;
-
-    	if (((EntityRaiderBase)entitylivingbaseIn).isArmsRaised())
+		super.setLivingAnimations(entityIn, p_78086_2_, p_78086_3_, partialTickTime);
+		
+    	if (entityIn instanceof EntityRaiderWitch && ((EntityRaiderBase)entityIn).isArmsRaised())
         {
 			this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
 			this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
 			
 			for (int i = 0; i < 10; ++i)
 			{
-				entitylivingbaseIn.world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, entitylivingbaseIn.posX + (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * (double)entitylivingbaseIn.width, entitylivingbaseIn.posY + entitylivingbaseIn.getRNG().nextDouble() * (double)entitylivingbaseIn.height - 0.25D, entitylivingbaseIn.posZ + (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * (double)entitylivingbaseIn.width, (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * 2.0D, -entitylivingbaseIn.getRNG().nextDouble(), (entitylivingbaseIn.getRNG().nextDouble() - 0.5D) * 2.0D, new int[0]);
+				entityIn.world.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, entityIn.posX + (entityIn.getRNG().nextDouble() - 0.5D) * (double)entityIn.width, entityIn.posY + entityIn.getRNG().nextDouble() * (double)entityIn.height - 0.25D, entityIn.posZ + (entityIn.getRNG().nextDouble() - 0.5D) * (double)entityIn.width, (entityIn.getRNG().nextDouble() - 0.5D) * 2.0D, -entityIn.getRNG().nextDouble(), (entityIn.getRNG().nextDouble() - 0.5D) * 2.0D, new int[0]);
 			}
         }
 	}
@@ -40,6 +37,7 @@ public class RaiderWitchModel extends RaiderModel{
 	@Override
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn)
     {
+		
 		boolean witchActive = entityIn instanceof EntityRaiderWitch && ((EntityRaiderWitch) entityIn).isWitchActive();
         
 		//If Witch is Sitting move his model down

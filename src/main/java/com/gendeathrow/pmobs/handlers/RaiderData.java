@@ -1,8 +1,8 @@
 package com.gendeathrow.pmobs.handlers;
 
-import net.minecraft.util.WeightedRandom;
-
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.util.WeightedRandom;
 
 public class RaiderData extends WeightedRandom.Item
 {
