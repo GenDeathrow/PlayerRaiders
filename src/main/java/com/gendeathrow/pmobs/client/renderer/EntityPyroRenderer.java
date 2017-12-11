@@ -4,7 +4,6 @@ import com.gendeathrow.pmobs.client.model.RaiderModel;
 import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.mob.EntityPyromaniac;
-import com.gendeathrow.pmobs.entity.mob.EntityRaider;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;

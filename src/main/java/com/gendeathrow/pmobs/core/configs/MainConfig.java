@@ -1,17 +1,19 @@
-package com.gendeathrow.pmobs.core;
+package com.gendeathrow.pmobs.core.configs;
 
 import java.io.File;
 
 import org.apache.logging.log4j.Level;
 
 import com.gendeathrow.pmobs.common.CustomItemDrop;
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 
 import net.minecraft.init.Items;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
-public class ConfigHandler 
+public class MainConfig 
 {
 
 	public static File configDir = new File("config/raiders");
@@ -21,8 +23,24 @@ public class ConfigHandler
 	private static String mobs = "Mobs";
 	private static String mobai = "MobsAI";
 	private static String classes = "raidersClasses";
-	private static String ESMHooks = "ESMControl";
+
 	private static ConfigCategory remove = new ConfigCategory("remove");
+	
+	
+	public static void preInit()
+	{
+		File file = new File(configDir, "settings.cfg");
+		
+		config = new Configuration(file);
+		
+		config.load();
+		
+		
+		PMSettings.renderNameTags = config.getBoolean("Render Name Tags", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders Name tags about thier heads.");
+		
+		PMSettings.renderOverlays = config.getBoolean("Render Skin Overlays", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders skins overlay features.");
+	}
+	
 	public static void load()
 	{
 		RaidersMain.logger.log(Level.INFO, "Loading Configs...");  
@@ -178,20 +196,7 @@ public class ConfigHandler
 	{
 		return config.getInt("Raid Day Difficulty Progression", "Progessive Difficulty", 5, 1, 100, "This is the Raid difficulty. Each set amount of days the mobs get harder(Raid Difficulty increases +1). Each x amount of days harder mobs have more of a chance to spawn its cumulative");
 	}
-	
-	public static void preInit()
-	{
-		File file = new File(configDir, "settings.cfg");
-		
-		config = new Configuration(file);
-		
-		config.load();
-		
-		
-		PMSettings.renderNameTags = config.getBoolean("Render Name Tags", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders Name tags about thier heads.");
-		
-		PMSettings.renderOverlays = config.getBoolean("Render Skin Overlays", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders skins overlay features.");
-	}
+
 	
 	
 	public static void PostLoad()

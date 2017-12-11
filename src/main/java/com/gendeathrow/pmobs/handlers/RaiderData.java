@@ -7,6 +7,7 @@ import net.minecraft.util.WeightedRandom;
 public class RaiderData extends WeightedRandom.Item
 {
 	private GameProfile gameProfile;
+	private boolean hasUpdated = false;
 	//private int weight;
 	
 	public RaiderData(GameProfile profileIn, int weightIn)
@@ -20,6 +21,9 @@ public class RaiderData extends WeightedRandom.Item
 		return this.gameProfile.getName();
 	}
 
+	public void setProfileUpdated() {
+		hasUpdated = true;
+	}
 
 	public GameProfile getProfile()
 	{
@@ -29,5 +33,9 @@ public class RaiderData extends WeightedRandom.Item
 	public void setProfile(GameProfile profile)
 	{
 		gameProfile = profile;
+	}
+
+	public boolean hasUpdatedProfile() {
+		return hasUpdated;
 	}
 }

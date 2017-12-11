@@ -3,7 +3,6 @@ package com.gendeathrow.pmobs.common.potion;
 import java.awt.Color;
 
 import com.gendeathrow.pmobs.core.RaidersMain;
-import com.gendeathrow.pmobs.util.ObfHelper;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;

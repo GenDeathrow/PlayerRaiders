@@ -34,28 +34,16 @@ public class RaidersSkinManager
 	private static Thread thread2;
 
 	private static List<RaiderData> raidersdata = new ArrayList<RaiderData>();	
-	
-	/**
-	 *  Run thur the Raiders list and Cache the Skin's localy
-	 *  
-	 */
-	public static void cacheSkins()
-	{
-		Iterator<RaiderData> raidersList = RaiderManager.getAllRaiders().values().iterator();
-		
-		while(raidersList.hasNext())
-			updateProfile(raidersList.next());
-	}
-	
-	
+
 	/**
 	 * 
 	 * @param raiderInfo
 	 */
 	public static void updateProfile(RaiderData raiderInfo) {
-
 		
-		if(!badraiders.contains(raiderInfo.getOwnerName())) raidersdata.add(raiderInfo);
+		if(raiderInfo == null) return;
+		
+		if(!raidersdata.contains(raiderInfo)) raidersdata.add(raiderInfo);
 
 		if (thread2 == null || thread2.getState() == Thread.State.TERMINATED) {
 			thread2 = new Thread(new Runnable() 
@@ -67,8 +55,8 @@ public class RaidersSkinManager
 					while (!raidersdata.isEmpty()) 
 					{
 						RaiderData raider = raidersdata.get(0);
-
 						raider.setProfile(TileEntitySkull.updateGameprofile(raider.getProfile()));
+						raider.setProfileUpdated();
 						
 						try 
 						{
@@ -90,17 +78,6 @@ public class RaidersSkinManager
 		}
 	}
 
-	private static List<String> badraiders = new ArrayList<String>();
-	public static void addToBadList(String owner) 
-	{
-		if(!badraiders.contains(owner))
-		{
-			badraiders.add(owner);
-			RaidersMain.logger.error("Could not Get this players profile."+ owner +" Added to the Naughty List");
-		}
-	}
-	
-	
 	/**
 	 * Download players skin from mojang
 	 * @return
@@ -109,64 +86,22 @@ public class RaidersSkinManager
     public static ResourceLocation DownloadPlayersSkin(EntityRaiderBase raider){
 		ResourceLocation resourcelocation =  DefaultPlayerSkin.getDefaultSkinLegacy();
 		
-        if (raider.getPlayerProfile() != null)
-        {
-            Minecraft minecraft = Minecraft.getMinecraft();
-            Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(raider.getPlayerProfile());
+		RaiderData playerSkinProfile = RaiderManager.getRaiderProfile(raider.getPlayerProfile());
 
-            if (map.containsKey(Type.SKIN))
-            {
-                resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
-            }
-            else
-            {
-                UUID uuid = EntityPlayer.getUUID(raider.getPlayerProfile());
-                resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
-            }
-        }
-        
-        
-        
-//		if (raider.getPlayerProfile() != null && raider.getPlayerProfile().getName() != null) 
-//		{
-//			Minecraft minecraft = Minecraft.getMinecraft();
-//			
-//            Property property = (Property)Iterables.getFirst(raider.getPlayerProfile().getProperties().get("textures"), null);
-//
-//            if ((raider.profileset == true && property == null ))
-//            {
-//            	return resourcelocation;
-//            }
-//            else if(raider.profileset = false)
-//            {
-//            	return resourcelocation;
-//            }
-//            
-//            
-//			Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(RaiderManager.getRaiderProfile(raider.getOwner()));
-//
-//			if (map.containsKey(Type.SKIN))
-//			{
-//				resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
-//			}
-//		}
-//		else
-//		{
-//			if(RaiderManager.getRaiderProfile(raider.getOwner()) != null)
-//			{
-//				//raider.setPlayerProfile(RaiderManager.getRaiderProfile(raider.getOwner()));
-//			}
-//			else
-//			{
-//				raider.setPlayerProfile(RaiderManager.getRaiderProfile(raider.getOwner()));
-//				
-//				raider.updateProfile(raider);
-//				
-//				RaiderManager.setRaiderProfile(raider.getOwner());
-//			
-//			}
-//		}
-		
+		if (raider.getPlayerProfile() != null && playerSkinProfile != null)
+		{
+			if(playerSkinProfile.hasUpdatedProfile()) {
+				Minecraft minecraft = Minecraft.getMinecraft();
+				Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(raider.getPlayerProfile());
+
+				if (map.containsKey(Type.SKIN)) {
+					resourcelocation = minecraft.getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
+				}
+			}
+			else {
+				updateProfile(playerSkinProfile);
+			}
+		}
 		return resourcelocation;
     	
     }

@@ -15,9 +15,9 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import com.gendeathrow.pmobs.core.ConfigHandler;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersMain;
+import com.gendeathrow.pmobs.core.configs.MainConfig;
 import com.gendeathrow.pmobs.util.Tools;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -35,7 +35,7 @@ public class RaiderManager
 	public static final HashMap<String, RaiderData> raidersList = new HashMap<String, RaiderData>();
 	//public static List<RaiderData> raiderWeighted = Lists.<RaiderData>newArrayList();
 	
-	public static final File raiderFile = new File(ConfigHandler.configDir, "raiders.json");
+	public static final File raiderFile = new File(MainConfig.configDir, "raiders.json");
 	
 	public static final File whiteListFolder = new File("raidersWhitelist");
 	
@@ -67,6 +67,11 @@ public class RaiderManager
 			
 			return raidersList.get(ownerName).getProfile();
 		}
+	}
+	
+
+	public static RaiderData getRaiderProfile(GameProfile playerProfile) {
+			return raidersList.get(playerProfile.getName());
 	}
 	
 	public static HashMap<String, RaiderData> getAllRaiders()
@@ -365,6 +370,7 @@ public class RaiderManager
 		raidersList.put("carnalizer",  new RaiderData(new GameProfile(UUID.fromString("f96f3d63-fc7f-46a7-9643-86eb0b3d66cb"), "carnalizer"), 10));
 		//raidersList.put("Grumm",  new RaiderData(new GameProfile(null, "Grumm"), 10));
 	}
+
 	
 
 }

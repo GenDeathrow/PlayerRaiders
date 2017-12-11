@@ -1,7 +1,5 @@
 package com.gendeathrow.pmobs.client.model;
 
-import com.gendeathrow.pmobs.entity.mob.AbstractRangeAttacker;
-
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
