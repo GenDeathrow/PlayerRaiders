@@ -1,4 +1,4 @@
-package com.gendeathrow.pmobs.entity;
+package com.gendeathrow.pmobs.entity.mob;
 
 import java.util.UUID;
 
@@ -48,7 +48,6 @@ public class EntityRaider extends EntityRaiderBase{
 	{
 		super.initEntityAI();
 		
-		
         this.tasks.addTask(2, new EntityAIAttackMelee(this, 1.0D, false));
         this.tasks.addTask(8, new EntityAIWander(this, 1.0D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
@@ -57,8 +56,6 @@ public class EntityRaider extends EntityRaiderBase{
 	    this.targetTasks.addTask(1, new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, true));
 	    this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<EntityVillager>(this, EntityVillager.class, false));
 			//this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, true));
-
-	        
 	}
 
     @Override

@@ -1,7 +1,7 @@
-package com.gendeathrow.pmobs.client.model.renderer;
+package com.gendeathrow.pmobs.client.model;
 
-import com.gendeathrow.pmobs.entity.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.EntityTwitcher;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityTwitcher;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

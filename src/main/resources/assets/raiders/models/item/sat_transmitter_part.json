@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
     "textures": {
-        "layer0": "playerraiders:items/sat_transmitter_part"
+        "layer0": "raiders:items/sat_transmitter_part"
     }
 }

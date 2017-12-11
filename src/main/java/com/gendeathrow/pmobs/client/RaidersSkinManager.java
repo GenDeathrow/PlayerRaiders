@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.gendeathrow.pmobs.core.RaidersMain;
-import com.gendeathrow.pmobs.entity.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 import com.gendeathrow.pmobs.handlers.RaiderData;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;

@@ -1,4 +1,6 @@
-package com.gendeathrow.pmobs.client.model.renderer;
+package com.gendeathrow.pmobs.client.model;
+
+import com.gendeathrow.pmobs.entity.mob.AbstractRangeAttacker;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
@@ -118,6 +120,20 @@ public class RaiderModel extends ModelBiped
 		ItemStack mainHand = entitylivingbaseIn.getHeldItem(EnumHand.MAIN_HAND);
 		ItemStack offHand = entitylivingbaseIn.getHeldItem(EnumHand.OFF_HAND);
 
+		
+		if (mainHand.getItem() == Items.BOW)
+		{
+			if (entitylivingbaseIn.getPrimaryHand() == EnumHandSide.RIGHT)
+			{
+				this.rightArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+			}
+			else
+			{
+				this.leftArmPose = ModelBiped.ArmPose.BOW_AND_ARROW;
+			}
+		}
+		
+		
 		if(offHand != null && offHand.getItem() == Items.SKULL)
 		{
 			this.leftArmPose = HoldingSkull;

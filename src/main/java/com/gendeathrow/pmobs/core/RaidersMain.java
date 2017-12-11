@@ -4,6 +4,9 @@ import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -29,10 +32,20 @@ public class RaidersMain
 	    
 	public static org.apache.logging.log4j.Logger logger;
 	    
-	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".CommonProxy")
+	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".ServerPoxy")
 	public static CommonProxy proxy;
 	
 	public static SimpleNetworkWrapper network;
+	
+	public static CreativeTabs RaidersTab= new CreativeTabs("Raiders")
+	{
+		@Override
+		public ItemStack getTabIconItem() 
+		{
+			return new ItemStack(Items.APPLE);
+		}
+	
+	};
 	
     @EventHandler
     public void preinit(FMLPreInitializationEvent event)
@@ -53,19 +66,14 @@ public class RaidersMain
     public void init(FMLInitializationEvent event)
     {
     	proxy.Init(event);
-
     	RegisterEntities.RegisterSpawns();
     	RegisterEntities.RegisterSpawners();
-    	
 		RaidersSoundEvents.register();
-		
- 
     }
     
     @EventHandler
     public void postinit(FMLPostInitializationEvent event)
     {
     	proxy.postInit(event);
-          
     }
 }

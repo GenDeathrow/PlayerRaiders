@@ -1,10 +1,10 @@
 package com.gendeathrow.pmobs.client.renderer;
 
-import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
-import com.gendeathrow.pmobs.client.model.renderer.TwitcherModel;
+import com.gendeathrow.pmobs.client.model.RaiderModel;
+import com.gendeathrow.pmobs.client.model.TwitcherModel;
 import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.EntityTwitcher;
+import com.gendeathrow.pmobs.entity.mob.EntityTwitcher;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;

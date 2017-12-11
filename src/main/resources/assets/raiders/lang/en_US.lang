@@ -1,20 +1,20 @@
-entity.playerraiders.Raiders.name=Raider
-playerraiders.Raiders=Raiders
+entity.raiders.Raiders.name=Raider
+raiders.Raiders=Raiders
 entity.Raiders.name=Raider
 itemGroup.Raiders=Raiders
 
-entity.playerraiders.role.none=No Class
-entity.playerraiders.role.brute=Brute
-entity.playerraiders.role.witch=Screamer
-entity.playerraiders.role.tweaker=Tweaker
-entity.playerraiders.role.ranged=Ranged
-entity.playerraiders.role.pyromaniac=Pyromaniac
-entity.playerraiders.role.friendly=Friendly
+entity.raider.name=Raider
+entity.brute.name=Brute
+entity.witch.name=Witch
+entity.tweaker.name=Tweaker
+entity.ranged.name=Ranged
+entity.pyromaniac.name=Pyromaniac
+entity.friendly=Friendly
 
-item.playerraiders.backup_transmitter.name=Mercenary Comm
-item.playerraiders.raider_custom_egg.name=Spawn Raider
-item.playerraiders.sat_transmitter_part.name=Transmitter Circuit Board
-item.playerraiders.brute_serum.name=Serum-B
-item.playerraiders.brute_serum_sample.name=Strange Sample
+item.raiders.backup_transmitter.name=Mercenary Comm
+item.raiders.raider_custom_egg.name=Spawn Raider
+item.raiders.sat_transmitter_part.name=Transmitter Circuit Board
+item.raiders.brute_serum.name=Serum-B
+item.raiders.brute_serum_sample.name=Strange Sample
 
-effect.playerraiders.bruteserum=Serum-B
+effect.raiders.bruteserum=Serum-B

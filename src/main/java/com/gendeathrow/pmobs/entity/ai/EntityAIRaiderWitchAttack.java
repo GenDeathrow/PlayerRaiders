@@ -2,7 +2,7 @@ package com.gendeathrow.pmobs.entity.ai;
 
 import java.util.List;
 
-import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderWitch;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

@@ -1,7 +1,7 @@
 package com.gendeathrow.pmobs.entity.ai;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
-import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderWitch;
 
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;

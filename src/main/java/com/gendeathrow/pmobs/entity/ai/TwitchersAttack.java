@@ -1,6 +1,6 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import com.gendeathrow.pmobs.entity.EntityTwitcher;
+import com.gendeathrow.pmobs.entity.mob.EntityTwitcher;
 
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 

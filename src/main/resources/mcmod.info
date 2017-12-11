@@ -1,6 +1,6 @@
 [
 {
-  "modid": "playerraiders",
+  "modid": "raiders",
   "name": "Raiders",
   "description": "Creates Fake Players, That are all trying to kill you",
   "version": "${version}",

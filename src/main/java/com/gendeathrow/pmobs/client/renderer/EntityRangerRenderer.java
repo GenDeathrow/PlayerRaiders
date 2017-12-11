@@ -5,31 +5,25 @@ package com.gendeathrow.pmobs.client.renderer;
 import com.gendeathrow.pmobs.client.model.RaiderModel;
 import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.mob.EntityBrute;
+import com.gendeathrow.pmobs.entity.mob.EntityRanger;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityBruteRenderer extends RenderBiped<EntityBrute> 
+public class EntityRangerRenderer extends RenderBiped<EntityRanger> 
 {
-	public static final Factory FACTORY = new Factory();
-
 	private final ModelBiped defaultModel;
 	    
-	private boolean flag = false;
-	    
-	public EntityBruteRenderer(RenderManager renderManager)
+	public EntityRangerRenderer(RenderManager renderManager)
 	{
 		super(renderManager, new RaiderModel(0F), 0.5F);
 		
@@ -44,8 +38,6 @@ public class EntityBruteRenderer extends RenderBiped<EntityBrute>
         	this.NAME_TAG_RANGE = 0;
         else 
         	this.NAME_TAG_RANGE = 64.0f;
-
-		
 	}
 	    
 	    /**
@@ -56,14 +48,15 @@ public class EntityBruteRenderer extends RenderBiped<EntityBrute>
 	{
 		return (RaiderModel)super.getMainModel();
 	}
-
-	protected ResourceLocation getEntityTexture(EntityBrute entity) 
+	
+	@Override
+	protected ResourceLocation getEntityTexture(EntityRanger entity) 
 	{
 		return entity.getLocationSkin();
 	}
 	
 	@Override
-	public void doRender(EntityBrute entity, double x, double y, double z, float entityYaw, float partialTicks)
+	public void doRender(EntityRanger entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		if(!PMSettings.renderNameTags)
 		{
@@ -78,23 +71,4 @@ public class EntityBruteRenderer extends RenderBiped<EntityBrute>
 	        GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
 	}
 
-	    
-	/**
-	 * Allows the render to do state modifications necessary before the model is rendered.
-	 */
-	@Override
-	protected void preRenderCallback(EntityBrute entitylivingbaseIn, float partialTickTime)
-	{
-        GlStateManager.scale(1.5F, 1.5F, 1.5F);
-	}
-	    
-	public static class Factory implements IRenderFactory<EntityBrute> 
-	{
-		@Override
-		public Render<? super EntityBrute> createRenderFor(RenderManager manager) 
-		{
-			return new EntityBruteRenderer(manager);
-		}
-	}
-		
 }

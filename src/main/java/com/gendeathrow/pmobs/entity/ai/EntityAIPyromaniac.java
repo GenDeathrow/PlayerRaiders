@@ -1,6 +1,6 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import com.gendeathrow.pmobs.entity.EntityPyromaniac;
+import com.gendeathrow.pmobs.entity.mob.EntityPyromaniac;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;

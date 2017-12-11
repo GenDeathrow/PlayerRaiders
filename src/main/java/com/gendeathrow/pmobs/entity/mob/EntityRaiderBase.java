@@ -1,4 +1,4 @@
-package com.gendeathrow.pmobs.entity;
+package com.gendeathrow.pmobs.entity.mob;
 
 import java.util.Calendar;
 import java.util.UUID;
@@ -10,6 +10,7 @@ import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.common.EnumFaction;
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.gendeathrow.pmobs.storage.InventoryStroageModifiable;
@@ -499,7 +500,7 @@ public class EntityRaiderBase extends EntityMob{
 	
 	//TODO
     protected boolean canDespawn() {
-    //	if(this.getRidingEntity() instanceof EntityDropPod) return false;
+    	if(this.getRidingEntity() instanceof EntityDropPod) return false;
         return super.canDespawn();
     }  
     

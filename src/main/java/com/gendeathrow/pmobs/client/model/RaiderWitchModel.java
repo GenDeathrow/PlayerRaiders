@@ -1,7 +1,7 @@
-package com.gendeathrow.pmobs.client.model.renderer;
+package com.gendeathrow.pmobs.client.model;
 
-import com.gendeathrow.pmobs.entity.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderWitch;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;

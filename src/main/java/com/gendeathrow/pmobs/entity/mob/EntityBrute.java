@@ -1,4 +1,4 @@
-package com.gendeathrow.pmobs.entity;
+package com.gendeathrow.pmobs.entity.mob;
 
 import javax.annotation.Nullable;
 

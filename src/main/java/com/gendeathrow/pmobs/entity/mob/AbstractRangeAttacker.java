@@ -1,9 +1,11 @@
-package com.gendeathrow.pmobs.entity;
+package com.gendeathrow.pmobs.entity.mob;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIAttackRanged;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -11,22 +13,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class EntityRaiderRangeAttacker extends EntityRaiderBase implements IRangedAttackMob{
+public abstract class AbstractRangeAttacker extends EntityRaiderBase implements IRangedAttackMob{
 
-    private static final DataParameter<Boolean> SWINGING_ARMS = EntityDataManager.<Boolean>createKey(EntityRaiderRangeAttacker.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> SWINGING_ARMS = EntityDataManager.<Boolean>createKey(AbstractRangeAttacker.class, DataSerializers.BOOLEAN);
     
-    private final EntityAIAttackMelee aiAttackOnCollide = new EntityAIAttackMelee(this, 1.2D, false) {
-        public void resetTask() {
-            super.resetTask();
-            EntityRaiderRangeAttacker.this.setSwingingArms(false);
-        }
-        public void startExecuting() {
-            super.startExecuting();
-            EntityRaiderRangeAttacker.this.setSwingingArms(true);
-        }
-    };
-    
-	public EntityRaiderRangeAttacker(World worldIn) {
+	public AbstractRangeAttacker(World worldIn) {
 		super(worldIn);
 	}
 	
@@ -44,6 +35,8 @@ public abstract class EntityRaiderRangeAttacker extends EntityRaiderBase impleme
 	
     
 	public abstract void rangedAttackTarget(EntityLivingBase target, float distanceFactor);
+
+	
 
 	@Override
 	public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {

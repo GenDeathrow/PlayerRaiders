@@ -1,6 +1,6 @@
 package com.gendeathrow.pmobs.client.audio;
 
-import com.gendeathrow.pmobs.entity.EntityRaiderWitch;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderWitch;
 
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.util.SoundCategory;

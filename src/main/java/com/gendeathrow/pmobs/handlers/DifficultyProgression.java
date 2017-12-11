@@ -3,7 +3,7 @@ package com.gendeathrow.pmobs.handlers;
 import java.util.Random;
 
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;

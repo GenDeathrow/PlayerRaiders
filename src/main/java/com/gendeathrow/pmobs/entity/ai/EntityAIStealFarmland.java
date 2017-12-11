@@ -1,6 +1,6 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import com.gendeathrow.pmobs.entity.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;

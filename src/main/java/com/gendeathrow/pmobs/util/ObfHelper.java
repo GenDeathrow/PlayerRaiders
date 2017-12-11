@@ -43,7 +43,6 @@ public class ObfHelper
 			{
 				Method m = Entity.class.getDeclaredMethod(ObfHelper.obfuscation ? ObfHelper.setSizeObf : ObfHelper.setSizeDeobf, float.class, float.class);
 				setSizeMethod = m;
-
 			}
 			catch(NoSuchMethodException e)
 			{

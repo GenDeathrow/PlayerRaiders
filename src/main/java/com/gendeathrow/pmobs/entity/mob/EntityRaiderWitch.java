@@ -1,7 +1,9 @@
-package com.gendeathrow.pmobs.entity;
+package com.gendeathrow.pmobs.entity.mob;
 
 import java.util.List;
 import java.util.UUID;
+
+import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitch;
@@ -11,6 +13,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackRanged;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -24,6 +27,7 @@ import net.minecraft.init.PotionTypes;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -32,11 +36,12 @@ import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
+public class EntityRaiderWitch extends AbstractRangeAttacker {
 
 	
     private static final DataParameter<Boolean> IS_DRINKINGPOTION = EntityDataManager.<Boolean>createKey(EntityRaiderWitch.class, DataSerializers.BOOLEAN);
@@ -58,6 +63,7 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
 		super(worldIn);
 	}
 
+	@Override
 	protected void initEntityAI(){
 		super.initEntityAI();
         this.tasks.addTask(0, new EntityAIRaiderWitch(this));  
@@ -259,6 +265,18 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
     
     
     
+    @Nullable
+    @Override
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
+    {
+        livingdata = super.onInitialSpawn(difficulty, livingdata);
+
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
+        this.setHealth(this.getMaxHealth());
+  	
+		return livingdata;
+    }
+    
     /**
      * Push Entites away from the Witch when the witch is active
      * @param p_70970_1_
@@ -284,6 +302,23 @@ public class EntityRaiderWitch extends EntityRaiderRangeAttacker {
 			}
 		}
 	}
+	
+	  public void readEntityFromNBT(NBTTagCompound compound)
+	    {
+	        super.readEntityFromNBT(compound);
+
+	        this.setWitchActive(compound.getBoolean("isWitchActive"));
+	    }
+	    
+	    public void writeEntityToNBT(NBTTagCompound compound)
+	    {
+	        super.writeEntityToNBT(compound);
+	        
+	        
+	        compound.setBoolean("isWitchActive", this.isWitchActive());
+
+	    }
+
 	
 	/** 
 	 * Used to make the witch sit and look at the ground.

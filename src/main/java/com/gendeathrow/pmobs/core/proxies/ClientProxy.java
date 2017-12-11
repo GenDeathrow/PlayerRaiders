@@ -1,6 +1,7 @@
 package com.gendeathrow.pmobs.core.proxies;
 
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
+import com.gendeathrow.pmobs.core.init.RegisterItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -41,15 +42,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.Init(event);
 		
-//		registerHandlers();
-//	
-//		FMLClientHandler.instance().getClient().getItemColors().registerItemColorHandler(new IItemColorHandler(), ModItems.spawnEgg);
-//
-//		registerItemModel(ModItems.backupTransmitter);  
-//		registerItemModel(ModItems.spawnEgg);
-//		registerItemModel(ModItems.bruteSerum);  
-//		registerItemModel(ModItems.bruteSerumSample);  
-//		registerItemModel(ModItems.satTransmitterPart);  
+
 	}
 	
 	@Override
@@ -63,9 +56,7 @@ public class ClientProxy extends CommonProxy
 	public void registerHandlers()
 	{
 		super.registerHandlers();
-		//System.out.println("client");
-//		MinecraftForge.EVENT_BUS.register(new RaidNotification());
-//		MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+
 	}
 	
 	@Override
@@ -78,7 +69,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderers()
 	{
-		
+		RegisterItems.registerRenderer();
 		RegisterEntities.RegisterRenderers();
 		
 		//RenderingRegistry.registerEntityRenderingHandler(EntityRaider.class, EntityRaiderRenderer.FACTORY);

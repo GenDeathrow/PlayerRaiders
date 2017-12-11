@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
-import com.gendeathrow.pmobs.entity.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 import com.gendeathrow.pmobs.storage.InventoryStroageModifiable;
 
 import net.minecraft.block.Block;

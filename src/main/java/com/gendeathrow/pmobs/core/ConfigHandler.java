@@ -158,19 +158,7 @@ public class ConfigHandler
 			config.moveProperty(progCat, "Raid Difficulty Day Progression", remove.getName());
 		}
 		
-		String esmaddon = "esm_addon";
- 		//ESM stuff
-		PMSettings.esmDiggingPercentage = config.getFloat("Digging AI Percentage", esmaddon, .3f, 0, 1, "Sets percentage of Raiders that will gain the Digging AI(RNG Gods make the true decisions)");
-		PMSettings.esmDemolitionRaidDiff = config.getInt("Demolition AI Raid Difficulty", esmaddon, 1, 0, Integer.MAX_VALUE, "TNT mobs wont start till x Raid Difficulty based of x amount of dayd set in 'Mob Difficulty Progression' ");
-		PMSettings.esmDemoPercentage = config.getFloat("Demolition AI FineTuning %", esmaddon, 1, 0, 1, "This is meant to make fine tuning to esm percentage. Math->(esmmod% * raidermod% = new%) Example:(1%(.01) * 50%(.5) = 0.5%(.005))");
-		PMSettings.esmDiggingTools = config.getInt("Digging Tools Chance", esmaddon, 20, 0, 100, "Sets how many diggers get digging tools?");
-		PMSettings.esmDiamondDiggingTools = config.getInt("Digging Tools Diamond Chance", esmaddon, 5, 0, 100, "Sets how many diggers get Diamond digging tools?");
-		PMSettings.esmDiamondToolsRaidDiff = config.getInt("Digging Tools Diamond on Raid Difficulty", esmaddon, 2, 0, Integer.MAX_VALUE, "Sets on what Raid Difficulty you see diamond Tools");
-		PMSettings.esmDigginRaidDiff = config.getInt("Digging AI Raid Difficulty", esmaddon, 0, 0, Integer.MAX_VALUE, "Digging mobs wont start till x Raid Difficulty based of x amount of dayd set in 'Mob Difficulty Progression' ");
-		
-		
-		
-		
+	
 		String items = "items";
  		//ESM stuff
 		PMSettings.dropSerum = config.getBoolean("Brutes Drop Serum Samples", items, true, "If false Brutes dont drop samples. THIS IS THE ONLY WAY TO GET THEM");

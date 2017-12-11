@@ -1,9 +1,9 @@
 package com.gendeathrow.pmobs.client.model.renderer.layers;
 
 import com.gendeathrow.pmobs.client.LayerFeatures;
-import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
+import com.gendeathrow.pmobs.client.model.RaiderModel;
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
