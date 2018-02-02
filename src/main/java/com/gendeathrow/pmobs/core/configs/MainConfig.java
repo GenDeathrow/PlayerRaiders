@@ -4,12 +4,10 @@ import java.io.File;
 
 import org.apache.logging.log4j.Level;
 
-import com.gendeathrow.pmobs.common.CustomItemDrop;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 
-import net.minecraft.init.Items;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
@@ -30,14 +28,10 @@ public class MainConfig
 	public static void preInit()
 	{
 		File file = new File(configDir, "settings.cfg");
-		
 		config = new Configuration(file);
-		
 		config.load();
 		
-		
 		PMSettings.renderNameTags = config.getBoolean("Render Name Tags", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders Name tags about thier heads.");
-		
 		PMSettings.renderOverlays = config.getBoolean("Render Skin Overlays", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders skins overlay features.");
 	}
 	
@@ -60,7 +54,7 @@ public class MainConfig
 		
 		//PMSettings.sprintersOnlyNight = config.getBoolean("Special Mobs Spawn at Night Only", mobs, false, "Hard/Fast/Special Mobs will only Spawn at night time only. (Except on hard days!)");
 		
-		PMSettings.removeVanillaSpawners = config.getBoolean("Remove Vanilla Mob Spawner", mobs, false, "Remove Vanilla Mob spawners from Dungeon Hooks");
+		PMSettings.removeVanillaSpawners = config.getBoolean("Remove Vanilla Mob Spawner", mobs, false, "Remove Vanilla Mob spawners from Dungeon Hooks, So only raiders will have spawners & possible other modded mobs.");
 			
 		PMSettings.raidersSpawnerWeight = config.getInt("Mob Spawner Weight", mobs, 200, 1, 1000, "Changes dungeon spawner weight for raiders. Example is zombies are 200, where skeletons are 100.");
 		
@@ -76,12 +70,14 @@ public class MainConfig
 		PMSettings.torchStopSpawns = config.getBoolean("Torches/GlowStone Stop Spawning", mobs, true, "GlowStone and torches will still stop a 7x7x7 spawn area. If cant see sky. Only works with 'Spawn in Daylight' == true");
 		
 		// Mob AI stuff
-		PMSettings.leapAttackAI = config.getBoolean("Leap Attack", mobai, true, "Gives some Raiders the abilit to leap attack, small chance increases with each raid difficulty");
+		PMSettings.leapAttackAI = config.getBoolean("Leap Attack", mobai, true, "Gives some Raiders the ability to leap attack, small chance increases with each raid difficulty");
 		PMSettings.veryHostile = config.getBoolean("Hostile to All", mobai, true, "Raiders will attack any Hostile mob that moves. Raiders will always attack passive mobs regaurdless of settings.");
 		
 		PMSettings.spawnNether = config.getBoolean("Enable Nether", mobs, true, "Spawn in Nether");
 		PMSettings.spawnEnd = config.getBoolean("Enable The End", mobs, false, "Spawn in The End");
 		
+		
+		/*
 		// Raiders Classes		
 		config.addCustomCategoryComment(classes, "Edit Class Specific options. Adding Drops Example: 'ModID:Item:Meta:Qty:Chance(0.01 - 1)'");
 			PMSettings.bruteClass = config.getBoolean("Brute Class Enabled", classes, true, "Adds Brute to the mix. They are slower, bigger, extra health, and hit alot harder");
@@ -150,6 +146,9 @@ public class MainConfig
 			//EnumRaiderRole.RANGED.setLoot(PMSettings.rangerDrops);
 			//EnumRaiderRole.RANGED.setWeight(PMSettings.screamerWeight);
 			//EnumRaiderRole.RANGED.setStartDiff(PMSettings.screamerStartDiff);
+			 * 
+			 * 
+			 */
 			
 		// Progression Difficulty stats
 		String progCat = "Progessive Difficulty";

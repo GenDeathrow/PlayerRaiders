@@ -35,7 +35,7 @@ public class RaiderManager
 	public static final HashMap<String, RaiderData> raidersList = new HashMap<String, RaiderData>();
 	//public static List<RaiderData> raiderWeighted = Lists.<RaiderData>newArrayList();
 	
-	public static final File raiderFile = new File(MainConfig.configDir, "raiders.json");
+	public static final File raiderFile = new File(MainConfig.configDir, "raiders_skins.json");
 	
 	public static final File whiteListFolder = new File("raidersWhitelist");
 	
@@ -87,6 +87,7 @@ public class RaiderManager
 		}
 	}
 	
+	//TODO
 	// Cant get rid of herobrine.. he will add him self back
 	protected static void permanentRaiders()
 	{
@@ -140,7 +141,7 @@ public class RaiderManager
 
 	                raidersList.putAll(parseJson(FileUtils.readFileToString(raiderFile)));
                 
-	                permanentRaiders();
+	                //permanentRaiders();
 	                
 	                getTwitchSubscribers();
 	            }
@@ -177,9 +178,7 @@ public class RaiderManager
 	        	IOUtils.closeQuietly(fo);
 	        }
 	}
-
-	    
-	    
+	
 	public static Map<String, RaiderData> parseJson(String p_150881_1_)
 	{
 	        JsonElement jsonelement = (new JsonParser()).parse(p_150881_1_);
@@ -195,25 +194,34 @@ public class RaiderManager
 
 	            for (Entry<String, JsonElement> entry : jsonobject.entrySet())
 	            {
+	            	
 	                String playerOwner = (String)entry.getKey();
+	                
+	            	if(playerOwner.equalsIgnoreCase("_exampleRaider")) 
+	            		continue;
+
 
 	                if (playerOwner != null)
 	                {
 	                	JsonObject playerData = entry.getValue().getAsJsonObject();
 	                	
 	                	int weight = 10;
-	                	
 	                	UUID uuid = null;
+	                	boolean isEnabled = true;
 	                	
 	                	if(playerData.has("weight"))
 	                		weight = playerData.get("weight").getAsInt();
-
-	                	if(playerData.has("uuid"))
-	                		uuid = UUID.fromString(playerData.get("uuid").getAsString());
+	                	
+	                	//TODO not working yet
+	                	if(playerData.has("enabled"))
+	                		isEnabled = playerData.get("enabled").getAsBoolean();
 	                				
 	                	GameProfile playerProfile = new GameProfile(uuid, playerOwner);
 	                	
-	                	RaiderData raiderData = new RaiderData(playerProfile, weight);
+	                	RaiderData raiderData = new RaiderData(playerProfile, weight, isEnabled);
+	                	
+	                	if(playerData.has("_comment"))
+	                		raiderData.setComment(playerData.get("_comment").getAsString());
 	                	
 	                	if(!map.containsKey(playerOwner))
 	                		map.put(playerOwner, raiderData);
@@ -234,18 +242,32 @@ public class RaiderManager
 	public static JsonObject dumpJson(Map<String, RaiderData> p_150880_0_)
 	{
 	        JsonObject jsonobject = new JsonObject();
+	        
+	        // Example
+	        JsonObject jsonobject1 = new JsonObject();
+	        
+	        jsonobject1.addProperty("_weight", "True Weight System, So you can tweak which skins you want to see more.");
+	                
+	        jsonobject1.addProperty("_enabled", "After you get your Twitch list, you may have broken skins because ppl have changed names. So you can disable them here.");
 
+	        //jsonobject1.addProperty("_lootdrop", "So you can add custom drop for a particular skin.");
+	        
+	        jsonobject1.addProperty("_comment", " Comment section is for you leave a comment if you disabled something to know why. or just any comment you want.");
+	                
+	        jsonobject.add("_exampleRaider", jsonobject1);
+	        
+	        // Raider Data
 	        for (Entry<String, RaiderData> entry : p_150880_0_.entrySet())
 	        {
 	            if (((RaiderData)entry.getValue()) != null)
 	            {
-	                JsonObject jsonobject1 = new JsonObject();
-	                
-	                if(entry.getValue().getProfile().getId() != null)
-	                	jsonobject1.addProperty("uuid", entry.getValue().getProfile().getId().toString());
+	                jsonobject1 = new JsonObject();
 	                
 	                jsonobject1.addProperty("weight", (Number)Integer.valueOf(entry.getValue().itemWeight));
 	                
+	                jsonobject1.addProperty("enabled", entry.getValue().isEnabled());
+	                
+	                jsonobject1.addProperty("_comment", " ");
 	                
 	                jsonobject.add(((String)entry.getKey()), jsonobject1);
 	            }
@@ -291,16 +313,6 @@ public class RaiderManager
 					e.printStackTrace();
 				}
 			}
-		
-//			if(subs.exists())
-//			{
-//				try 
-//				{
-//					parseTwitchSubsWhiteList(subs);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
 		}
 		
 	}

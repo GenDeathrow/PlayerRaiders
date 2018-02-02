@@ -23,6 +23,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -88,6 +89,9 @@ public class EntityRaiderBase extends EntityMob{
 	protected final EntityAIWatchClosest watchClosestAI =  new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F);
 	protected final EntityAIWander wanderAI = new EntityAIWander(this, 1.0D);
 	protected final EntityAILookIdle lookIdleAI = new EntityAILookIdle(this);
+	
+    private boolean isLeapAttackTaskSet = false;
+    private final EntityAILeapAtTarget leapAttack = new EntityAILeapAtTarget(this, 0.4F);
 	    
 	
 	public EntityRaiderBase(World worldIn){
@@ -126,6 +130,23 @@ public class EntityRaiderBase extends EntityMob{
         this.tasks.addTask(2, new EntityAIMoveTowardsRestriction(this, 1.0D));
 	}
     
+    
+	public void setLeapAttack(boolean enabled)
+	{
+		if (this.isLeapAttackTaskSet != enabled)
+		{
+			this.isLeapAttackTaskSet = enabled;
+
+			if (enabled)
+			{
+				this.tasks.addTask(1, this.leapAttack);
+			}
+			else
+			{
+	           this.tasks.removeTask(this.leapAttack);
+			}
+		}
+	}
     /**
      * Will the raider walking speed be reduced in daylight?
      * @return
@@ -450,6 +471,9 @@ public class EntityRaiderBase extends EntityMob{
     }
     
     
+    
+    public void raidersExtraDropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source) {   }
+    
     //TODO
     @Override
 	public void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
@@ -470,6 +494,8 @@ public class EntityRaiderBase extends EntityMob{
 				
 				this.world.spawnEntity(skull);
 			}
+			
+			this.raidersExtraDropLoot(wasRecentlyHit, lootingModifier, source);
 			
 //			if(PMSettings.dropSerum && this.getRaiderRole() == EnumRaiderRole.BRUTE && this.getRNG().nextDouble() <= 0.10)
 //			{

@@ -3,6 +3,7 @@ package com.gendeathrow.pmobs.entity.mob;
 import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
 
 import net.minecraft.entity.IEntityLivingData;
@@ -49,6 +50,9 @@ public class EntityTwitcher extends EntityRaiderBase{
     		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Tweaker Health", -.5, 2));
 
 	        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.30D);
+	        
+	        if(!this.isChild() && PMSettings.leapAttackAI && rand.nextDouble() < .07 + difficultyManager.calculateProgressionDifficulty(.05, .10))
+	        	this.setLeapAttack(true);  
         	
     		return livingdata;
     }

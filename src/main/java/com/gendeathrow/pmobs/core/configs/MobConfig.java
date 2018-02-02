@@ -4,11 +4,12 @@ import java.io.File;
 
 import com.gendeathrow.pmobs.util.JsonConfig;
 
-public class EquimentConfigs extends JsonConfig{
+public class MobConfig extends JsonConfig{
 
-	public EquimentConfigs(File file) {
+	public MobConfig(File file) {
 		super(file);
 	}
 
-
+	
+	
 }

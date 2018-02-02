@@ -1,6 +1,7 @@
 package com.gendeathrow.pmobs.core;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.configs.ConfigHandler;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
 
@@ -52,6 +53,8 @@ public class RaidersMain
     {
 		logger = event.getModLog();
 		
+		ConfigHandler.preInit();
+		
     	proxy.preInit(event);
     	
     	RegisterEntities.Register();
@@ -66,6 +69,7 @@ public class RaidersMain
     public void init(FMLInitializationEvent event)
     {
     	proxy.Init(event);
+    	ConfigHandler.init();
     	RegisterEntities.RegisterSpawns();
     	RegisterEntities.RegisterSpawners();
 		RaidersSoundEvents.register();
@@ -75,5 +79,6 @@ public class RaidersMain
     public void postinit(FMLPostInitializationEvent event)
     {
     	proxy.postInit(event);
+    	ConfigHandler.postInit();
     }
 }

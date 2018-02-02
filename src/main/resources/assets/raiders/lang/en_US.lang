@@ -7,7 +7,7 @@ entity.raider.name=Raider
 entity.brute.name=Brute
 entity.witch.name=Witch
 entity.tweaker.name=Tweaker
-entity.ranged.name=Ranged
+entity.ranged.name=Archer
 entity.pyromaniac.name=Pyromaniac
 entity.friendly=Friendly
 

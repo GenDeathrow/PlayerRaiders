@@ -1,8 +1,6 @@
 package com.gendeathrow.pmobs.core;
 
-import java.util.ArrayList;
-
-import com.gendeathrow.pmobs.common.CustomItemDrop;
+import com.gendeathrow.pmobs.handlers.LootManager;
 
 public class PMSettings 
 {
@@ -36,8 +34,8 @@ public class PMSettings
 	public static boolean leapAttackAI = true;
 
 	// Raiders Classes
+	public static boolean raiderClass = true;
 	public static boolean pyroClass = true;
-		public static float pyroChance = 0.05f;
 	public static boolean bruteClass = true;
 	public static boolean tweakersClass = true;
 	public static boolean screamerClass = true;
@@ -69,12 +67,12 @@ public class PMSettings
 	
 	public static float daySpeedRestiction = 0.60F;
 
-	public static ArrayList<CustomItemDrop> screamerDrops;
-	public static ArrayList<CustomItemDrop> tweakerDrops;
-	public static ArrayList<CustomItemDrop> pyroDrops;
-	public static ArrayList<CustomItemDrop> noneDrops;
-	public static ArrayList<CustomItemDrop> bruteDrops;
-	public static ArrayList<CustomItemDrop> rangerDrops;
+	public static LootManager screamerDrops;
+	public static LootManager tweakerDrops;
+	public static LootManager pyroDrops;
+	public static LootManager noneDrops;
+	public static LootManager bruteDrops;
+	public static LootManager rangerDrops;
 
 	public static int[] noSpawnDays;
 	

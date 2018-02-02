@@ -3,6 +3,7 @@ package com.gendeathrow.pmobs.entity.mob;
 import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
 
 import net.minecraft.entity.IEntityLivingData;
@@ -48,6 +49,9 @@ public class EntityPyromaniac extends EntityRaiderBase{
     {		
     		livingdata = super.onInitialSpawn(difficulty, livingdata);
     		
+	        if(!this.isChild() && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
+	        	this.setLeapAttack(true);  
+	        
     		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
     		
     		return livingdata;

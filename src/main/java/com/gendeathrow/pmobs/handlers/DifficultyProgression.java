@@ -94,23 +94,14 @@ public class DifficultyProgression
     {
     	return ((int)(getDay(worldObj) / PMSettings.dayDifficultyProgression));
     }
-    
-    
-    
-    
-    public void setSpeedDifficulty(DifficultyInstance difficulty)
+      
+    public void setSpeedDifficulty(DifficultyInstance difficulty, double baseSpeed)
     {  
-    	//if(raider.isChild() || raider.isHeroBrine() || (!(raider instanceof EntityRaider)) return; // || raider.getRaiderRole() != EnumRaiderRole.PYROMANIAC)) return;
+    	if(raider.isChild()) return; // || raider.getRaiderRole() != EnumRaiderRole.PYROMANIAC)) return;
     	
     	if(rand.nextDouble() < calculateProgressionDifficulty(PMSettings.SpeedPercentageIncrease, PMSettings.SpeedMaxPercentage))
     	{
-    		double speedbase = 0.25;
-    		
-    		//TODO
-//    		if(raider.getRaiderRole() == EnumRaiderRole.BRUTE)
-//    			speedbase = .15;
-    			
-        	double speed = speedbase * rand.nextDouble();
+        	double speed = baseSpeed * rand.nextDouble();
             raider.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).applyModifier(new AttributeModifier(EntityRaiderBase.SPEED_BOOST_ID, "Speed Bonus", speed , 0));
     	}
     }

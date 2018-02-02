@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.core.PMSettings;
+
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -28,6 +30,8 @@ public class EntityRaider extends EntityRaiderBase{
 	private static final AttributeModifier BABY_SPEED_BOOST = new AttributeModifier(BABY_SPEED_BOOST_ID, "Baby speed boost", 0.45D, 1);
 	
 	private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(EntityRaiderBase.class, DataSerializers.BOOLEAN);
+	
+	
 	
 	public EntityRaider(World worldIn) {
 		super(worldIn);
@@ -66,6 +70,9 @@ public class EntityRaider extends EntityRaiderBase{
     		
     		if(this.world.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance) 
 	        	this.setChild(true); 
+	        
+	        if(!this.isChild() && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
+	        	this.setLeapAttack(true);  
   
     		return livingdata;
     }
