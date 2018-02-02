@@ -91,13 +91,19 @@ public class RegisterEntities {
 	   		}
      	
 	   	RaidersMain.logger.info("Added "+ biomes.length +" biomes to Raiders spawn list.");
-  	
-	   	EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
-	   	EntityRegistry.addSpawn(EntityBrute.class, PMSettings.bruteWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
-	   	EntityRegistry.addSpawn(EntityRaiderWitch.class, PMSettings.screamerWeight, 1, 1, EnumCreatureType.MONSTER, biomes);
-	   	EntityRegistry.addSpawn(EntityTwitcher.class, PMSettings.tweakerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
-	   	EntityRegistry.addSpawn(EntityPyromaniac.class, PMSettings.pyroWeight, 1, 1, EnumCreatureType.MONSTER, biomes);
-	   	EntityRegistry.addSpawn(EntityRanger.class, PMSettings.rangerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   	
+	   	if(PMSettings.raiderClass)
+	   		EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   	if(PMSettings.bruteClass)
+	   		EntityRegistry.addSpawn(EntityBrute.class, PMSettings.bruteWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   	if(PMSettings.screamerClass)
+	   		EntityRegistry.addSpawn(EntityRaiderWitch.class, PMSettings.screamerWeight, 1, 1, EnumCreatureType.MONSTER, biomes);
+	   	if(PMSettings.tweakersClass)
+	   		EntityRegistry.addSpawn(EntityTwitcher.class, PMSettings.tweakerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   	if(PMSettings.pyroClass)
+	   		EntityRegistry.addSpawn(EntityPyromaniac.class, PMSettings.pyroWeight, 1, 1, EnumCreatureType.MONSTER, biomes);
+	   	if(PMSettings.rangerClass)
+	   		EntityRegistry.addSpawn(EntityRanger.class, PMSettings.rangerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
 
 	}
 
