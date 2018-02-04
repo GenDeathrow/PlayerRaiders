@@ -5,6 +5,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
 
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -21,6 +22,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
@@ -68,6 +70,9 @@ public class EntityRaider extends EntityRaiderBase{
     		
     		livingdata = super.onInitialSpawn(difficulty, livingdata);
     		
+    		//TODO need to change to my custom
+    		this.setEquipmentBasedOnDifficulty(difficulty);
+    		
     		if(this.world.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance) 
 	        	this.setChild(true); 
 	        
@@ -75,6 +80,12 @@ public class EntityRaider extends EntityRaiderBase{
 	        	this.setLeapAttack(true);  
   
     		return livingdata;
+    }
+    
+    @Nullable
+    protected ResourceLocation getLootTable()
+    {
+        return RegisterEntities.raidersLoot;
     }
 	
     @Override

@@ -3,6 +3,7 @@ package com.gendeathrow.pmobs.entity.mob;
 import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
@@ -64,6 +66,12 @@ public class EntityBrute extends EntityRaiderBase{
 
         	
     		return livingdata;
+    }
+    
+    @Nullable
+    protected ResourceLocation getLootTable()
+    {
+        return RegisterEntities.bruteLoot;
     }
     
 	// Raider attacks Target

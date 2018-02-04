@@ -4,7 +4,7 @@ import com.gendeathrow.pmobs.client.model.RaiderModel;
 import com.gendeathrow.pmobs.client.model.TwitcherModel;
 import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.mob.EntityTwitcher;
+import com.gendeathrow.pmobs.entity.mob.EntityTweaker;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class EntityTwitcherRenderer extends RenderBiped<EntityTwitcher> 
+public class EntityTwitcherRenderer extends RenderBiped<EntityTweaker> 
 {
 	private final ModelBiped defaultModel;
 	    
@@ -27,11 +27,24 @@ public class EntityTwitcherRenderer extends RenderBiped<EntityTwitcher>
 		super(renderManager, new TwitcherModel(0F), 0.5F);
 		
 		this.defaultModel = this.getMainModel();
-		this.addLayer(new LayerBipedArmor(this));
+		this.addLayer(new LayerBipedArmor(this) {
+		    @Override
+			protected void initArmor()
+		    {
+		        this.modelLeggings = new TwitcherModel(0.5F);
+		        this.modelArmor = new TwitcherModel(1.0F);
+		    }
+		});
 		this.addLayer(new LayerHeldItem(this));
 		this.addLayer(new LayerArrow(this));
 		
-		this.addLayer(new LayerFeatureRenderer(this));
+		this.addLayer(new LayerFeatureRenderer(this) {
+		    @Override
+			protected void initModel()
+		    {
+		       this.layerModel = new TwitcherModel(0F);
+		    }
+		});
 	        
         if(!PMSettings.renderNameTags) 
         	this.NAME_TAG_RANGE = 0;
@@ -51,13 +64,13 @@ public class EntityTwitcherRenderer extends RenderBiped<EntityTwitcher>
 	}
 	
 	@Override
-	protected ResourceLocation getEntityTexture(EntityTwitcher entity) 
+	protected ResourceLocation getEntityTexture(EntityTweaker entity) 
 	{
 		return entity.getLocationSkin();
 	}
 	
 	@Override
-	public void doRender(EntityTwitcher entity, double x, double y, double z, float entityYaw, float partialTicks)
+	public void doRender(EntityTweaker entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
 		if(!PMSettings.renderNameTags)
 		{

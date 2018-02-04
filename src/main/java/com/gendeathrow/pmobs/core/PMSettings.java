@@ -1,13 +1,10 @@
 package com.gendeathrow.pmobs.core;
 
-import com.gendeathrow.pmobs.handlers.LootManager;
-
 public class PMSettings 
 {
 	
-	public static boolean attackAll = true;
+	public static boolean attackAll = false;
 
-	public static float daySpawnPercentage = 0.45f;
 	
 	public static float setEquptmentHard = .1f;
 	
@@ -24,13 +21,6 @@ public class PMSettings
 
 	public static String[] whitelists;
 	
-
-	@Deprecated
-	public static int daySpawnWeight = 100;
-	@Deprecated
-	public static int dayMaxGroupSpawn = 1;
-
-
 	public static boolean leapAttackAI = true;
 
 	// Raiders Classes
@@ -41,12 +31,12 @@ public class PMSettings
 	public static boolean screamerClass = true;
 	public static boolean rangerClass = true;
 	
-	public static int pyroWeight = 4;
-	public static int bruteWeight = 7;
-	public static int tweakerWeight = 5;
-	public static int noneWeight = 80;
-	public static int screamerWeight = 2;
-	public static int rangerWeight = 10;
+	public static int pyroWeight = 50;
+	public static int bruteWeight = 94;
+	public static int tweakerWeight = 60;
+	public static int noneWeight = 100;
+	public static int screamerWeight = 10;
+	public static int rangerWeight = 100;
 
 	
 	public static int rangerStartDiff = 1;
@@ -67,16 +57,9 @@ public class PMSettings
 	
 	public static float daySpeedRestiction = 0.60F;
 
-	public static LootManager screamerDrops;
-	public static LootManager tweakerDrops;
-	public static LootManager pyroDrops;
-	public static LootManager noneDrops;
-	public static LootManager bruteDrops;
-	public static LootManager rangerDrops;
-
 	public static int[] noSpawnDays;
 	
-	public static boolean shouldDaylightSpawm = true;
+	public static boolean shouldDaylightSpawm = false;
 
 	public static boolean veryHostile;
 
@@ -89,9 +72,6 @@ public class PMSettings
 	public static double SpeedPercentageIncrease = 0.05F;
 	public static double SpeedMaxPercentage = 0.40F;
 	
-	
-	
-
 	public static int[] dimensions = new int[]{0};
 	
 	// SpawnSettings

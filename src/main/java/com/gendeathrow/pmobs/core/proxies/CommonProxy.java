@@ -2,6 +2,7 @@ package com.gendeathrow.pmobs.core.proxies;
 
 import com.gendeathrow.pmobs.common.BruteSerumHandler;
 import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -50,6 +51,7 @@ public class CommonProxy
 	{
 		BruteSerumHandler.registerPotion(); 
 		PlayerDataProvider.register();
+		RegisterEntities.RegisterLootTables();
 
 	}
 	public void postInit(FMLPostInitializationEvent event) 

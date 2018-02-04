@@ -56,7 +56,7 @@ public class RaidersSkinManager
 						
 						try 
 						{
-							System.out.println("Getting Profile "+ raider.getOwnerName() +" - "+ raider.getProfile().getId().toString());
+//							System.out.println("Getting Profile "+ raider.getOwnerName() +" - "+ raider.getProfile().getId().toString());
 							Thread.sleep(300);
 							
 						} catch (InterruptedException e) 

@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitch;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitchAttack;
 
@@ -21,6 +22,8 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntityArrow.PickupStatus;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.PotionTypes;
@@ -36,6 +39,8 @@ import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -163,13 +168,54 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
 
             
             if(this.isWitchActive())
+
             	this.RemoveEntitiesfromArea(this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().grow(30.0D, 10.0D, 30.0D)));
         }
-
+    	sendThrownEntitiesBack();
         super.onLivingUpdate();
     }
 	
 	
+	public void sendThrownEntitiesBack() {
+		
+		
+		List<EntityArrow> thrownList = this.world.getEntitiesWithinAABB(EntityArrow.class, this.getEntityBoundingBox().grow(5));
+		
+		if(thrownList.isEmpty()) return;
+		
+		for(EntityArrow arrow : thrownList) {
+			if(arrow.shootingEntity == this) continue;
+			
+				Entity target = arrow.shootingEntity;
+				if(target == null) continue;
+				arrow.shootingEntity = this;
+				arrow.pickupStatus = PickupStatus.DISALLOWED;
+				returnArrow(arrow, target);
+		}
+		
+	}
+	
+	private void returnArrow(EntityArrow arrow, Entity target) {
+
+        this.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 2.0F, 1.2F / (this.rand.nextFloat() * 0.2F + 0.9F));
+        
+			for(int i = 0; i < 20; i++)
+				this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, arrow.posX + (this.rand.nextDouble() * .5), arrow.posY + (this.rand.nextDouble() * .5), arrow.posZ + (this.rand.nextDouble() * .5), this.rand.nextDouble() * .5, this.rand.nextDouble() * .5, this.rand.nextDouble() * .5, new int[0]);
+
+		if(target == null) return;
+		
+        double d0 = target.posX - arrow.posX;
+        double d1 = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - arrow.posY;
+        double d2 = target.posZ - arrow.posZ;
+        double d3 = (double)MathHelper.sqrt(d0 * d0 + d2 * d2);
+		arrow.setThrowableHeading(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, (float)(14 - this.world.getDifficulty().getDifficultyId() * 4));
+		
+	}
+	
+	@Override
+    public int getMaxSpawnedInChunk() {
+        return 1;
+    }
 	
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
@@ -277,6 +323,12 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
 		return livingdata;
     }
     
+    
+    @Nullable
+    protected ResourceLocation getLootTable()
+    {
+        return RegisterEntities.witchLoot;
+    }
     /**
      * Push Entites away from the Witch when the witch is active
      * @param p_70970_1_

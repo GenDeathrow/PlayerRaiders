@@ -26,11 +26,24 @@ public class EntityWitchRenderer extends RenderBiped<EntityRaiderWitch>
 		super(renderManager, new RaiderWitchModel(0F), 0.5F);
 		
 		this.defaultModel = this.getMainModel();
-		this.addLayer(new LayerBipedArmor(this));
+		this.addLayer(new LayerBipedArmor(this) {
+		    @Override
+			protected void initArmor()
+		    {
+		        this.modelLeggings = new RaiderWitchModel(0.5F);
+		        this.modelArmor = new RaiderWitchModel(1.0F);
+		    }
+		});
 		this.addLayer(new LayerHeldItem(this));
 		this.addLayer(new LayerArrow(this));
 		
-		this.addLayer(new LayerFeatureRenderer(this));
+		this.addLayer(new LayerFeatureRenderer(this) {
+		    @Override
+			protected void initModel()
+		    {
+		       this.layerModel = new RaiderWitchModel(0F);
+		    }
+		});
 	        
         if(!PMSettings.renderNameTags) 
         	this.NAME_TAG_RANGE = 0;

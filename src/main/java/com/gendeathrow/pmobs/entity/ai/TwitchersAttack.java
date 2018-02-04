@@ -1,15 +1,15 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import com.gendeathrow.pmobs.entity.mob.EntityTwitcher;
+import com.gendeathrow.pmobs.entity.mob.EntityTweaker;
 
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 
 public class TwitchersAttack extends EntityAIAttackMelee{
 
-    private final EntityTwitcher raider;
+    private final EntityTweaker raider;
     private int raiseArmTicks;
 
-    public TwitchersAttack(EntityTwitcher entityRaiderBase, double speedIn, boolean longMemoryIn)
+    public TwitchersAttack(EntityTweaker entityRaiderBase, double speedIn, boolean longMemoryIn)
     {
         super(entityRaiderBase, speedIn, longMemoryIn);
         this.raider = entityRaiderBase;

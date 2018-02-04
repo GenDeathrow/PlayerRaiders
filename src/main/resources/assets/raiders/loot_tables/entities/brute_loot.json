@@ -3,7 +3,7 @@
     "pools": [
 	{
 			"name" : "main",
-            "rolls": 1,
+            "rolls": 2,
             "entries": [
                 {
                     "type": "item",
@@ -18,49 +18,10 @@
                             }
                         }
                     ]
-                },
-				{
+                },{
                     "type": "item",
-                    "name": "minecraft:string",
-                    "weight": 5,
-					
-					"functions": [
-                        {
-                            "function": "set_count",
-                            "count": {
-                                "min": 0,
-                                "max": 2
-                            }
-                        },
-                        {
-                            "function": "looting_enchant",
-                            "count": {
-                                "min": 0,
-                                "max": 1
-                            }
-                        }
-                    ]
-                },
-                {
-                    "type": "item",
-                    "name": "minecraft:stick",
-                    "weight": 10,
-					"functions": [
-                        {
-                            "function": "set_count",
-                            "count": {
-                                "min": 0,
-                                "max": 2
-                            }
-                        },
-                        {
-                            "function": "looting_enchant",
-                            "count": {
-                                "min": 0,
-                                "max": 1
-                            }
-                        }
-                    ]
+                    "name": "minecraft:red_flower",
+                    "weight": 5
                 },
 				{
                     "type": "item",
@@ -76,10 +37,19 @@
                         }
                     ]
                 },
-                {
+				{
                     "type": "item",
-                    "name": "minecraft:leather",
-                    "weight": 1
+                    "name": "raiders:brute_serum_sample",
+                    "weight": 9,
+					"functions": [
+                        {
+                            "function": "looting_enchant",
+                            "count": {
+                                "min": 1,
+                                "max": 2
+                            }
+                        }
+                    ]
                 }
             ]
         },

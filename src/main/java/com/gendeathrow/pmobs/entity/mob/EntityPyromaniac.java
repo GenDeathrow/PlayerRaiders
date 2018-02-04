@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
 
 import net.minecraft.entity.IEntityLivingData;
@@ -17,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
@@ -56,6 +58,12 @@ public class EntityPyromaniac extends EntityRaiderBase{
     		
     		return livingdata;
 	}
+    
+    @Nullable
+    protected ResourceLocation getLootTable()
+    {
+        return RegisterEntities.pyromaniacLoot;
+    }
 	
 	@Override
 	protected SoundEvent getAmbientSound()

@@ -45,7 +45,7 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
     private boolean strafingBackwards;
     private int strafingTime = -1;
     
-    private final double moveSpeedAmp = 1.2D;
+    private final double moveSpeedAmp = 1.4D;
     private final float maxAttackDistance = 60;
     
     private int armAnimation = 20;
@@ -157,22 +157,23 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
         
         if (this.strafingTime > -1)
         {
-            if (d0 > (double)(this.maxAttackDistance * 0.85F))
+            if (d0 > (double)(this.maxAttackDistance * 0.75F))
             {
                 this.strafingBackwards = false;
             }
-            else if (d0 < (double)(this.maxAttackDistance * 0.35F))
+            else if (d0 < (double)(this.maxAttackDistance * 0.25F))
             {
                 this.strafingBackwards = true;
             }
 
-            this.raider.getMoveHelper().strafe(this.strafingBackwards ? -0.5F : 0.5F, this.strafingClockwise ? 0.5F : -0.5F);
+            this.raider.getMoveHelper().strafe(this.strafingBackwards ? -0.85F : 1F, this.strafingClockwise ? 0.75F : -0.75F);
             this.raider.faceEntity(entitylivingbase, 30.0F, 30.0F);
         }
         else
         {
             this.raider.getLookHelper().setLookPositionWithEntity(entitylivingbase, 30.0F, 30.0F);
         }
+        
         if (d0 < maxAttackDistance)
         {
         	if(this.attackTime <= 0)
@@ -197,11 +198,7 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
         		
         	}
         }
-        else
-        {
-            this.raider.getNavigator().clearPathEntity();
-            this.raider.getMoveHelper().setMoveTo(entitylivingbase.posX, entitylivingbase.posY, entitylivingbase.posZ, 1.0D);
-        }
+
 
         super.updateTask();
     }
@@ -254,8 +251,6 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
 		
     	List<Entity> entities = this.raider.world.getEntitiesWithinAABBExcludingEntity(this.raider, this.raider.getEntityBoundingBox().grow(10.0D, 3.0D, 10.0D));
     	
-    	System.out.println("cast push back");
-    	
     	if(!entities.isEmpty())
     	{
      	
@@ -266,8 +261,6 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
 		
     		for (Entity entity : entities)
     		{
-    			System.out.println("pushed back: "+ entity.getName());
-    			
     			
     	   		this.raider.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 1, 1.0F + (this.raider.world.rand.nextFloat() - this.raider.world.rand.nextFloat()) * 0.4F);
      	   		this.raider.playSound(SoundEvents.EVOCATION_ILLAGER_CAST_SPELL, 1, 1.0F + (this.raider.world.rand.nextFloat() - this.raider.world.rand.nextFloat()) * 0.4F);

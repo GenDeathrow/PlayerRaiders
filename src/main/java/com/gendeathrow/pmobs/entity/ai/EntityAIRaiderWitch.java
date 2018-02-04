@@ -24,7 +24,9 @@ public class EntityAIRaiderWitch  extends EntityAIBase{
    
       
    public boolean shouldExecute() {
-       return this.raider.world.isAnyPlayerWithinRangeAt(this.raider.posX, this.raider.posY, this.raider.posZ, 10.0D) || this.triggered;
+	   
+	   return this.raider.world.getNearestPlayerNotCreative(this.raider, 10) != null || this.triggered;
+       //return this.raider.world.isAnyPlayerWithinRangeAt(this.raider.posX, this.raider.posY, this.raider.posZ, 10.0D) || this.triggered;
    }
    
    

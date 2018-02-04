@@ -1,7 +1,7 @@
 package com.gendeathrow.pmobs.client.model;
 
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.mob.EntityTwitcher;
+import com.gendeathrow.pmobs.entity.mob.EntityTweaker;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,7 +23,7 @@ public class TwitcherModel extends RaiderModel{
 	{
 		super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
 
-		boolean twitcherActive = entityIn instanceof EntityTwitcher && ((EntityRaiderBase)entityIn).isArmsRaised();
+		boolean twitcherActive = entityIn instanceof EntityTweaker && ((EntityRaiderBase)entityIn).isArmsRaised();
     
     	if (twitcherActive)
         {

@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
 
 import net.minecraft.entity.IEntityLivingData;
@@ -15,13 +16,14 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityTwitcher extends EntityRaiderBase{
+public class EntityTweaker extends EntityRaiderBase{
 
-	public EntityTwitcher(World worldIn) {
+	public EntityTweaker(World worldIn) {
 		super(worldIn);
 	}
 
@@ -55,6 +57,12 @@ public class EntityTwitcher extends EntityRaiderBase{
 	        	this.setLeapAttack(true);  
         	
     		return livingdata;
+    }
+    
+    @Nullable
+    protected ResourceLocation getLootTable()
+    {
+        return RegisterEntities.tweakerLoot;
     }
     
     private int ScreamTick = 1200;

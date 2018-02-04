@@ -125,7 +125,6 @@ public class EntityRaiderBase extends EntityMob{
     @Override
 	protected void initEntityAI() {
     	super.initEntityAI();
-    	
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(2, new EntityAIMoveTowardsRestriction(this, 1.0D));
 	}
@@ -469,15 +468,12 @@ public class EntityRaiderBase extends EntityMob{
      	else
      		return super.isValidLightLevel();
     }
-    
-    
-    
-    public void raidersExtraDropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source) {   }
-    
+       
     //TODO
     @Override
 	public void dropLoot(boolean wasRecentlyHit, int lootingModifier, DamageSource source)
 	{
+
 		if(source.getTrueSource() != null && source.getTrueSource() instanceof EntityPlayer)
 		{
 			double dropit = this.rand.nextDouble();
@@ -495,8 +491,7 @@ public class EntityRaiderBase extends EntityMob{
 				this.world.spawnEntity(skull);
 			}
 			
-			this.raidersExtraDropLoot(wasRecentlyHit, lootingModifier, source);
-			
+		
 //			if(PMSettings.dropSerum && this.getRaiderRole() == EnumRaiderRole.BRUTE && this.getRNG().nextDouble() <= 0.10)
 //			{
 //				this.entityDropItem(new ItemStack(ModItems.bruteSerumSample), 0.0f);
