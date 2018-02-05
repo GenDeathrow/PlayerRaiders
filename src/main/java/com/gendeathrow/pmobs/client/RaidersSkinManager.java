@@ -36,7 +36,7 @@ public class RaidersSkinManager
 	 * @param raiderInfo
 	 */
 	public static void updateProfile(RaiderData raiderInfo) {
-		
+		System.out.print("");
 		if(raiderInfo == null) return;
 		
 		if(!raidersdata.contains(raiderInfo)) raidersdata.add(raiderInfo);

@@ -168,7 +168,6 @@ import com.google.gson.JsonObject;
 			while ((line = reader.readLine()) != null)
 			{
 				stringBuilder.append(line + "\n");
-				System.out.println(line);
 			}
 		    	
 			con.connect();
@@ -197,7 +196,6 @@ import com.google.gson.JsonObject;
 	        while ((line = reader.readLine()) != null)
 	        {
 	          stringBuilder.append(line + "\n");
-	          System.out.println(line);
 	        }
 	    	
 	        con.connect();

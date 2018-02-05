@@ -23,7 +23,7 @@ public class RaidersMain
 {
     public static final String MODID = "raiders";
     public static final String NAME = "Raiders";
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "@VERSION@";
     public static final String CHANNELNAME = "genraiders";
 
 	@Instance(MODID)

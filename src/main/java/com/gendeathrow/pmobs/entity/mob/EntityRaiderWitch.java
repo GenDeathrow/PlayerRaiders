@@ -220,10 +220,7 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
-    	
     	if(key == EntityRaiderWitch.IS_ACTIVE) {
-    		
-    		System.out.println(this.isWitchActive());
     		if(this.isWitchActive())
     			this.setWitchCombat();
     	}

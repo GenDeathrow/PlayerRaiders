@@ -16,7 +16,7 @@ public class RaiderClassConfigs extends JsonConfig{
 		super(new File(dir, "raider_classes.json"));
 	}
 
-	private String isEnabledID = "isEnabled";
+	private String isEnabledID = "isEnabled"; 
 	private String spawnWeightID = "spawnWeight";
 	private String startDiffID = "startDiff";
 	private String extraDropPercentageID = "extraDropPercentage";
@@ -25,23 +25,23 @@ public class RaiderClassConfigs extends JsonConfig{
 	public void readFile() {
 
 		
-		JsonObject raiderObject = defaultClassJson("Raider", PMSettings.raidersSpawnWeight, 0, 0.1, null);
+		JsonObject raiderObject = defaultClassJson("Raider", PMSettings.raidersSpawnWeight, 0);
 			PMSettings.raiderClass = isEnabled(raiderObject);
 			PMSettings.raidersSpawnWeight = getWeight(raiderObject);
 			//TODO Drops
 			
-		JsonObject bruteObject = defaultClassJson("Brute", PMSettings.bruteWeight, 0, 0.1, new Object[] {new ItemStack(RegisterItems.bruteSerumSample), 10});
+		JsonObject bruteObject = defaultClassJson("Brute", PMSettings.bruteWeight, 0);
 			PMSettings.bruteClass = isEnabled(bruteObject);
 			PMSettings.bruteWeight = getWeight(bruteObject);
 			PMSettings.bruteStartDiff = getStartDiff(bruteObject);
 			//TODO Drops
 			
-		JsonObject pyromaniacObject = defaultClassJson("Pyromaniac", PMSettings.pyroWeight, 0, 0.1, null);
+		JsonObject pyromaniacObject = defaultClassJson("Pyromaniac", PMSettings.pyroWeight, 0);
 			PMSettings.pyroClass = isEnabled(pyromaniacObject);
 			PMSettings.pyroWeight = getWeight(pyromaniacObject);
 			PMSettings.pyroStartDiff = getStartDiff(pyromaniacObject);
 		
-		JsonObject tweakerObject = defaultClassJson("Tweaker", PMSettings.tweakerWeight, 0, 0.1, null);
+		JsonObject tweakerObject = defaultClassJson("Tweaker", PMSettings.tweakerWeight, 0);
 			if(!tweakerObject.has("spawnOnlyAtNight")) {
 				tweakerObject.addProperty("spawnOnlyAtNight", false);
 				this.setHasChanged(true);
@@ -51,7 +51,7 @@ public class RaiderClassConfigs extends JsonConfig{
 			PMSettings.tweakerStartDiff = getStartDiff(tweakerObject);
 			PMSettings.tweakerOnlyNight =  tweakerObject.get("spawnOnlyAtNight").getAsBoolean();
 			
-		JsonObject witchObject = defaultClassJson("Witch", PMSettings.screamerWeight, 0, 0.1, new Object[] {new ItemStack(Items.DRAGON_BREATH), 1}, new Object[] {new ItemStack(Items.EMERALD), 10}, new Object[] {new ItemStack(Items.SPIDER_EYE), 20}, new Object[] {new ItemStack(Items.EXPERIENCE_BOTTLE, 3), 40}, new Object[] {new ItemStack(Items.MUSHROOM_STEW), 40}); 
+		JsonObject witchObject = defaultClassJson("Witch", PMSettings.screamerWeight, 0); 
 			if(!witchObject.has("hasFogEffect")) {
 				witchObject.addProperty("hasFogEffect", true);
 				this.setHasChanged(true);
@@ -61,7 +61,7 @@ public class RaiderClassConfigs extends JsonConfig{
 			PMSettings.screamerStartDiff = getStartDiff(witchObject);
 			PMSettings.screamerFogOn =  witchObject.get("hasFogEffect").getAsBoolean();
 			
-		JsonObject archerObject = defaultClassJson("Archer", PMSettings.rangerWeight, 1, 0.1, null);
+		JsonObject archerObject = defaultClassJson("Archer", PMSettings.rangerWeight, 1);
 			PMSettings.rangerClass = isEnabled(archerObject);
 			PMSettings.rangerWeight = getWeight(archerObject);
 			PMSettings.rangerStartDiff = getStartDiff(archerObject);
@@ -83,7 +83,7 @@ public class RaiderClassConfigs extends JsonConfig{
 	}
 	
 
-	public JsonObject defaultClassJson(String cat, int weight, int startDiff, double extraDropPercentage, Object[]... object) {
+	public JsonObject defaultClassJson(String cat, int weight, int startDiff) {
 		
 		JsonObject json  = this.getCategory(cat);
 		 

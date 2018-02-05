@@ -45,8 +45,6 @@ public class BruteSerumEffect  extends Potion
     	if(entityLivingBaseIn instanceof EntityPlayer)
     	{
     		((EntityPlayer)entityLivingBaseIn).eyeHeight = 2.5F;
-    		System.out.println("apply");
-
     	}
     	
     	
@@ -67,8 +65,6 @@ public class BruteSerumEffect  extends Potion
     	{
     		((EntityPlayer)entityLivingBaseIn).eyeHeight =((EntityPlayer)entityLivingBaseIn).getDefaultEyeHeight();;
     		((EntityPlayer)entityLivingBaseIn).stepHeight -= 1.4;
-    		System.out.println("remove");
-
     	}
     	
     	

@@ -24,7 +24,6 @@ public class CapabilityHandler
 
        if(!event.getCapabilities().containsKey(PLAYERSDATA)) {
         	event.addCapability(PLAYERSDATA, new PlayerDataProvider());
-        	System.out.println("attached cap "+ event.getClass().getName());
        }
     }
 }
