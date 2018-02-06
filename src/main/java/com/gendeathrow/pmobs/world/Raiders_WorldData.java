@@ -37,12 +37,17 @@ public class Raiders_WorldData extends WorldSavedData
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		lastHerobrineSpotted = nbt.getInteger(HEROBRINEID);
+		
+		RaiderClassDifficulty.readNBT(nbt);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) 
 	{
 		compound.setInteger(HEROBRINEID, lastHerobrineSpotted);
+		
+		RaiderClassDifficulty.writeNBT(compound);
+		
 		return compound;
 	}
 	

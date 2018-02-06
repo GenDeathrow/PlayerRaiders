@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.core.RaidersMain;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -69,7 +70,7 @@ public class EntityRanger extends AbstractRangeAttacker{
 	        
         this.targetTasks.addTask(1, new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, true));
         this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<EntityVillager>(this, EntityVillager.class, false));
-
+		this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, true));
 	}
 	
 	

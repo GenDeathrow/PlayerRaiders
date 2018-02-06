@@ -14,6 +14,7 @@ import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.gendeathrow.pmobs.storage.InventoryStroageModifiable;
+import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.block.Block;
@@ -35,6 +36,7 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -52,6 +54,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
@@ -115,11 +120,11 @@ public class EntityRaiderBase extends EntityMob{
 	protected void applyEntityAttributes()
 	{
 	        super.applyEntityAttributes();
-	        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(40.0D);
-	        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
+	        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(35.0D);
+	        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
 	        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.5D);
 	        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(3.0D);
-	        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10);
+	        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(15);
 	}
 
     @Override
@@ -151,7 +156,7 @@ public class EntityRaiderBase extends EntityMob{
      * @return
      */
     public boolean isDaylightSpeedReduced() {
-    	return true;
+    	return PMSettings.daySpeedRestiction != 1;
     }
     
 	@Override
@@ -240,6 +245,19 @@ public class EntityRaiderBase extends EntityMob{
     		
     		livingdata = super.onInitialSpawn(difficulty, livingdata);
 	        
+    		
+            if (livingdata == null)
+            {
+                livingdata = new EntityRaiderBase.GroupData(this.world.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance, EnumFaction.getRandomFaction(this, this.difficultyManager));
+            }
+            
+            if (livingdata instanceof EntityRaiderBase.GroupData)
+            {
+            	EntityRaiderBase.GroupData entityraider$groupdata = (EntityRaiderBase.GroupData)livingdata;
+
+            	this.setRaiderFaction(entityraider$groupdata.faction);
+            }
+            
 	        float f = difficulty.getClampedAdditionalDifficulty();
 	        
 	        GameProfile gameprofile = getRandomPlayerSkin();
@@ -267,6 +285,8 @@ public class EntityRaiderBase extends EntityMob{
 	        
 	        this.setEnchantmentBasedOnDifficulty(difficulty);
 	        
+	        this.difficultyManager.setupDifficutlyOfRaider(difficulty);
+	        
 	        if (this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null)
 	        {
 	            Calendar calendar = this.world.getCurrentDate();
@@ -280,6 +300,19 @@ public class EntityRaiderBase extends EntityMob{
 
 	        return livingdata;
 	}
+    
+    
+    
+    @Override
+    public ITextComponent getDisplayName()
+    {
+    	TextFormatting color = getRaiderFaction() == EnumFaction.FRIENDLY ? TextFormatting.GREEN : getRaiderFaction() == EnumFaction.HOSTILE ? TextFormatting.RED : TextFormatting.GRAY;
+    	
+        TextComponentString textcomponentstring = new TextComponentString(color + this.getName());
+        textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
+        textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
+        return textcomponentstring;
+    }
     
 	public DifficultyProgression getDifficultyProgession(){
 		return this.difficultyManager;
@@ -400,10 +433,8 @@ public class EntityRaiderBase extends EntityMob{
     		return true;
     	else if(PMSettings.veryHostile && EntityMob.class.isAssignableFrom(entity))
     		return true;
-    	else if(this.getClass().isAssignableFrom(entity))
+    	else if(EntityRaiderBase.class.isAssignableFrom(entity))
     		return true;
-    	else if(EntityMob.class.isAssignableFrom(entity))
-    		return false;
     	else if (EntityLiving.class.isAssignableFrom(entity))
     		return true;
     	
@@ -431,8 +462,8 @@ public class EntityRaiderBase extends EntityMob{
             this.experienceValue = (int)((float)this.experienceValue * 0.5F);
         }
         
-        if(this.getDifficultyProgession().getRaidDifficulty() > 0) {
-        	this.experienceValue = this.experienceValue + this.getRNG().nextInt(this.getDifficultyProgession().getRaidDifficulty());
+        if(RaidersWorldDifficulty.getRaidDifficulty(this.world) > 0) {
+        	this.experienceValue = this.experienceValue + this.getRNG().nextInt(RaidersWorldDifficulty.getRaidDifficulty(this.world));
         }
 
         return super.getExperiencePoints(player);
@@ -490,26 +521,7 @@ public class EntityRaiderBase extends EntityMob{
 				
 				this.world.spawnEntity(skull);
 			}
-			
-		
-//			if(PMSettings.dropSerum && this.getRaiderRole() == EnumRaiderRole.BRUTE && this.getRNG().nextDouble() <= 0.10)
-//			{
-//				this.entityDropItem(new ItemStack(ModItems.bruteSerumSample), 0.0f);
-//			}
-//			
-//			boolean flag = false;
-//
-//			if(this.getRaiderRole() == EnumRaiderRole.NONE  && this.getRNG().nextDouble() <= 0.02)
-//				flag = true;
-//			else if(this.getRaiderRole() == EnumRaiderRole.WITCH && this.getRNG().nextDouble() <= 0.35)
-//				flag = true;
-//
-//			
-//			if(flag && PMSettings.dropTransmitter)
-//				this.entityDropItem(new ItemStack(ModItems.satTransmitterPart), 0.0f);
-//			
-//			
-//			this.getRaiderRole().dropLoot(this);
+
 		}
 		super.dropLoot(wasRecentlyHit, lootingModifier, source);
 	}
@@ -595,5 +607,18 @@ public class EntityRaiderBase extends EntityMob{
             return (T) this.raidersInventory;
         }
         return super.getCapability(capability, facing);    
+    }
+    
+    
+    class GroupData implements IEntityLivingData
+    {
+        public boolean isChild;
+        public EnumFaction faction;
+
+        private GroupData(boolean p_i47328_2_, EnumFaction factionIn)
+        {
+            this.isChild = p_i47328_2_;
+            this.faction = factionIn;
+        }
     }
 }

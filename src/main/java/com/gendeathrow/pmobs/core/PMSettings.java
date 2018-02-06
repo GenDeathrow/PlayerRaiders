@@ -31,7 +31,7 @@ public class PMSettings
 	public static boolean screamerClass = true;
 	public static boolean rangerClass = true;
 	
-	public static int pyroWeight = 50;
+	public static int pyroWeight = 20;
 	public static int bruteWeight = 94;
 	public static int tweakerWeight = 60;
 	public static int noneWeight = 100;
@@ -64,13 +64,20 @@ public class PMSettings
 	public static boolean veryHostile;
 
 //Progresion Difficulty
-	public static int HealthIncrease = 20;
+	public static int HealthIncrease = 2;
 	public static int HealthMaxOut = -1;
-	public static double BonusHealthPercentageIncrease = 0.025F;
-	public static double BonusHealthMaxPercentage = 0.10F;
+
+	public static double SpeedIncrease = 0.01F;
+	public static double SpeedMaxIncrease = 0.12F;
 	
-	public static double SpeedPercentageIncrease = 0.05F;
-	public static double SpeedMaxPercentage = 0.40F;
+	public static double dmgIncrease = 0.25f;
+	public static double dmgMaxIncrease = 6;
+	
+	public static double armorIncrease = 0.25f;
+	public static double armorMax = 3;
+	
+	public static double knockbackIncrease = 0.05;
+	public static double knockbackMax = 0.5;
 	
 	public static int[] dimensions = new int[]{0};
 	

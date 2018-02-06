@@ -7,6 +7,8 @@ import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAILookIdle;
@@ -16,9 +18,12 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
@@ -42,6 +47,7 @@ public class EntityPyromaniac extends EntityRaiderBase{
         
 	    this.targetTasks.addTask(1, new EntityAINearestAttackableTarget<EntityPlayer>(this, EntityPlayer.class, true));
 	    this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<EntityVillager>(this, EntityVillager.class, false));
+		this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, true));
 	}
 	
 
@@ -57,7 +63,44 @@ public class EntityPyromaniac extends EntityRaiderBase{
     		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
     		
     		return livingdata;
+    }
+    
+	/**
+	 * Called to update the entity's position/logic.
+	 */
+	public void onUpdate()
+	{
+		lastBurnTick++;
+		super.onUpdate();
 	}
+    
+	
+	private int lastBurnTick = 0;
+	@Override
+	public boolean attackEntityAsMob(Entity entityIn)
+	{
+		boolean hasHitTarget = super.attackEntityAsMob(entityIn);
+
+		if (hasHitTarget)
+		{
+			int i = this.world.getDifficulty().getDifficultyId();
+			
+			if(lastBurnTick > 600 && this.getHeldItemOffhand() != null && this.getHeldItemOffhand().getItem() == Items.FLINT_AND_STEEL && this.rand.nextFloat() < (float)i * 0.3F )
+			{
+				this.swingArm(EnumHand.OFF_HAND);
+    			this.world.playSound(null, entityIn.getPosition(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
+    			this.world.playSound(null, this.getPosition(), RaidersSoundEvents.RAIDERS_LAUGH, SoundCategory.HOSTILE, 1.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
+				entityIn.setFire(2 * i);
+				lastBurnTick = 0;
+			}
+		}
+		
+		return hasHitTarget;
+	}
+	@Override
+    public int getMaxSpawnedInChunk() {
+        return 2;
+    }
     
     @Nullable
     protected ResourceLocation getLootTable()

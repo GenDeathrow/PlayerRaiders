@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.common.EnumFaction;
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitch;
@@ -314,6 +315,7 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
     {
         livingdata = super.onInitialSpawn(difficulty, livingdata);
 
+        this.setRaiderFaction(EnumFaction.HOSTILE);
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
         this.setHealth(this.getMaxHealth());
   	
