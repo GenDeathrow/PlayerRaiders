@@ -16,24 +16,26 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class RaidNotification 
 {
-
-	public static void ScheduleNotice(String mainTxt, String subTxt, String sound)
-	{
-		//Temp fix for only having one notic
-		if(notices.size() == 0)
-		{
-			notices.add(new QuestNotice(mainTxt, subTxt, sound));
-		}
-	}
 	
 	static ArrayList<QuestNotice> notices = new ArrayList<QuestNotice>();
+
+	
+	public static void ScheduleNotice(ArrayList<String> lines, String sound)
+	{
+		//Temp fix for only having one notic
+		notices.add(new QuestNotice(lines, sound));
+
+	}
 	
 	@SubscribeEvent
-	public void onDrawScreen(RenderGameOverlayEvent.Post event)
+	public static void onDrawScreen(RenderGameOverlayEvent.Post event)
 	{
 		if(event.getType() != RenderGameOverlayEvent.ElementType.HELMET || notices.size() <= 0)
 		{
@@ -81,13 +83,16 @@ public class RaidNotification
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
      	
-		String tmp = TextFormatting.RED + "" + TextFormatting.UNDERLINE + "" + TextFormatting.BOLD + I18n.format(notice.mainTxt);
+		String tmp = TextFormatting.RED + "" + TextFormatting.UNDERLINE + "" + TextFormatting.BOLD + I18n.format(notice.getLine(0));
 		int txtW = mc.fontRenderer.getStringWidth(tmp);
 		mc.fontRenderer.drawString(tmp, width/2 - txtW/2, height/4, color, true);
 		
-		tmp = TextFormatting.YELLOW + "" + I18n.format(notice.subTxt);
-		txtW = mc.fontRenderer.getStringWidth(tmp);
-		mc.fontRenderer.drawString(tmp, width/2 - txtW/2, height/4 + 12, color, true);
+		
+		for(int i = 1; i < notice.lines.size(); i++) {
+			tmp = TextFormatting.YELLOW + "" + I18n.format(notice.getLine(i));
+			txtW = mc.fontRenderer.getStringWidth(tmp);
+			mc.fontRenderer.drawString(tmp, width/2 - txtW/2, height/4 + (12 * i), color, true);
+		}
 		
 		//GlStateManager.disableBlend();
 		GlStateManager.popMatrix();
@@ -97,17 +102,27 @@ public class RaidNotification
 	{
 		long startTime = 0;
 		public boolean init = false;
-		public String mainTxt = "";
-		public String subTxt = "";
+		public ArrayList<String> lines = new ArrayList<String>();
 		public ItemStack icon = null;
 		public String sound = "random.levelup";
 		
-		public QuestNotice(String mainTxt, String subTxt, String sound)
+		public QuestNotice(ArrayList<String> linesIn, String sound)
 		{
 			this.startTime = Minecraft.getSystemTime();
-			this.mainTxt = mainTxt;
-			this.subTxt = subTxt;
+			lines = linesIn;
 			this.sound = sound;
+		}
+		
+		public String getLine(int line) {
+			if(validate(line))
+				return lines.get(line);
+			return "";
+		}
+		
+		private boolean validate(int line) {
+			if(line < lines.size())
+				return true;
+			return false;
 		}
 		
 		public float getTime()

@@ -458,14 +458,15 @@ public class EntityRaiderBase extends EntityMob{
     
     @Override
     protected int getExperiencePoints(EntityPlayer player) {
+
+        if(RaidersWorldDifficulty.INSTANCE.getCurrentRaidDifficulty(this.world) > 0) {
+        	this.experienceValue = this.experienceValue + this.getRNG().nextInt(RaidersWorldDifficulty.INSTANCE.getCurrentRaidDifficulty(this.world));
+        }
+
         if (this.isChild()) {
             this.experienceValue = (int)((float)this.experienceValue * 0.5F);
         }
         
-        if(RaidersWorldDifficulty.getRaidDifficulty(this.world) > 0) {
-        	this.experienceValue = this.experienceValue + this.getRNG().nextInt(RaidersWorldDifficulty.getRaidDifficulty(this.world));
-        }
-
         return super.getExperiencePoints(player);
     }
     

@@ -1,9 +1,11 @@
 package com.gendeathrow.pmobs.core;
 
+import com.gendeathrow.pmobs.commands.CommonCommands;
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.configs.ConfigHandler;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
+import com.gendeathrow.pmobs.network.RaidNotificationPacket;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
@@ -15,8 +17,10 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = RaidersMain.MODID, name=RaidersMain.NAME, version = RaidersMain.VERSION, dependencies="after:BiomesOPlenty", acceptedMinecraftVersions="[1.11.2]")
 public class RaidersMain
@@ -62,6 +66,7 @@ public class RaidersMain
     	proxy.registerHandlers();
 		
        	RaidersMain.network = NetworkRegistry.INSTANCE.newSimpleChannel(RaidersMain.CHANNELNAME);
+       	RaidersMain.network.registerMessage(RaidNotificationPacket.ClientHandler.class, RaidNotificationPacket.class, 0, Side.CLIENT);
     }
     
     
@@ -81,4 +86,10 @@ public class RaidersMain
     	proxy.postInit(event);
     	ConfigHandler.postInit();
     }
+    
+	@EventHandler
+	public void serverStart(FMLServerStartingEvent event)
+	{
+		event.registerServerCommand(new CommonCommands());
+	}
 }

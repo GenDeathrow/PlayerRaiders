@@ -47,9 +47,9 @@ public class RegisterEntities {
 	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "raider"), EntityRaider.class, "raider", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 15677239);
 	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "brute"),  EntityBrute.class, "brute", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 1310720);
 	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "witch"),  EntityRaiderWitch.class, "witch", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 971165);
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "twitcher"),  EntityTweaker.class, "twitcher", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 971165);
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "pyromaniac"),  EntityPyromaniac.class, "pyromaniac", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 971165);
-	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "ranger"),  EntityRanger.class, "ranger", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 971165);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "tweaker"),  EntityTweaker.class, "tweaker", nextID++, RaidersMain.instance, 80, 3, true, -3971048,  0xc842f4);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "pyromaniac"),  EntityPyromaniac.class, "pyromaniac", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 0xeadb0b);
+	  	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "ranger"),  EntityRanger.class, "ranger", nextID++, RaidersMain.instance, 80, 3, true, -3971048, 0x0beae6);
     	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "droppod"), EntityDropPod.class, "DropPod",  nextID++, RaidersMain.instance, 80, 1, true);
     	EntityRegistry.registerModEntity(new ResourceLocation(RaidersMain.MODID, "signaltransmitter"), EntitySignalTransmitter.class, "Transmitter",  nextID++, RaidersMain.instance, 80, 1, false);
 	}

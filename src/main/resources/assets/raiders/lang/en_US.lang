@@ -5,9 +5,9 @@ itemGroup.Raiders=Raiders
 
 entity.raider.name=Raider
 entity.brute.name=Brute
-entity.witch.name=Witch
+entity.witch.name=Witch Screamer
 entity.tweaker.name=Tweaker
-entity.ranged.name=Archer
+entity.ranger.name=Archer
 entity.pyromaniac.name=Pyromaniac
 entity.friendly=Friendly
 

@@ -101,8 +101,6 @@ public class PMSettings
 
 	public static boolean torchStopSpawns = true;
 
-	//Items
-	public static boolean dropSerum = true;
-	public static boolean dropTransmitter = true;
+	public static boolean isDifficultyProgressionEnabled = true;
 	
 }

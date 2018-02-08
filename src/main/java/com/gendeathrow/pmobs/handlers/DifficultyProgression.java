@@ -41,7 +41,7 @@ public class DifficultyProgression
 	 */
 	public double calculateProgressionDifficulty(double eachIncrease)
 	{
-		return  eachIncrease * RaidersWorldDifficulty.getRaidDifficulty(raider.world);
+		return  eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world);
 	}
 		
 	/**
@@ -64,21 +64,19 @@ public class DifficultyProgression
      * @param Max - Maximum % amount 
      * @return
      */
-    public double calculateProgressionDifficulty(double eachIncrease, int startDifficulty, double Max)
-    {
-    	if(RaidersWorldDifficulty.getRaidDifficulty(raider.world) > startDifficulty)
-    	{
-    		return eachIncrease * RaidersWorldDifficulty.getRaidDifficulty(raider.world) > Max ? Max : eachIncrease * RaidersWorldDifficulty.getRaidDifficulty(raider.world);
+    public double calculateProgressionDifficulty(double eachIncrease, int startDifficulty, double Max){
+    	if(RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world) > startDifficulty){
+    		return eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world) > Max ? Max : eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world);
     	}
     	
     	return 0;
     }
     
 
+   public void setupDifficutlyOfRaider(DifficultyInstance difficulty) {
 
-    
-    public void setupDifficutlyOfRaider(DifficultyInstance difficulty) {
-
+	   if(classDifficulty == null || !PMSettings.isDifficultyProgressionEnabled) return;
+	   
     	setSpeedDifficulty(difficulty);
     	setHealthDifficulty(difficulty);
     	setDamageDifficulty(difficulty);

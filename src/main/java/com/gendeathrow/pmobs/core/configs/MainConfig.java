@@ -1,6 +1,7 @@
 package com.gendeathrow.pmobs.core.configs;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.logging.log4j.Level;
 
@@ -43,68 +44,76 @@ public class MainConfig
 		
 		PMSettings.whitelists = config.getStringList("WhiteLists", Configuration.CATEGORY_GENERAL, new String[0], "Meant for Twitch/Other sub whitelist. # One whitelist link per line. Example: http://whitelist.twitchapps.com/list.php?id=12345 [default: ]");
 
-		
-		PMSettings.raidersSpawnWeight = config.getInt("SpawnWeight", mobs, 10, 1, 1000, "Weight of Raiders spawning");
-
-		PMSettings.raidersMaxGroupSpawn = config.getInt("MaxSpawnGroup", mobs, 1, 1, 10, "Max Spawn group size");
-
-		//PMSettings.setEquitmentDefault = config.getFloat("Set Equipment Defult Difficulty", mobs, .025f, .01f, 1f, "Sets Raiders default chance to wear equipment based on Easy and Medium difficulty");
-		
-		//PMSettings.setEquptmentHard = config.getFloat("Set Equipment Hard Difficulty", mobs, .1f, .01f, 1f, "Sets Raiders chance to wear equipment based on Hard difficulty");
-		
-		//PMSettings.sprintersOnlyNight = config.getBoolean("Special Mobs Spawn at Night Only", mobs, false, "Hard/Fast/Special Mobs will only Spawn at night time only. (Except on hard days!)");
-		
 		PMSettings.removeVanillaSpawners = config.getBoolean("Remove Vanilla Mob Spawner", mobs, false, "Remove Vanilla Mob spawners from Dungeon Hooks, So only raiders will have spawners & possible other modded mobs.");
 			
 		PMSettings.raidersSpawnerWeight = config.getInt("Mob Spawner Weight", mobs, 200, 1, 1000, "Changes dungeon spawner weight for raiders. Example is zombies are 200, where skeletons are 100.");
-		
+
+		PMSettings.daySpeedRestiction = config.getFloat("DayTime Speed Modifier", mobs, 1, 0, 2f, "Mulitply raiders speed during Daytime. 1 is normal speed.");
+
+		PMSettings.shouldDaylightSpawm = config.getBoolean("Spawn in Daylight", mobs, false, "Raiders will spawn regardless of light levels. Basically Daytime Spawning. False sets it to Vanilla Spawning rules");
+
+		PMSettings.torchStopSpawns = config.getBoolean("Torches/GlowStone Stop Spawning", mobs, true, "GlowStone and torches will still stop a 7x7x7 spawn area. If cant see sky. Only works with 'Spawn in Daylight' == true");
+	
 		//PMSettings.safeForaDay = config.getBoolean("Safe for a Day", mobs, false, "Prevents All Mobs from Spawning during first day above Y lvl 50");
 		
 		//PMSettings.factionsEnabled = config.getBoolean("Enable Factions", mobs, true, "If true Some Raiders can belong to a friendly/hostile faction. If false they are all hostile");
-		
-		PMSettings.daySpeedRestiction = config.getFloat("DayTime Speed Modifier", mobs, 1, 0, 2f, "Mulitply raiders speed during Daytime. 1 is normal speed.");
 
-		PMSettings.shouldDaylightSpawm = config.getBoolean("Spawn in Daylight", mobs, true, "Raiders will spawn reguardless of light levels. Basically Daytime Spawning. False sets it to Vanilla Spawning rules");
-		PMSettings.torchStopSpawns = config.getBoolean("Torches/GlowStone Stop Spawning", mobs, true, "GlowStone and torches will still stop a 7x7x7 spawn area. If cant see sky. Only works with 'Spawn in Daylight' == true");
+		
+		config.setCategoryPropertyOrder(mobs, Arrays.asList("WhiteLists", 
+																"Remove Vanilla Mob Spawner",
+																"Mob Spawner Weight",
+																"Armor Max",
+																"Spawn in Daylight",
+																"Torches/GlowStone Stop Spawning",
+				 												"DayTime Speed Modifier"));
+
+	
 		
 		// Mob AI stuff
 		PMSettings.leapAttackAI = config.getBoolean("Leap Attack", mobai, true, "Gives some Raiders the ability to leap attack, small chance increases with each raid difficulty");
-		//PMSettings.veryHostile = config.getBoolean("Hostile to All", mobai, true, "Raiders will attack any Hostile mob that moves. Raiders will always attack passive mobs regaurdless of settings.");
-		
-		//TODO 
-//		PMSettings.spawnNether = config.getBoolean("Enable Nether", mobs, true, "Spawn in Nether");
-//		PMSettings.spawnEnd = config.getBoolean("Enable The End", mobs, false, "Spawn in The End");
-		
+		PMSettings.veryHostile = config.getBoolean("Hostile to All", mobai, true, "Raiders will attack any Hostile mob that moves. Raiders will always attack passive mobs regaurdless of settings.");
 		
 		// Progression Difficulty stats
 		
-		/*
-		String progCat = "Progessive Difficulty";
-		config.addCustomCategoryComment(progCat, "You can set what the raiders get on each Difficulty Increase");
+
+		String progCat = "Progessive Raid Difficulty";
+		config.addCustomCategoryComment(progCat, "You can set what the raiders get on when ever the Difficulty increases.");
 		
-		PMSettings.HealthIncrease = config.getInt("Health Increase", progCat, 2, 10, 100, "Each point = Half a Heart.");
-		PMSettings.HealthMaxOut = config.getInt("Health Max Outs", progCat, -1, -1, 100, "Sets what Raid Difficulty the health will max out at(Does not mean max health). -1 Means there is no max Difficulty.");
 		
-		PMSettings.BonusHealthPercentageIncrease = config.get(progCat, "Health Bonus Health Percentage Increase", 0.025D, "Adds Percentage Chance for raider to gain bonus health to each Raid Difficulty IE. (0.05 * Raid 5 = 25%)").getDouble();
-		PMSettings.BonusHealthMaxPercentage = config.get(progCat, "Health Bonus Max Percentage", 0.10D, "Max Percentage of Raiders that can get bonus health based off (Health Bonus Health Percentage Increase)").getDouble(); 
+		PMSettings.isDifficultyProgressionEnabled = config.getBoolean("Enable Difficulty Progression", progCat, true, "If you want to use progressive raider difficulty set true. If not raiders will stay at default stats. ");
+		PMSettings.dayDifficultyProgression = config.getInt("Raid Difficulty Progression", progCat, 5, 1, 500, "This is the Raid difficulty. Each set amount of days the mobs get harder(Raid Difficulty increases +1). \n Every x Days you set the Mobs will get more difficult. So if you set it to 5, every 5 days mobs get harder. ");
+
+		PMSettings.HealthIncrease = config.getInt("Health Increase", progCat, PMSettings.HealthIncrease, 10, 100, "Each point = Half a Heart.");
+		PMSettings.HealthMaxOut = config.getInt("Health Max", progCat, PMSettings.HealthMaxOut, -1, 100, "Sets what Raid Difficulty the health will max out at(Does not mean max health). -1 Means there is no max Difficulty.");
 		
-		PMSettings.SpeedPercentageIncrease = config.get(progCat, "Speed Percentage Increase", 0.05D, "Adds Percentage Chance for raider to gain extra speed to each Raid Difficulty IE. (0.05 * Raid 5 = 25%)").getDouble();
-		PMSettings.SpeedMaxPercentage = config.get(progCat, "Speed Max Percentage", 0.40D, "Max Percentage of Raiders that can get speed increase based off (Speed Raid Increase)").getDouble(); 
+		PMSettings.armorIncrease = config.get(progCat, "Armor Increase", PMSettings.armorIncrease, "Adds Armor defense points").getDouble();
+		PMSettings.armorMax = config.get(progCat, "Armor Max", PMSettings.armorMax, "Max bonus armor defense points. ").getDouble(); 
 		
-		if(config.hasKey(mobs, "Mob Difficulty Progression"))
-		{
-			config.moveProperty(mobs, "Mob Difficulty Progression", progCat);
-			config.renameProperty(progCat, "Mob Difficulty Progression", "Raid Day Difficulty Progression");
-		}
-		  
-		PMSettings.dayDifficultyProgression = getRaidDifficultyProgressions();
-		if(config.hasKey(progCat, "Raid Difficulty Day Progression"))
-		{
-			config.moveProperty(progCat, "Raid Difficulty Day Progression", remove.getName());
-		}
+		PMSettings.SpeedIncrease = config.get(progCat, "Speed Increase", PMSettings.SpeedIncrease, "Increases the speed of raider by x amt.").getDouble();
+		PMSettings.SpeedMaxIncrease = config.get(progCat, "Speed Max", PMSettings.SpeedMaxIncrease, "Max bonus that can be applied to a raider. Raiders start out at '.25' + speed bonus. \n Other mob examples: Zombies 0.23, creepers 0.25, & enderman 0.30").getDouble(); 
 		
-		 */	
-		String items = "items";
+		PMSettings.dmgIncrease = config.get(progCat, "Damge Increase", PMSettings.dmgIncrease, "Damage delt in Half Hearts. 2 = 1 heart").getDouble();
+		PMSettings.dmgMaxIncrease = config.get(progCat, "Damge Max", PMSettings.dmgMaxIncrease, "Max amout of bonus damage raiders can recieve.").getDouble();
+		
+		PMSettings.knockbackIncrease = config.get(progCat, "Knockback Resistance Increase", PMSettings.knockbackIncrease, "Adds knockback Resistance to raider. 0 = 0%  / 1 = 100%").getDouble();
+		PMSettings.knockbackMax = config.get(progCat, "Knockback Resistance  Max", PMSettings.knockbackMax, "Max bonus they can get on top of what every they may have. ").getDouble();
+
+	
+		config.setCategoryPropertyOrder(progCat, Arrays.asList("Enable Difficulty Progression", 
+																"Raid Difficulty Progression", 
+																"Health Increase",
+																"Health Max",
+																 "Armor Increase",
+																 "Armor Max",
+																 "Speed Increase",
+																 "Speed Max",
+																 "Damge Increase",
+																 "Damge Max",
+																 "Knockback Resistance Increase",
+																 "Knockback Resistance  Max"));
+		
+
+		//String items = "items";
  		//ESM stuff
 		//PMSettings.dropSerum = config.getBoolean("Brutes Drop Serum Samples", items, true, "If false Brutes dont drop samples. THIS IS THE ONLY WAY TO GET THEM");
 		//PMSettings.dropTransmitter = config.getBoolean("Drop Tramsmitter Part", items, true, "If false Raiders dont drop samples. THIS IS THE ONLY WAY TO GET THEM");
@@ -115,9 +124,6 @@ public class MainConfig
 			config.save();
 	}
 	
-	public static int getRaidDifficultyProgressions()	{
-		return config.getInt("Raid Day Difficulty Progression", "Progessive Difficulty", 5, 1, 100, "This is the Raid difficulty. Each set amount of days the mobs get harder(Raid Difficulty increases +1). Each x amount of days harder mobs have more of a chance to spawn its cumulative");
-	}
 
 	
 	

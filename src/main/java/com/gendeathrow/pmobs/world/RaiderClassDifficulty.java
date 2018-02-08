@@ -1,8 +1,6 @@
 package com.gendeathrow.pmobs.world;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
@@ -17,6 +15,7 @@ import com.gendeathrow.pmobs.entity.mob.EntityTweaker;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
@@ -24,6 +23,10 @@ public class RaiderClassDifficulty {
 
 	
 	public static HashMap<Class<? extends Entity>, DiffEntry> classesDifficulty = new HashMap<Class<? extends Entity>, DiffEntry>();
+	
+	static {
+		SetupRaiderClassDifficulty();
+	}
 	
 	public static void SetupRaiderClassDifficulty(){
 		classesDifficulty.clear();
@@ -37,8 +40,8 @@ public class RaiderClassDifficulty {
 	}
 	
 	public static DiffEntry getRandomClass(World world) {
-		DiffEntry[] entries = (DiffEntry[]) classesDifficulty.values().toArray();
-		return entries[world.rand.nextInt(entries.length)];
+		Object[] entries = classesDifficulty.values().toArray();
+		return (DiffEntry) entries[world.rand.nextInt(entries.length)];
 	}
 	
 	@Nullable
@@ -79,8 +82,7 @@ public class RaiderClassDifficulty {
 		NBTTagList list = new NBTTagList();
 		
 		for(Entry<Class<? extends Entity>, DiffEntry> classDiff : classesDifficulty.entrySet()) {
-			NBTTagCompound diffNBT = new NBTTagCompound();
-				classDiff.getValue().writeNBT(diffNBT);
+			NBTTagCompound diffNBT = classDiff.getValue().writeNBT(new NBTTagCompound());
 			list.appendTag(diffNBT);
 		}
 		tag.setTag("classDifficulty", list);
@@ -98,22 +100,23 @@ public class RaiderClassDifficulty {
 	 */
 	public static class DiffEntry {
 		
-		Class<? extends Entity> entityClass;
-		int healthLvl = 0;
-		int speedLvl = 0;
-		int followRangeLvl = 0;
-		int dmgLvl = 0;
-		int armorLvl = 0;
-		int knockbackLvl = 0;
-		int abilityLvl = 0;
+		public Class<? extends Entity> entityClass;
+		private int healthLvl = 0;
+		private int speedLvl = 0;
+		private int dmgLvl = 0;
+		private int armorLvl = 0;
+		private int knockbackLvl = 0;
+		private int abilityLvl = 0;
 		
 		public DiffEntry(Class<? extends Entity> entityClassIn) {
 			this.entityClass = entityClassIn;
 		}
 		
-		public void increaseRandomBonus(World world) {
+		public EnumBonusDiff increaseRandomBonus(World world, int amt) {
 			EnumBonusDiff[] entries = EnumBonusDiff.values();
-			addLevel(entries[world.rand.nextInt(entries.length)], 1);
+			EnumBonusDiff bonus = entries[world.rand.nextInt(entries.length)];
+			addLevel(bonus, amt);
+			return bonus;
 		}
 		
 		public void addLevel(EnumBonusDiff bonus, int add) {
@@ -125,9 +128,6 @@ public class RaiderClassDifficulty {
 				case SPEEDBONUS:
 					speedLvl += add;
 					break;
-				case FOLLOWBONUS:
-					followRangeLvl += add;
-					break;
 				case DAMAGEBONUS:
 					dmgLvl += add;
 					break;
@@ -137,10 +137,17 @@ public class RaiderClassDifficulty {
 				case KNOCKBACKBONUS:
 					knockbackLvl += add;
 					break;
-				case ABILITYBONUS:
-					abilityLvl += add;
-					break;
+				//case ABILITYBONUS:
+				//	abilityLvl += add;
+				//	break;
 			}
+			
+			MathHelper.clamp(healthLvl, 0, Integer.MAX_VALUE);
+			MathHelper.clamp(speedLvl, 0, Integer.MAX_VALUE);
+			MathHelper.clamp(dmgLvl, 0, Integer.MAX_VALUE);
+			MathHelper.clamp(armorLvl, 0, Integer.MAX_VALUE);
+			MathHelper.clamp(knockbackLvl, 0, Integer.MAX_VALUE);
+			
 		}
 		
 		
@@ -150,16 +157,14 @@ public class RaiderClassDifficulty {
 					return healthLvl;
 				case SPEEDBONUS:
 					return speedLvl;
-				case FOLLOWBONUS:
-					return followRangeLvl;
 				case DAMAGEBONUS:
 					return dmgLvl;
 				case ARMORBONUS:
 					return armorLvl;
 				case KNOCKBACKBONUS:
 					return knockbackLvl;
-				case ABILITYBONUS:
-					return abilityLvl;
+				//case ABILITYBONUS:
+				//	return abilityLvl;
 			}
 			
 			return 0;
@@ -169,7 +174,6 @@ public class RaiderClassDifficulty {
 			
 			healthLvl = tag.getInteger("healthBonus");
 			speedLvl = tag.getInteger("speedBonus");
-			followRangeLvl = tag.getInteger("followBonus");
 			dmgLvl = tag.getInteger("dmgBonus");
 			armorLvl = tag.getInteger("armorBonus");
 			knockbackLvl = tag.getInteger("knockbackBonus");
@@ -177,10 +181,10 @@ public class RaiderClassDifficulty {
 		}
 		
 		public NBTTagCompound writeNBT(NBTTagCompound tag) {
+			
 			tag.setString("id", entityClass.getSimpleName());
 			tag.setInteger("healthBonus", healthLvl);
 			tag.setInteger("speedBonus", speedLvl);
-			tag.setInteger("followBonus", followRangeLvl);
 			tag.setInteger("dmgBonus", dmgLvl);
 			tag.setInteger("armorBonus", armorLvl);
 			tag.setInteger("knockbackBonus", knockbackLvl);
@@ -192,13 +196,30 @@ public class RaiderClassDifficulty {
 	
 	public static enum EnumBonusDiff {
 		
-		HEALTHBONUS,
-		SPEEDBONUS,
-		FOLLOWBONUS,
-		DAMAGEBONUS,
-		ARMORBONUS,
-		KNOCKBACKBONUS,
-		ABILITYBONUS;
+		HEALTHBONUS("Health"),
+		SPEEDBONUS("Speed"),
+		DAMAGEBONUS("Damage"),
+		ARMORBONUS("Armor"),
+		KNOCKBACKBONUS("Knockback Resistance");
+		//ABILITYBONUS("Ability");
 		
+		String unlocalizedName;
+		EnumBonusDiff(String idIn) {
+			unlocalizedName = idIn;
+		}
+		
+		public String getUnLocalization() {
+			return unlocalizedName;
+		}
+		
+		public static EnumBonusDiff getBonusByID(String id) {
+			for(EnumBonusDiff value : EnumBonusDiff.values()) {
+				if(id.equalsIgnoreCase(value.name()))
+					return value;
+			}
+			return null;
+		}
+		
+
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
+import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -63,7 +64,7 @@ public class RaidersReportGUI extends GuiScreen
 		
 		int i = 10;
 		
-		this.drawString(this.fontRenderer, "Current Raid Difficulty: "+ DiffProg.getRaidDifficulty(), 10, i, Color.WHITE.getRGB());
+		this.drawString(this.fontRenderer, "Current Raid Difficulty: "+ RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(Minecraft.getMinecraft().world), 10, i, Color.WHITE.getRGB());
 
 		//this.drawString(this.fontRendererObj, "Raid 1: "+ DiffProg.getRaidDifficulty(), 10, i * 2, Color.WHITE.getRGB());
 		
