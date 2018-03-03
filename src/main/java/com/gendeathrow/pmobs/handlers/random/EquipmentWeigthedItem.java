@@ -8,20 +8,20 @@ import javax.annotation.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.WeightedRandom;
 
-public class EquipmentWeigthedItem extends WeightedRandom.Item
+public class EquipmentWeigthedItem extends AbstractEquipmentWeighted
 {
 
-	ItemStack stack;
+	ItemHolder stackHolder;
 	
 	ArrayList<EquipmentWeigthedItem> offHand;
 	
-	public EquipmentWeigthedItem(ItemStack itemstack, int itemWeightIn) 
+	public EquipmentWeigthedItem(ItemHolder itemstack, int itemWeightIn) 
 	{
 		super(itemWeightIn);
-		this.stack = itemstack;
+		this.stackHolder = itemstack;
 	}
 	
-	public EquipmentWeigthedItem(ItemStack itemstack, int itemWeightIn, ArrayList<EquipmentWeigthedItem> offHand) 
+	public EquipmentWeigthedItem(ItemHolder itemstack, int itemWeightIn, ArrayList<EquipmentWeigthedItem> offHand) 
 	{
 		this(itemstack, itemWeightIn);
 		this.offHand = offHand;
@@ -30,13 +30,13 @@ public class EquipmentWeigthedItem extends WeightedRandom.Item
 	@Nullable
 	public ItemStack getCopy()
 	{
-		if(stack.copy() != null) return stack.copy();
+		if(stackHolder.getStack() != null) return stackHolder.getStack();
 		return null;
 	}
 
 	public String toString()
 	{
-		System.out.println(stack.getDisplayName() +":"+ stack.getItemDamage());
+		System.out.println(stackHolder.getStack().getDisplayName() +":"+ stackHolder.getStack().getItemDamage());
 		return null;
 	}
 	

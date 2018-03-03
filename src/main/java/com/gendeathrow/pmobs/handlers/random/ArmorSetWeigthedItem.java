@@ -4,21 +4,20 @@ import javax.annotation.Nullable;
 
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandom;
 
-public class ArmorSetWeigthedItem extends WeightedRandom.Item
+public class ArmorSetWeigthedItem extends AbstractEquipmentWeighted
 {
 
-	ItemStack head;
-	ItemStack body;
-	ItemStack legs;
-	ItemStack feet;
+	ItemHolder head;
+	ItemHolder body;
+	ItemHolder legs;
+	ItemHolder feet;
 	
 	boolean alwayFullSet;
 	
 	
 	
-	public ArmorSetWeigthedItem(@Nullable ItemStack head, @Nullable ItemStack body, @Nullable ItemStack legs, @Nullable ItemStack feet, int itemWeightIn, boolean alwaysFullSet) 
+	public ArmorSetWeigthedItem(@Nullable ItemHolder head, @Nullable ItemHolder body, @Nullable ItemHolder legs, @Nullable ItemHolder feet, int itemWeightIn, boolean alwaysFullSet) 
 	{
 		super(itemWeightIn);
 		
@@ -37,18 +36,16 @@ public class ArmorSetWeigthedItem extends WeightedRandom.Item
 
 		if(slot == EntityEquipmentSlot.HEAD && head != null)
 		{
-			stack = head;
+			stack = head.getStack();
 		}else if(slot == EntityEquipmentSlot.CHEST && body != null)
 		{
-			stack = body;
+			stack = body.getStack();
 		}else if(slot == EntityEquipmentSlot.LEGS && legs != null)
 		{
-			//System.out.println("legs"+ legs.getDisplayName() + legs.getMetadata());
-			stack = legs;
+			stack = legs.getStack();
 		}else if(slot == EntityEquipmentSlot.FEET && feet != null)
 		{
-			//System.out.println("head");
-			stack = feet;
+			stack = feet.getStack();
 		}
 		
 		return stack;

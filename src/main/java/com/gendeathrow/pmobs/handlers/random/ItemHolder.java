@@ -1,4 +1,4 @@
-package com.gendeathrow.pmobs.common;
+package com.gendeathrow.pmobs.handlers.random;
 
 import java.util.Random;
 
@@ -15,12 +15,10 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class LootItem {
-
+public class ItemHolder
+{
 	private String itemID;
 	private int metaID;
-	private double chance;
-	private int qty;
 	private NBTTagCompound nbtData;
 	private JsonObject nbtRawJson;
 	
@@ -31,33 +29,35 @@ public class LootItem {
 	
 	Gson gson = new Gson();
 	
-	public LootItem(){
+	public ItemHolder(){
 		itemID = Items.AIR.getRegistryName().toString();
 		metaID = 0;
-		chance = 0.5d;
-		qty = 1;
 		nbtData = null;
 		stack = ItemStack.EMPTY;
 	}
 	
-	public LootItem(ItemStack stackIn){
+	public ItemHolder(Item itemIn) {
+		itemID = itemIn.getRegistryName().toString();
+		metaID = 0;
+		nbtData = null;
+		stack = ItemStack.EMPTY;
+	}
+	
+	public ItemHolder(ItemStack stackIn){
 		itemID = stackIn.getItem().getRegistryName().toString();
 		metaID = stackIn.getMetadata();
-		chance = 0.20d;
-		qty = stackIn.getCount();
 		stack = stackIn;
 		nbtData = stackIn.hasTagCompound() ?  stackIn.getTagCompound() : null;
 		isComplete = true;
 	}
 	
-	public LootItem(String itemID, int metaID, double chance, int qty) {
+	public ItemHolder(String itemID, int metaID, double chance, int qty) {
 		this.itemID = itemID;
 		this.metaID = metaID;
-		this.chance = chance;
-		this.qty = qty;
 		this.nbtData = null;
 	}
 	
+
 	@Nullable
 	public Item getItem() {
 		return Item.getByNameOrId(this.itemID);
@@ -68,25 +68,15 @@ public class LootItem {
 	}
 	
 	/**
-	 * Checks the chance of this item dropping. 
-	 * @param rand
-	 * @return
-	 */
-	public boolean shouldDrop(Random rand) {
-		return rand.nextDouble() <= this.chance;
-	}
-	
-	/**
 	 * Get or Create itemstack for this Loot Item
-	 * @param rand
 	 * @return
 	 */
-	public ItemStack getStack(Random rand) {
+	public ItemStack getStack() {
 		
 		if(!isComplete) {
 			isComplete = true;
 			if(getItem() != null) {
-				stack = new ItemStack(getItem() , this.qty > 1 ? rand.nextInt(this.qty-1)+1 : this.qty, this.metaID);
+				stack = new ItemStack(getItem(), 1, this.metaID);
 				
 				if(this.nbtData != null && !this.nbtData.hasNoTags())
 	                	stack.setTagCompound(this.nbtData);
@@ -97,12 +87,10 @@ public class LootItem {
 		return stack.copy();
 	}
 	
-	public LootItem readJsonObject(JsonObject data) throws NumberFormatException {
+	public ItemHolder readJsonObject(JsonObject data) throws NumberFormatException {
 		itemID =  data.has("itemID") ? data.get("itemID").getAsString() : Items.AIR.getRegistryName().toString();
 		metaID =  data.has("metaID") ? data.get("metaID").getAsInt() : 0;
-		chance=   data.has("chance") ? data.get("chance").getAsDouble() : 0.5;
-		qty =     data.has("qty")    ? data.get("qty").getAsInt() : 1;
-		
+	
 		nbtRawJson =  data.has("nbt")  ? data.get("nbt").getAsJsonObject() : null; 
 			
 		try {
@@ -115,20 +103,15 @@ public class LootItem {
 		return this;
 	}
 	
-	public void writeJsonObject(JsonObject data) throws NumberFormatException {
+	public JsonObject writeJsonObject(JsonObject data) throws NumberFormatException {
 		data.addProperty("itemID", itemID);
 		data.addProperty("metaID", metaID);
-		data.addProperty("chance", chance);
-		data.addProperty("qty", qty);
 		
 		if(nbtData != null && !nbtData.hasNoTags()) {
-			
 			JsonElement element = gson.fromJson(nbtData.toString(), JsonElement.class);
-			
 			data.add("nbt", element.getAsJsonObject());
 		}
 		
-		
+		return data;
 	}
-	
 }

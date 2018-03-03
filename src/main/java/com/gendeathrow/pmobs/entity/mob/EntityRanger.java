@@ -2,7 +2,9 @@ package com.gendeathrow.pmobs.entity.mob;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersMain;
+import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -73,7 +75,12 @@ public class EntityRanger extends AbstractRangeAttacker{
 		this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, true));
 	}
 	
-	
+    @Override
+    public boolean canSpawnAtDifficulty() {
+    	return RaidersWorldDifficulty.calculateRaidDifficulty(this.world) >= PMSettings.rangerStartDiff;
+    };
+    
+    
     @Override
 	@Nullable
 	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata){

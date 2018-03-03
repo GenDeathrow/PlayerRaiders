@@ -36,7 +36,6 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -61,9 +60,24 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class EntityRaiderBase extends EntityMob{
+@Mod.EventBusSubscriber
+public class EntityRaiderBase extends EntityMob {
+	
+	@SubscribeEvent
+	public static void onSpawnEvent(LivingSpawnEvent event) {
+		if(event.getEntity() instanceof EntityRaiderBase) {
+			boolean canspawn = ((EntityRaiderBase)event.getEntity()).canSpawnAtDifficulty();
+			
+			if(!canspawn)
+				event.setResult(Result.DENY);
+		}
+	}
 
 	protected GameProfile playerProfile;
 	
@@ -287,20 +301,34 @@ public class EntityRaiderBase extends EntityMob{
 	        
 	        this.difficultyManager.setupDifficutlyOfRaider(difficulty);
 	        
-	        if (this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null)
-	        {
-	            Calendar calendar = this.world.getCurrentDate();
 
-	            if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31 && this.rand.nextFloat() < 0.25F)
-	            {
-	                this.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(this.rand.nextFloat() < 0.1F ? Blocks.LIT_PUMPKIN : Blocks.PUMPKIN));
-	                this.inventoryArmorDropChances[EntityEquipmentSlot.HEAD.getIndex()] = 0.0F;
-	            }
-	        }
+	        
+	        
 
+	        setCanPickUpLoot(true);
+	        
 	        return livingdata;
 	}
     
+    
+    public void dateEasterEggs() {
+
+        Calendar calendar = this.world.getCurrentDate();
+        
+    	//Halloween
+        if (this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null)
+        {
+            if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31 && this.rand.nextFloat() < 0.25F) {
+                this.setItemStackToSlot(EntityEquipmentSlot.HEAD, new ItemStack(this.rand.nextFloat() < 0.1F ? Blocks.LIT_PUMPKIN : Blocks.PUMPKIN));
+                this.inventoryArmorDropChances[EntityEquipmentSlot.HEAD.getIndex()] = 0.0F;
+            }
+        }
+        
+        //Christmas
+        if (calendar.get(2) + 1 == 12 && calendar.get(5) == 25) {
+        		this.setFeatures(LayerFeatures.SANATASUIT.ordinal());
+        }
+    }
     
     
     @Override
@@ -479,6 +507,15 @@ public class EntityRaiderBase extends EntityMob{
     public int getMaxSpawnedInChunk() {
         return 4;
     }
+    
+    /**
+     * Determines if a raider can spawn at this difficulty or not. 
+     * 
+     * @return
+     */
+    public boolean canSpawnAtDifficulty() {
+    	return true;
+    };
     
     @Override
     public boolean getCanSpawnHere() {

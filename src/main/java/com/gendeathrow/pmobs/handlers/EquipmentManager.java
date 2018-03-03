@@ -15,8 +15,9 @@ import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.core.configs.MainConfig;
 import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
 import com.gendeathrow.pmobs.handlers.random.EquipmentWeigthedItem;
+import com.gendeathrow.pmobs.handlers.random.ItemHolder;
+import com.gendeathrow.pmobs.handlers.random.PotionItemHolder;
 import com.gendeathrow.pmobs.util.JsonHelper;
-import com.gendeathrow.pmobs.util.NBTConverter;
 import com.google.common.collect.Lists;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -25,12 +26,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.WeightedRandom;
 //TODO
 public class EquipmentManager 
@@ -45,6 +40,12 @@ public class EquipmentManager
 	public static ArrayList<EquipmentWeigthedItem> tippedArrows = new ArrayList<EquipmentWeigthedItem>();
 	
 	public static final File equipmentFile = new File(MainConfig.configDir, "equipment.json");
+	
+	public static final File equimentFolder = new File(MainConfig.configDir, "equipment");
+	public static final File armorFile = new File(equimentFolder, "armor.json");
+	public static final File mainHandFile = new File(equimentFolder, "main_hand.json");
+	public static final File offHandFile = new File(equimentFolder, "off_hand.json");
+	public static final File arrorwsFile = new File(equimentFolder, "tipped_arrows.json");
 	
 	public static final Random rand = new Random();
 	
@@ -107,7 +108,6 @@ public class EquipmentManager
 	            	RaidersMain.logger.error((String)("Couldn\'t parse Equipment file " + equipmentFile), (Throwable)jsonparseexception);
 	            }
 	        }
-	        //else saveEquipmentFile();
 	}
 
 	private static void LoadEquipment(JsonObject jsonObject) 
@@ -126,54 +126,25 @@ public class EquipmentManager
 				JsonObject data = element.getAsJsonObject();
 				ArmorSetWeigthedItem weightedArmor = null;
 				String name; 
-				String head = null; JsonObject headNBT = null;
-				String body = null; JsonObject bodyNBT = null;
-				String legs = null; JsonObject legsNBT = null;
-				String feet = null; JsonObject feetNBT = null;
+				ItemHolder head = null; 
+				ItemHolder body = null; 
+				ItemHolder legs = null; 
+				ItemHolder feet = null; 
 				
 				boolean fullSet = false;
 				int weight = 10;
 				
 				if(data.has("name")) name = data.get("name").getAsString(); 
-				if(data.has("head")) head = data.get("head").getAsString();
-				if(data.has("body")) body = data.get("body").getAsString();
-				if(data.has("legs")) legs = data.get("legs").getAsString();
-				if(data.has("feet")) feet = data.get("feet").getAsString();
+				if(data.has("head")) head = new ItemHolder().readJsonObject(data.get("head").getAsJsonObject());
+				if(data.has("body")) body = new ItemHolder().readJsonObject(data.get("body").getAsJsonObject());
+				if(data.has("legs")) legs = new ItemHolder().readJsonObject(data.get("legs").getAsJsonObject());
+				if(data.has("feet")) feet = new ItemHolder().readJsonObject(data.get("feet").getAsJsonObject());
 				
-				if(data.has("head_nbt") && data.get("head_nbt").isJsonObject()) headNBT = data.get("head_nbt").getAsJsonObject();
-				if(data.has("body_nbt") && data.get("body_nbt").isJsonObject()) bodyNBT = data.get("body_nbt").getAsJsonObject(); 
-				if(data.has("legs_nbt") && data.get("legs_nbt").isJsonObject()) legsNBT = data.get("legs_nbt").getAsJsonObject();
-				if(data.has("feet_nbt") && data.get("feet_nbt").isJsonObject()) feetNBT = data.get("feet_nbt").getAsJsonObject();
 				
 				if(data.has("always spawn full set")) fullSet = data.get("always spawn full set").getAsBoolean();
 				if(data.has("weight"))	weight = data.get("weight").getAsInt();
 
-				ItemStack headStack = null;
-				ItemStack bodyStack = null; 
-				ItemStack legsStack = null;
-				ItemStack feetStack = null;
-
-				if(head != null) 
-				{
-					headStack = getItemStackFromID(head);
-					setNBTData(headNBT, headStack);
-				}
-				if(body != null)
-				{
-					bodyStack = getItemStackFromID(body);
-					setNBTData(bodyNBT, bodyStack);
-				}
-				if(legs != null) 
-				{
-					legsStack = getItemStackFromID(legs);
-					setNBTData(legsNBT, legsStack);
-				}
-				if(feet != null) 
-				{
-					feetStack = getItemStackFromID(feet);
-					setNBTData(feetNBT, feetStack);
-				}
-				weightedArmor = new ArmorSetWeigthedItem(headStack, bodyStack, legsStack, feetStack, weight, fullSet);
+				weightedArmor = new ArmorSetWeigthedItem(head, body, legs, feet, weight, fullSet);
 				
 				if(weightedArmor != null)
 				{
@@ -197,14 +168,15 @@ public class EquipmentManager
 				if(data.has("nbt")  && data.get("nbt").isJsonObject()) itemNBT = data.get("nbt").getAsJsonObject();
 				if(data.has("weight"))	weight = data.get("weight").getAsInt();
 				
-				ItemStack stack = getItemStackFromID(itemID);
-				
-				setNBTData(itemNBT, stack);
-				
-				if(stack != null)
-				{
-					weightedItem = new EquipmentWeigthedItem(stack, weight);
-				}
+				//TODO
+//				ItemStack stack = getItemStackFromID(itemID);
+//				
+//				setNBTData(itemNBT, stack);
+//				
+//				if(stack != null)
+//				{
+//					weightedItem = new EquipmentWeigthedItem(stack, weight);
+//				}
 				
 				if(weightedItem != null)
 				{
@@ -228,14 +200,17 @@ public class EquipmentManager
 				if(data.has("nbt") && data.get("nbt").isJsonObject()) itemNBT = data.get("nbt").getAsJsonObject();
 				if(data.has("weight"))	weight = data.get("weight").getAsInt();
 				
-				ItemStack stack = getItemStackFromID(itemID);
+				//TODO
+				//ItemStack stack = getItemStackFromID(itemID);
 				
-				setNBTData(itemNBT, stack);
+				//TODO
+				//setNBTData(itemNBT, stack);
 				
-				if(stack != null)
-				{
-					weightedItem = new EquipmentWeigthedItem(stack, weight);
-				}
+				//TODO	
+//				if(stack != null)
+//				{
+//					weightedItem = new EquipmentWeigthedItem(stack, weight);
+//				}
 				
 				if(weightedItem != null)
 				{
@@ -249,85 +224,25 @@ public class EquipmentManager
 			for(JsonElement arrowSet : jsonObject.get("Tipped_Arrows_Effects").getAsJsonArray())
 			{
 				
-				ItemStack arrowTip = new ItemStack(Items.TIPPED_ARROW);
+				ItemHolder PotionItemHolder = new PotionItemHolder(Items.TIPPED_ARROW);
 
 				EquipmentWeigthedItem weightedItem = null;
-				
-				String itemID = null; JsonObject itemNBT = null;
-				int weight = 10; int ticks = 60;
-				String customName = null;
-				
-				JsonObject arrowElement = arrowSet.getAsJsonObject();
-				
-				if(arrowElement.has("nbt") && arrowElement.get("nbt").isJsonObject()) itemNBT = arrowElement.get("nbt").getAsJsonObject();
-				if(arrowElement.has("weight"))	weight = arrowElement.get("weight").getAsInt();
-				if(arrowElement.has("ticks"))	ticks = arrowElement.get("ticks").getAsInt();
-				
-				arrowTip.setStackDisplayName(arrowSet +" "+ arrowTip.getDisplayName()); 
-				
-				setNBTData(itemNBT, arrowTip);
-				
-				if(arrowElement.has("TippedArrowsPotions"))
-				{
-					List<PotionEffect> collection = (List) new ArrayList();
-					
-					if(arrowElement.get("TippedArrowsPotions").isJsonArray())
-					{
-						JsonArray TippedArrows = arrowElement.get("TippedArrowsPotions").getAsJsonArray();
-						
-						for(JsonElement potionID : TippedArrows)
-						{
-						
-							if(potionID.getAsJsonObject().has("potionID"))
-							{
-								Potion potion = Potion.getPotionFromResourceLocation((potionID.getAsJsonObject().get("potionID").getAsString()));
-								if(potion != null) collection.add(new PotionEffect(potion, ticks));
-								else 
-								{
-									ErrorList.add(potionID.getAsJsonObject().get("potionID").getAsString());
-									RaidersMain.logger.error("Potion could not be Found: "+ potionID.getAsJsonObject().get("potionID").getAsString());
-								}
-							}
-	
-						}
-					
-					}
-					else if(arrowElement.get("TippedArrowsPotions").isJsonObject())
-					{
-						JsonObject potionID = arrowElement.get("TippedArrowsPotions").getAsJsonObject();
-						if(potionID.has("potionID"))
-						{
-							Potion potion = Potion.getPotionFromResourceLocation(potionID.get("potionID").getAsString());
-							if(potion != null) collection.add(new PotionEffect(potion, ticks));
-							else 
-							{
-								ErrorList.add(potionID.get("potionID").getAsString());
-								RaidersMain.logger.error("Potion could not be Found: "+ potionID.get("potionID").getAsString());
-							}
-						}
-					}
-					
-					
-					if(arrowTip != null && !collection.isEmpty())
-					{	
-						PotionUtils.appendEffects(arrowTip, collection);
-						weightedItem = new EquipmentWeigthedItem(arrowTip, weight);
-					}
-				
-					if(weightedItem != null)
-					{
-						tippedArrows.add(weightedItem);
-					
-					}
-					
 
-					
-				}
+				int weight = 10;
 				
+				if(arrowSet.getAsJsonObject().has("weight"))	weight = arrowSet.getAsJsonObject().get("weight").getAsInt();
+				
+				PotionItemHolder.readJsonObject(arrowSet.getAsJsonObject());
+				
+				weightedItem = new EquipmentWeigthedItem(PotionItemHolder, weight);  
+				
+				if(weightedItem != null)
+				{
+					tippedArrows.add(weightedItem);
+				
+				}
 			}
 		}
-		
-
 		RaidersMain.logger.info("MainHandList Size: "+ mainHandList.size());
 		RaidersMain.logger.info("OffHand Size: "+ offHandList.size());
 		RaidersMain.logger.info("Armor Sets Size: "+ armorList.size());
@@ -335,77 +250,6 @@ public class EquipmentManager
 		RaidersMain.logger.info("Errors: "+ ErrorList.size());
 	}
 	
-	private static ItemStack getItemStackFromID(String itemID)
-	{
-		
-		String[] args = itemID.split(":");
-		
-
-		ItemStack stack = null;
-		Item item = null;
-		int meta = 0;
-		
-		if(args.length == 3) 
-		{
-			try
-			{
-				meta = Integer.parseInt(args[2]);
-				item = Item.getByNameOrId(args[0] +":"+ args[1]);		
-				//System.out.println("meta:"+ meta);
-			}catch(Exception e)
-			{
-				item = Item.getByNameOrId(args[0] +":"+ args[1]);
-			}
-		}
-		else
-		{
-			item = Item.getByNameOrId(args[0] +":"+ args[1]);
-		}
-			
-		
-		
-		if(item != null)
-		{
-			stack = new ItemStack(Item.getByNameOrId(args[0] +":"+ args[1]), 1, meta);
-		}
-		else
-		{
-			ErrorList.add(itemID);
-			RaidersMain.logger.error("Item could not be Found: "+ itemID);
-		}
-
-		return stack;
-	}
-	
-	private static ItemStack setNBTData(JsonObject nbt, ItemStack stack)
-	{
-		if(nbt != null && stack != null)
-		{
-			try
-			{
-				NBTTagCompound tags = new NBTTagCompound();
-				NBTConverter.JSONtoNBT_Object(nbt, tags);
-			
-				if(!tags.hasNoTags()) 
-				{
-//					if(stack.hasTagCompound()) 
-//					{
-//						stack.getTagCompound().merge(tags);
-//					}
-//					else 
-					stack.setTagCompound(tags);
-				}
-		
-			}catch(Exception e)
-			{
-				RaidersMain.logger.error("Error Saving Stack to NBT "+ stack.getDisplayName() + e);
-				
-				return stack;
-			}
-		}
-		
-		return stack;
-	}
 
 	public static void saveEquipmentFile()
 	{
@@ -414,10 +258,6 @@ public class EquipmentManager
 	        {
 	        	fo = FileUtils.openOutputStream(equipmentFile);
 	        			
-	            //String json = new GsonBuilder().setPrettyPrinting().create().toJson(dumpJson(armorList));
-	        	   
-	            //FileUtils.writeStringToFile(equipmentFile, json);
-	            
 	            fo.close(); // don't swallow close Exception if copy completes normally
 	        }
 	        catch (IOException ioexception)
@@ -429,29 +269,20 @@ public class EquipmentManager
 	        }
 	}
 
-	    
-	public static JsonObject dumpJson(ArrayList<EquipmentWeigthedItem> list)
-	{
-	        JsonObject jsonobject = new JsonObject();
-
-			for (EquipmentWeigthedItem entry : list)
-	        {
-	            if (((EquipmentWeigthedItem)entry) != null)
-	            {
-	                JsonObject jsonobject1 = new JsonObject();
-	 
-//	                jsonobject1.addProperty("weight", (Number)Integer.valueOf(entry.getValue().itemWeight));
-//
-//	                jsonobject.add(((String)entry), jsonobject1);
-	            }
-	            else
-	            {
-	                //jsonobject.addProperty(((String)entry.getKey()), (Number)Integer.valueOf(10));
-	            }
-	        }
-
-	        
-	        return jsonobject;
+	public static int LoadArmorFile() {
+		return 0;
+	}
+	
+	public static int LoadMainHandFile() {
+		return 0;
+	}
+	
+	public static int LoadOffHandFile() {
+		return 0;	
+	}
+	
+	public static int loadTippedArrowsFile() {
+		return 0;
 	}
 	
 	public static File GenerateDefault()
@@ -486,14 +317,10 @@ public class EquipmentManager
         		
        			// Leather
         		object.addProperty("name", "Leather Armor Set");
-        		object.addProperty("head", "minecraft:leather_helmet");
-        		object.addProperty("body", "minecraft:leather_chestplate");
-        		object.addProperty("legs", Item.REGISTRY.getNameForObject(Items.LEATHER_LEGGINGS).toString());
-        		object.addProperty("feet", "minecraft:leather_boots");
-        		object.add("head_nbt", new JsonObject());
-        		object.add("body_nbt", new JsonObject());
-        		object.add("legs_nbt", new JsonObject());
-        		object.add("feet_nbt", new JsonObject());
+        		object.add("head", new ItemHolder(Items.LEATHER_HELMET).writeJsonObject(new JsonObject()));
+        		object.add("body", new ItemHolder(Items.LEATHER_CHESTPLATE).writeJsonObject(new JsonObject()));
+        		object.add("legs", new ItemHolder(Items.LEATHER_LEGGINGS).writeJsonObject(new JsonObject()));
+        		object.add("feet", new ItemHolder(Items.LEATHER_BOOTS).writeJsonObject(new JsonObject()));
         		object.addProperty("always spawn full set", false);
         		object.addProperty("weight", 20);
         		
@@ -505,14 +332,10 @@ public class EquipmentManager
 
        			// iron
         		object.addProperty("name", "Iron Armor Set");
-        		object.addProperty("head", "minecraft:iron_helmet");
-        		object.addProperty("body", "minecraft:iron_chestplate");
-        		object.addProperty("legs", Item.REGISTRY.getNameForObject(Items.IRON_LEGGINGS).toString());
-        		object.addProperty("feet", "minecraft:iron_boots");
-        		object.add("head_nbt", new JsonObject());
-        		object.add("body_nbt", new JsonObject());
-        		object.add("legs_nbt", new JsonObject());
-        		object.add("feet_nbt", new JsonObject());
+        		object.add("head", new ItemHolder(Items.IRON_HELMET).writeJsonObject(new JsonObject()));
+        		object.add("body", new ItemHolder(Items.IRON_CHESTPLATE).writeJsonObject(new JsonObject()));
+        		object.add("legs", new ItemHolder(Items.IRON_LEGGINGS).writeJsonObject(new JsonObject()));
+        		object.add("feet", new ItemHolder(Items.IRON_BOOTS).writeJsonObject(new JsonObject()));
         		object.addProperty("always spawn full set", false);
         		object.addProperty("weight", 20);
         		
@@ -523,14 +346,10 @@ public class EquipmentManager
         		
        			// gold
         		object.addProperty("name", "Gold Armor Set");
-        		object.addProperty("head", "minecraft:golden_helmet");
-        		object.addProperty("body", "minecraft:golden_chestplate");
-        		object.addProperty("legs", Item.REGISTRY.getNameForObject(Items.GOLDEN_LEGGINGS).toString());
-        		object.addProperty("feet", "minecraft:golden_boots");
-        		object.add("head_nbt", new JsonObject());
-        		object.add("body_nbt", new JsonObject());
-        		object.add("legs_nbt", new JsonObject());
-        		object.add("feet_nbt", new JsonObject());
+        		object.add("head", new ItemHolder(Items.GOLDEN_HELMET).writeJsonObject(new JsonObject()));
+        		object.add("body", new ItemHolder(Items.GOLDEN_CHESTPLATE).writeJsonObject(new JsonObject()));
+        		object.add("legs", new ItemHolder(Items.GOLDEN_LEGGINGS).writeJsonObject(new JsonObject()));
+        		object.add("feet", new ItemHolder(Items.GOLDEN_BOOTS).writeJsonObject(new JsonObject()));
         		object.addProperty("always spawn full set", false);
         		object.addProperty("weight", 10);
         		
@@ -540,14 +359,10 @@ public class EquipmentManager
         		
        			// Diamond
         		object.addProperty("name", "Diamond Armor Set");
-        		object.addProperty("head", "minecraft:diamond_helmet");
-        		object.addProperty("body", "minecraft:diamond_chestplate");
-        		object.addProperty("legs", Item.REGISTRY.getNameForObject(Items.DIAMOND_LEGGINGS).toString());
-        		object.addProperty("feet", "minecraft:diamond_boots");
-        		object.add("head_nbt", new JsonObject());
-        		object.add("body_nbt", new JsonObject());
-        		object.add("legs_nbt", new JsonObject());
-        		object.add("feet_nbt", new JsonObject());
+        		object.add("head", new ItemHolder(Items.DIAMOND_HELMET).writeJsonObject(new JsonObject()));
+        		object.add("body", new ItemHolder(Items.DIAMOND_CHESTPLATE).writeJsonObject(new JsonObject()));
+        		object.add("legs", new ItemHolder(Items.DIAMOND_LEGGINGS).writeJsonObject(new JsonObject()));
+        		object.add("feet", new ItemHolder(Items.DIAMOND_BOOTS).writeJsonObject(new JsonObject()));
         		object.addProperty("always spawn full set", false);
         		object.addProperty("weight", 10);
         		
@@ -556,14 +371,10 @@ public class EquipmentManager
         		object = new JsonObject();
         		//Chain mail
         		object.addProperty("name", "Chain Mail Armor Set");
-        		object.addProperty("head", "minecraft:chainmail_helmet");
-        		object.addProperty("body", "minecraft:chainmail_chestplate");
-        		object.addProperty("legs", Item.REGISTRY.getNameForObject(Items.CHAINMAIL_LEGGINGS).toString());
-        		object.addProperty("feet", "minecraft:chainmail_boots");
-        		object.add("head_nbt", new JsonObject());
-        		object.add("body_nbt", new JsonObject());
-        		object.add("legs_nbt", new JsonObject());
-        		object.add("feet_nbt", new JsonObject());
+        		object.add("head", new ItemHolder(Items.CHAINMAIL_HELMET).writeJsonObject(new JsonObject()));
+        		object.add("body", new ItemHolder(Items.CHAINMAIL_CHESTPLATE).writeJsonObject(new JsonObject()));
+        		object.add("legs", new ItemHolder(Items.CHAINMAIL_LEGGINGS).writeJsonObject(new JsonObject()));
+        		object.add("feet", new ItemHolder(Items.CHAINMAIL_BOOTS).writeJsonObject(new JsonObject()));
         		object.addProperty("always spawn full set", false);
         		object.addProperty("weight", 10);
         		
@@ -571,94 +382,50 @@ public class EquipmentManager
         		
         		
         		// MainHand
-        		object = new JsonObject();
-        		
-        		object.addProperty("itemID", "minecraft:wooden_sword");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.WOODEN_SWORD).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 20);
         		
         		
         		MainHand.add(object);
         		
-        		object = new JsonObject();
-
-        		object.addProperty("itemID", "minecraft:iron_sword");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.IRON_SWORD).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 20);
 
         		MainHand.add(object);
         		
-        		object = new JsonObject();
-        		
-        		object.addProperty("itemID", "minecraft:golden_sword");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.GOLDEN_SWORD).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 10);
         		
         		MainHand.add(object);
         		
-        		object = new JsonObject();
-
-        		object.addProperty("itemID", "minecraft:diamond_sword");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.DIAMOND_SWORD).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 10);
         		
         		MainHand.add(object);
         		
         		
         		// OFFHAND
-        		object = new JsonObject();
-        		
-        		object.addProperty("itemID", "minecraft:feather");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.FEATHER).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 20);
         		
         		
         		OffHandSlots.add(object);
         		
-        		object = new JsonObject();
-
-        		object.addProperty("itemID", "minecraft:map");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.MAP).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 20);
 
         		OffHandSlots.add(object);
         		
-        		object = new JsonObject();
-        		
-        		object.addProperty("itemID", "minecraft:stick");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.STICK).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 10);
         		
         		OffHandSlots.add(object);
         		
-        		object = new JsonObject();
-
-        		object.addProperty("itemID", "minecraft:skull:1");
-        		object.add("nbt", new JsonObject());
+        		object = new ItemHolder(Items.SKULL).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 10);
         		
         		OffHandSlots.add(object);
         		
-        		object = new JsonObject();
-
-        		JsonObject head = new JsonObject(); head.addProperty("SkullOwner", "Gen_Deathrow");
-        				
-        		object.addProperty("itemID", "minecraft:skull:3");
-        		object.add("nbt", head);
-        		object.addProperty("weight", 10);
-        		
-        		OffHandSlots.add(object);
-        		
-        		object = new JsonObject();
-        		
-        		head = new JsonObject(); head.addProperty("SkullOwner", "Darkosto");
-        		
-        		object.addProperty("itemID", "minecraft:skull:3");
-        		object.add("nbt", head);
-        		object.addProperty("weight", 10);
-        		
-        		OffHandSlots.add(object);
-
         		/// arrow tips
         		
         		object = new JsonObject();
@@ -751,12 +518,6 @@ public class EquipmentManager
         	}
         
         return null;
-        
-        // Armor Sets
-		
-		// Offhand
-		
-		// Weapons
 	}
 	
 	

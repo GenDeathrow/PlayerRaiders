@@ -6,6 +6,7 @@ import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
+import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.IEntityLivingData;
@@ -43,7 +44,12 @@ public class EntityTweaker extends EntityRaiderBase{
 		this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<EntityLiving>(this, EntityLiving.class, true));
 	}
 	
-	
+    @Override
+    public boolean canSpawnAtDifficulty() {
+    	return RaidersWorldDifficulty.calculateRaidDifficulty(this.world) >= PMSettings.tweakerStartDiff;
+    };
+    
+    
     @Override
 	@Nullable
 	public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata){

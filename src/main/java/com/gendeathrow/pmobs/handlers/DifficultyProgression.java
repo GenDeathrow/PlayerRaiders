@@ -66,7 +66,7 @@ public class DifficultyProgression
      */
     public double calculateProgressionDifficulty(double eachIncrease, int startDifficulty, double Max){
     	if(RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world) > startDifficulty){
-    		return eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world) > Max ? Max : eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world);
+    		return eachIncrease * RaidersWorldDifficulty.calculateRaidDifficulty(raider.world) > Max ? Max : eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world);
     	}
     	
     	return 0;
@@ -104,6 +104,8 @@ public class DifficultyProgression
         }else {
         	raider.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Health bonus", this.rand.nextDouble() * 1.00D + bonusHealth, EnumAttrModifierOperation.ADD_VAL_TO_BASE.ordinal()));
         }
+    	
+    	raider.setHealth(raider.getMaxHealth());
     }
     
     protected void setDamageDifficulty(DifficultyInstance difficulty)

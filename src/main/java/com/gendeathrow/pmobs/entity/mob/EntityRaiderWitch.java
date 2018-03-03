@@ -7,9 +7,11 @@ import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.EnumFaction;
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitch;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitchAttack;
+import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -81,6 +83,12 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
 	public void rangedAttackTarget(EntityLivingBase target, float distanceFactor) {
 		
 	}
+	
+    @Override
+    public boolean canSpawnAtDifficulty() {
+    	return RaidersWorldDifficulty.calculateRaidDifficulty(this.world) >= PMSettings.screamerStartDiff;
+    };
+    
 
 	@Override
 	public void onLivingUpdate()

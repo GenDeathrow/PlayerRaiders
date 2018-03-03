@@ -6,6 +6,7 @@ import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
+import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -68,14 +69,21 @@ public class EntityPyromaniac extends EntityRaiderBase{
 	/**
 	 * Called to update the entity's position/logic.
 	 */
+    @Override
 	public void onUpdate()
 	{
 		lastBurnTick++;
 		super.onUpdate();
 	}
     
+    @Override
+    public boolean canSpawnAtDifficulty() {
+    	return RaidersWorldDifficulty.calculateRaidDifficulty(this.world) >= PMSettings.pyroStartDiff;
+    };
+    
+    
 	
-	private int lastBurnTick = 0;
+	private long lastBurnTick = 600;
 	@Override
 	public boolean attackEntityAsMob(Entity entityIn)
 	{
@@ -85,7 +93,7 @@ public class EntityPyromaniac extends EntityRaiderBase{
 		{
 			int i = this.world.getDifficulty().getDifficultyId();
 			
-			if(lastBurnTick > 600 && this.getHeldItemOffhand() != null && this.getHeldItemOffhand().getItem() == Items.FLINT_AND_STEEL && this.rand.nextFloat() < (float)i * 0.3F )
+			if(lastBurnTick > 600 && !this.getHeldItemOffhand().isEmpty() && this.getHeldItemOffhand().getItem() == Items.FLINT_AND_STEEL && this.rand.nextFloat() < (float)i * 0.3F )
 			{
 				this.swingArm(EnumHand.OFF_HAND);
     			this.world.playSound(null, entityIn.getPosition(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
@@ -97,6 +105,7 @@ public class EntityPyromaniac extends EntityRaiderBase{
 		
 		return hasHitTarget;
 	}
+	
 	@Override
     public int getMaxSpawnedInChunk() {
         return 2;

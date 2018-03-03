@@ -4,7 +4,6 @@ public class PMSettings
 {
 	
 	public static boolean attackAll = false;
-
 	
 	public static float setEquptmentHard = .1f;
 	

@@ -1,5 +1,7 @@
 package com.gendeathrow.pmobs.core.configs;
 
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
+
 public class ConfigHandler {
 
 	public static RaiderClassConfigs raiderClassConfigs = new RaiderClassConfigs(MainConfig.configDir);
@@ -13,9 +15,11 @@ public class ConfigHandler {
 		MainConfig.load();
 		raiderClassConfigs.readFile();
 
+
 	}
 	
 	public static void postInit() {
 		MainConfig.PostLoad();
+		EquipmentManager.readEquipmentFile();
 	}
 }
