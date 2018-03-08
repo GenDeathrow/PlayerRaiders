@@ -1,7 +1,5 @@
 package com.gendeathrow.pmobs.handlers.random;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import com.google.gson.Gson;
@@ -24,7 +22,7 @@ public class ItemHolder
 	
 	private boolean isComplete = false;
 	
-	private ItemStack stack;
+	private ItemStack stack =  ItemStack.EMPTY;
 	
 	
 	Gson gson = new Gson();
@@ -67,6 +65,10 @@ public class ItemHolder
 		return this.metaID;
 	}
 	
+	public int getAmount() {
+		return 1;
+	}
+	
 	/**
 	 * Get or Create itemstack for this Loot Item
 	 * @return
@@ -76,14 +78,13 @@ public class ItemHolder
 		if(!isComplete) {
 			isComplete = true;
 			if(getItem() != null) {
-				stack = new ItemStack(getItem(), 1, this.metaID);
+				stack = new ItemStack(getItem(), this.getAmount(), this.metaID);
 				
 				if(this.nbtData != null && !this.nbtData.hasNoTags())
 	                	stack.setTagCompound(this.nbtData);
-
-				return stack.copy();
 			}
 		}
+		//System.out.println("Getting: "+ stack.getDisplayName());
 		return stack.copy();
 	}
 	

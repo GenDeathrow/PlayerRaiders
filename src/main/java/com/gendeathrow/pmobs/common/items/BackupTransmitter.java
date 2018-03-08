@@ -9,6 +9,7 @@ import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
 import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.entity.mob.EntityRaider;
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.mob.EntityRanger;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 
 import net.minecraft.block.state.IBlockState;
@@ -162,28 +163,41 @@ public class BackupTransmitter extends Item
 		EntityDropPod droppod = new EntityDropPod(worldObj);
 		droppod.setPosition(player.posX + randX, 300, player.posZ + randZ);
 		droppod.playSound(RaidersSoundEvents.SONIC_BOOM, 17, 1f);
-
-		EntityRaiderBase raider = new EntityRaider(worldObj);
-		raider.onInitialSpawn(worldObj.getDifficultyForLocation(player.getPosition()),  (IEntityLivingData)null);
-		
-		raider.setRaiderFaction(EnumFaction.FRIENDLY);
-		raider.setLeftHanded(false);
-		
-		raider.setLocationAndAngles(droppod.posX, droppod.posY, droppod.posZ, raider.rotationYaw, 0.0F);
-		
+		EntityRaiderBase raider = null;
 		
 		if (Loader.isModLoaded("lcrdrfs")) 
 		{
+			raider = new EntityRaider(worldObj);
+			raider.onInitialSpawn(worldObj.getDifficultyForLocation(player.getPosition()),  (IEntityLivingData)null);
+		
+			raider.setRaiderFaction(EnumFaction.FRIENDLY);
+			raider.setLeftHanded(false);
+		
+			raider.setLocationAndAngles(droppod.posX, droppod.posY, droppod.posZ, raider.rotationYaw, 0.0F);
+
 			ItemStack stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation("lcrdrfs:laser_blaster")), 1, 0);
 			raider.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
 			raider.setDropChance(EntityEquipmentSlot.MAINHAND, 0.05F);
 			//raider.targetTasks.addTask(0, new EntityAINearestAttackableTarget((EntityZombie) raider, EntityLivingBase.class, 0, true, false, null));
 			//raider.tasks.addTask(2, new EntityAIShootLaser((EntityZombie)raider));
+		}else
+		{
+			raider = new EntityRanger(worldObj);
+			raider.onInitialSpawn(worldObj.getDifficultyForLocation(player.getPosition()),  (IEntityLivingData)null);
+		
+			raider.setRaiderFaction(EnumFaction.FRIENDLY);
+		
+			raider.setLocationAndAngles(droppod.posX, droppod.posY, droppod.posZ, raider.rotationYaw, 0.0F);
+
+			ItemStack stack = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation("lcrdrfs:laser_blaster")), 1, 0);
+			raider.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
+			raider.setDropChance(EntityEquipmentSlot.MAINHAND, 0.05F);
+
 		}
 
 		
-
-		EntityDropPod.addDropPodtoQueue(raider, droppod);
+		if(raider != null)
+			EntityDropPod.addDropPodtoQueue(raider, droppod);
 	}
 
 }

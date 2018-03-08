@@ -32,7 +32,7 @@ public class ArmorSetWeigthedItem extends AbstractEquipmentWeighted
 	@Nullable
 	public ItemStack getArmorbyEquipmentSlot(EntityEquipmentSlot slot)
 	{
-		ItemStack stack = null;
+		ItemStack stack = ItemStack.EMPTY;
 
 		if(slot == EntityEquipmentSlot.HEAD && head != null)
 		{

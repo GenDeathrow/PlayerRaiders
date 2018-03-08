@@ -56,7 +56,7 @@ public class PotionItemHolder extends ItemHolder{
 			return true;
 		return false;
 	}
-	
+
 	public void addPotionEffect(PotionEffect potionIn) {
 		String id = potionIn.getPotion().getRegistryName().toString();
 		int ticks = potionIn.getDuration();
@@ -94,9 +94,7 @@ public class PotionItemHolder extends ItemHolder{
 		return this;
 	}
 	
-	@Override
-	public JsonObject writeJsonObject(JsonObject data) throws NumberFormatException {
-		super.writeJsonObject(data);
+	public JsonObject writeJsonPotions(JsonObject data) throws NumberFormatException {
 		
 		JsonArray potionNBTList = new JsonArray();
 		
@@ -110,4 +108,13 @@ public class PotionItemHolder extends ItemHolder{
 		data.add("TippedArrowsPotions", potionNBTList);
 		return data;
 	}
+	
+	@Override
+	public JsonObject writeJsonObject(JsonObject data) throws NumberFormatException {
+		super.writeJsonObject(data);
+		writeJsonPotions(data);
+		return data;
+	}
+
+
 }

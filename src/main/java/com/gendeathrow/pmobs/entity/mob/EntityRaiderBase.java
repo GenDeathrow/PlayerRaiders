@@ -12,7 +12,9 @@ import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
+import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
 import com.gendeathrow.pmobs.storage.InventoryStroageModifiable;
 import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 import com.mojang.authlib.GameProfile;
@@ -301,10 +303,6 @@ public class EntityRaiderBase extends EntityMob {
 	        
 	        this.difficultyManager.setupDifficutlyOfRaider(difficulty);
 	        
-
-	        
-	        
-
 	        setCanPickUpLoot(true);
 	        
 	        return livingdata;
@@ -496,6 +494,91 @@ public class EntityRaiderBase extends EntityMob {
         }
         
         return super.getExperiencePoints(player);
+    }
+    
+    @Override
+    protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
+    {
+
+    	if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05))
+        {
+	    	System.out.println((0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05));
+	    	
+            int i = this.rand.nextInt(2);
+            
+            if (this.rand.nextFloat() < 0.095F)
+                ++i;
+
+            if (this.rand.nextFloat() < 0.095F)
+                ++i;
+
+            if (this.rand.nextFloat() < 0.095F)
+                ++i;
+            
+            
+            float f = this.world.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
+
+            boolean armorflag = true;
+            boolean handflag = true;
+
+            ArmorSetWeigthedItem ArmorSet = EquipmentManager.getRandomArmor();
+            //System.out.println("isEmpty: "+ (ArmorSet == null));
+            for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
+            {
+            	//System.out.print(entityequipmentslot.getName());
+                if (entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.ARMOR)
+                {
+                    ItemStack armorSlot = this.getItemStackFromSlot(entityequipmentslot);
+    
+                    if (!armorflag && this.rand.nextFloat() > f + this.difficultyManager.calculateProgressionDifficulty(.05))
+                    {
+                        break;
+                    }
+
+                    armorflag = false;
+
+                    if (armorSlot.isEmpty() & ArmorSet != null)
+                    {
+                   		ItemStack stack = ArmorSet.getArmorbyEquipmentSlot(entityequipmentslot);
+                   		
+                        if (!stack.isEmpty() && stack.getItem() != null)
+                        {
+                        	this.setItemStackToSlot(entityequipmentslot, stack.copy());
+                        }
+                    }
+                }
+                else if(entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.HAND)
+                {
+                    ItemStack itemstack = this.getItemStackFromSlot(entityequipmentslot);
+
+                    if (!handflag && this.rand.nextFloat() > f + this.difficultyManager.calculateProgressionDifficulty(.05))
+                    {
+                        break;
+                    }
+
+                    handflag = false;
+
+                    if (itemstack == null)
+                    {
+                    	ItemStack stack = null;
+                    	
+                    	if(entityequipmentslot == EntityEquipmentSlot.MAINHAND)
+                    	{
+                    		stack = EquipmentManager.getRandomWeapons().getCopy();
+                    	}
+                    	else if(entityequipmentslot == EntityEquipmentSlot.OFFHAND)
+                    	{
+                    		stack = EquipmentManager.getRandomOffHand().getCopy();
+                    	}
+                        if (stack != null && stack.getItem() != null)
+                        {
+                            this.setItemStackToSlot(entityequipmentslot, stack);
+                        }
+                    }
+                }
+                
+            }
+        } 
     }
     
     @Override

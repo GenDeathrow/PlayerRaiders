@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -26,7 +27,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.WeightedRandom;
+import net.minecraftforge.client.event.GuiScreenEvent.PotionShiftEvent;
 //TODO
 public class EquipmentManager 
 {
@@ -97,11 +103,11 @@ public class EquipmentManager
 	{
 			GenerateDefault();
 			
-	        if (equipmentFile.isFile())
+	        if (equimentFolder.isDirectory())
 	        {
 	            try
 	            {
-	            	LoadEquipment(JsonHelper.ReadJsonFile(equipmentFile));
+	            	LoadEquipment();
 	            }
 	            catch (JsonParseException jsonparseexception)
 	            {
@@ -110,7 +116,7 @@ public class EquipmentManager
 	        }
 	}
 
-	private static void LoadEquipment(JsonObject jsonObject) 
+	private static void LoadEquipment() 
 	{
 		armorList.clear();
 		offHandList.clear();
@@ -118,12 +124,63 @@ public class EquipmentManager
 		
 		ErrorList.clear();
 		
+        if (armorFile.isFile())
+            try {
+        		LoadArmorFile(JsonHelper.ReadJsonFile(armorFile)); }
+            catch (JsonParseException jsonparseexception) {
+            	RaidersMain.logger.error((String)("Couldn\'t parse Equipment file " + equipmentFile), (Throwable)jsonparseexception); }
 
-		if(jsonObject.has("Armor_Sets"))
-		{
-			for(JsonElement element : jsonObject.get("Armor_Sets").getAsJsonArray())
+        if (mainHandFile.isFile())
+            try {
+        		LoadMainHandFile(JsonHelper.ReadJsonFile(mainHandFile)); }
+            catch (JsonParseException jsonparseexception) {
+            	RaidersMain.logger.error((String)("Couldn\'t parse Equipment file " + mainHandFile), (Throwable)jsonparseexception); }
+
+        if (offHandFile.isFile())
+            try {
+            	LoadOffHandFile(JsonHelper.ReadJsonFile(offHandFile)); }
+            catch (JsonParseException jsonparseexception) {
+            	RaidersMain.logger.error((String)("Couldn\'t parse Equipment file " + offHandFile), (Throwable)jsonparseexception); }
+
+        if (arrorwsFile.isFile())
+            try {
+            	loadTippedArrowsFile(JsonHelper.ReadJsonFile(arrorwsFile)); }
+            catch (JsonParseException jsonparseexception) {
+            	RaidersMain.logger.error((String)("Couldn\'t parse Equipment file " + arrorwsFile), (Throwable)jsonparseexception); }
+
+		RaidersMain.logger.info("MainHandList Size: "+ mainHandList.size());
+		RaidersMain.logger.info("OffHand Size: "+ offHandList.size());
+		RaidersMain.logger.info("Armor Sets Size: "+ armorList.size());
+		RaidersMain.logger.info("Tipped Arrows Size: "+ tippedArrows.size());
+		RaidersMain.logger.info("Errors: "+ ErrorList.size());
+	}
+	
+
+	public static void saveEquipmentFile()
+	{
+	    	FileOutputStream fo = null; 
+	        try
+	        {
+	        	fo = FileUtils.openOutputStream(equipmentFile);
+	        			
+	            fo.close(); // don't swallow close Exception if copy completes normally
+	        }
+	        catch (IOException ioexception)
+	        {
+	        	RaidersMain.logger.error((String)"Couldn\'t save stats", (Throwable)ioexception);
+	        }finally 
+	        {
+	        	IOUtils.closeQuietly(fo);
+	        }
+	}
+
+	public static void LoadArmorFile(JsonElement jsonElement) {
+		
+		 Iterator<JsonElement> iterator = jsonElement.getAsJsonArray().iterator();
+		
+			while(iterator.hasNext())
 			{
-				JsonObject data = element.getAsJsonObject();
+				JsonObject data = iterator.next().getAsJsonObject();;
 				ArmorSetWeigthedItem weightedArmor = null;
 				String name; 
 				ItemHolder head = null; 
@@ -152,77 +209,67 @@ public class EquipmentManager
 				}
 				
 			}
-		}
+	}
+	
+	public static void LoadMainHandFile(JsonElement jsonElement) {
 		
-		if(jsonObject.has("MainHand/Weapon"))
-		{
-			for( JsonElement element : jsonObject.get("MainHand/Weapon").getAsJsonArray())
+		 Iterator<JsonElement> iterator = jsonElement.getAsJsonArray().iterator();
+			
+			while(iterator.hasNext())
 			{
-				JsonObject data = element.getAsJsonObject();
+				JsonObject data = iterator.next().getAsJsonObject();;
 				
 				EquipmentWeigthedItem weightedItem = null;
-				String itemID = null; JsonObject itemNBT = null;
 				int weight = 10;
 				
-				if(data.has("itemID"))	itemID = data.get("itemID").getAsString();
-				if(data.has("nbt")  && data.get("nbt").isJsonObject()) itemNBT = data.get("nbt").getAsJsonObject();
-				if(data.has("weight"))	weight = data.get("weight").getAsInt();
+				weight = data.get("weight").getAsInt();
 				
-				//TODO
-//				ItemStack stack = getItemStackFromID(itemID);
-//				
-//				setNBTData(itemNBT, stack);
-//				
-//				if(stack != null)
-//				{
-//					weightedItem = new EquipmentWeigthedItem(stack, weight);
-//				}
+				ItemHolder itemHolder = new ItemHolder().readJsonObject(data);
+				
+				weightedItem = new EquipmentWeigthedItem(itemHolder, weight);
 				
 				if(weightedItem != null)
 				{
 					mainHandList.add(weightedItem);
 				}
-			}
 		}
+	}
+	
+	public static void LoadOffHandFile(JsonElement jsonElement) {
 		
-		if(jsonObject.has("OffHand"))
-		{
-			for(JsonElement element : jsonObject.get("OffHand").getAsJsonArray())
+		 Iterator<JsonElement> iterator = jsonElement.getAsJsonArray().iterator();
+			
+			while(iterator.hasNext())
 			{
-				JsonObject data = element.getAsJsonObject();
+				JsonObject data = iterator.next().getAsJsonObject();
 				
 				EquipmentWeigthedItem weightedItem = null;
 				
 				String itemID = null; JsonObject itemNBT = null;
 				int weight = 10;
 				
-				if(data.has("itemID"))	itemID = data.get("itemID").getAsString();
-				if(data.has("nbt") && data.get("nbt").isJsonObject()) itemNBT = data.get("nbt").getAsJsonObject();
 				if(data.has("weight"))	weight = data.get("weight").getAsInt();
 				
-				//TODO
-				//ItemStack stack = getItemStackFromID(itemID);
+				ItemHolder itemHolder = new ItemHolder().readJsonObject(data);
 				
-				//TODO
-				//setNBTData(itemNBT, stack);
-				
-				//TODO	
-//				if(stack != null)
-//				{
-//					weightedItem = new EquipmentWeigthedItem(stack, weight);
-//				}
+				weightedItem = new EquipmentWeigthedItem(itemHolder, weight);  
 				
 				if(weightedItem != null)
 				{
 					offHandList.add(weightedItem);
 				}
 			}
-		}
 		
-		if(jsonObject.has("Tipped_Arrows_Effects"))
-		{
-			for(JsonElement arrowSet : jsonObject.get("Tipped_Arrows_Effects").getAsJsonArray())
+	}
+	
+	public static void loadTippedArrowsFile(JsonElement jsonElement) {
+	
+		
+		 Iterator<JsonElement> iterator = jsonElement.getAsJsonArray().iterator();
+			
+			while(iterator.hasNext())
 			{
+				JsonObject arrowSet = iterator.next().getAsJsonObject();
 				
 				ItemHolder PotionItemHolder = new PotionItemHolder(Items.TIPPED_ARROW);
 
@@ -242,70 +289,18 @@ public class EquipmentManager
 				
 				}
 			}
-		}
-		RaidersMain.logger.info("MainHandList Size: "+ mainHandList.size());
-		RaidersMain.logger.info("OffHand Size: "+ offHandList.size());
-		RaidersMain.logger.info("Armor Sets Size: "+ armorList.size());
-		RaidersMain.logger.info("Tipped Arrows Size: "+ tippedArrows.size());
-		RaidersMain.logger.info("Errors: "+ ErrorList.size());
-	}
-	
-
-	public static void saveEquipmentFile()
-	{
-	    	FileOutputStream fo = null; 
-	        try
-	        {
-	        	fo = FileUtils.openOutputStream(equipmentFile);
-	        			
-	            fo.close(); // don't swallow close Exception if copy completes normally
-	        }
-	        catch (IOException ioexception)
-	        {
-	        	RaidersMain.logger.error((String)"Couldn\'t save stats", (Throwable)ioexception);
-	        }finally 
-	        {
-	        	IOUtils.closeQuietly(fo);
-	        }
-	}
-
-	public static int LoadArmorFile() {
-		return 0;
-	}
-	
-	public static int LoadMainHandFile() {
-		return 0;
-	}
-	
-	public static int LoadOffHandFile() {
-		return 0;	
-	}
-	
-	public static int loadTippedArrowsFile() {
-		return 0;
 	}
 	
 	public static File GenerateDefault()
 	{
-	
-        try 
-        {	
-        	File file = equipmentFile;
+	        	
+        	if (!equimentFolder.exists())
+        	{
+        		equimentFolder.mkdirs();
+        	}
         	
-        	if (file.exists())
-        	{
-        		return file;
-        	}else file.createNewFile();
-			
-        	if (file.canWrite())
-        	{
-        		FileWriter fw = new FileWriter(file);
-        			
-        		JsonObject json = new JsonObject();
-        		
+        	
         		JsonArray ArmorSet = new JsonArray();
-        		
-        		JsonArray armorSetsArray = new JsonArray();
         		
         		JsonArray OffHandSlots = new JsonArray();
         		
@@ -328,8 +323,6 @@ public class EquipmentManager
         		
         		object = new JsonObject();
         		
-        		JsonElement blank = new JsonArray();
-
        			// iron
         		object.addProperty("name", "Iron Armor Set");
         		object.add("head", new ItemHolder(Items.IRON_HELMET).writeJsonObject(new JsonObject()));
@@ -416,7 +409,9 @@ public class EquipmentManager
 
         		OffHandSlots.add(object);
         		
-        		object = new ItemHolder(Items.STICK).writeJsonObject(new JsonObject());
+        		ItemStack bigStick = new ItemStack(Items.STICK);
+        		bigStick.setStackDisplayName("Big Stick");
+        		object = new ItemHolder(bigStick).writeJsonObject(new JsonObject());
         		object.addProperty("weight", 10);
         		
         		OffHandSlots.add(object);
@@ -428,59 +423,43 @@ public class EquipmentManager
         		
         		/// arrow tips
         		
+        		
         		object = new JsonObject();
-        		
-        		JsonArray potionsArray = new JsonArray();
-        		JsonObject potion = new JsonObject(); potion.addProperty("potionID","slowness");
-        		
+
+        		PotionItemHolder holder = new PotionItemHolder(Items.TIPPED_ARROW);
+        		holder.addPotionEffect("minecraft:slowness", 60);
+
         		object.addProperty("CustomName", "Slowness");
-        		object.add("nbt", new JsonObject());
         		object.addProperty("weight", 5);
-        		object.addProperty("ticks", 60);
-        		object.add("TippedArrowsPotions", potion);
+        		holder.writeJsonPotions(object);
         		
         		arrowTipArray.add(object);
     		
         		//***
         		
         		object = new JsonObject();
-        		potion = new JsonObject(); potion.addProperty("potionID","instant_damage");
-        		object.addProperty("CustomName", "Harmful");
-        		object.add("nbt", new JsonObject());
-        		object.addProperty("weight", 10);
-        		object.addProperty("ticks", 20);
-        		object.add("TippedArrowsPotions", potion);
         		
-        		arrowTipArray.add(object);
-        		
-        		//*********
-        		object = new JsonObject();
-        		
-        		potion = new JsonObject(); potion.addProperty("potionID","nausea");
-        		potionsArray.add(potion);
-        		
-        		object.addProperty("CustomName", "Harmful");
-        		object.add("nbt", new JsonObject());
-        		object.addProperty("weight", 5);
-        		object.addProperty("ticks", 30);
-        		object.add("TippedArrowsPotions", potion);
-        		
-        		arrowTipArray.add(object);
-        		
-        		//********
-        		object = new JsonObject();
- 
-        		potionsArray = new JsonArray();
-        		
-        		potion = new JsonObject(); potion.addProperty("potionID","poison");
-        		JsonObject potion2 = new JsonObject(); potion2.addProperty("potionID","weakness");
-        		potionsArray.add(potion); potionsArray.add(potion2);
+        		holder = new PotionItemHolder(Items.TIPPED_ARROW);
+        		holder.addPotionEffect("minecraft:instant_damage", 20);
 
-        		object.addProperty("CustomName", "Poisonous");
-        		object.add("nbt", new JsonObject());
+        		
+        		object.addProperty("CustomName", "Harmful");
         		object.addProperty("weight", 10);
-        		object.addProperty("ticks", 30);
-        		object.add("TippedArrowsPotions", potionsArray);
+        		holder.writeJsonPotions(object);
+        		
+        		arrowTipArray.add(object);
+        		
+ 
+        		object = new JsonObject();
+        		
+        		holder = new PotionItemHolder(Items.TIPPED_ARROW);
+        		holder.addPotionEffect("minecraft:poison", 30);
+        		holder.addPotionEffect("minecraft:weakness", 60);
+
+        		
+        		object.addProperty("CustomName", "Poisonous");
+        		object.addProperty("weight", 10);
+        		holder.writeJsonPotions(object);
         		
         		arrowTipArray.add(object);
         		
@@ -488,39 +467,52 @@ public class EquipmentManager
         		
         		object = new JsonObject();
         		
-        		potion = new JsonObject(); potion.addProperty("potionID","weakness");
+        		holder = new PotionItemHolder(Items.TIPPED_ARROW);
+        		holder.addPotionEffect("weakness", 40);
         		
         		object.addProperty("CustomName", "Weakness");
-        		object.add("nbt", new JsonObject());
         		object.addProperty("weight", 25);
-        		object.addProperty("ticks", 30);
-        		object.add("TippedArrowsPotions", potion);
+        		holder.writeJsonPotions(object);
         		
         		arrowTipArray.add(object);
         		
         		//********8
         		
-        		json.add("Armor_Sets", ArmorSet);
-        		json.add("MainHand/Weapon", MainHand);
-        		json.add("OffHand", OffHandSlots);
-        		json.add("Tipped_Arrows_Effects", arrowTipArray);
+        		writeJson(armorFile, ArmorSet);
+        		writeJson(mainHandFile, MainHand);
+        		writeJson(offHandFile, OffHandSlots);
+        		writeJson(arrorwsFile, arrowTipArray);
           		
-        		new GsonBuilder().setPrettyPrinting().create().toJson(json, fw);
+        		//new GsonBuilder().setPrettyPrinting().create().toJson(json, fw);
         			
-        		fw.flush();
-        		fw.close();
-        		
-                return file;
-        	}
-			}catch (IOException e) 
-        	{
-				e.printStackTrace();
-        	}
-        
         return null;
 	}
 	
 	
-	
+	private static File writeJson(File file, JsonArray json ) {
+        try 
+        {	
+        	if (!file.exists())
+        		file.createNewFile();
+
+        	if (file.canWrite())
+        	{
+
+        		FileWriter fw = new FileWriter(file);
+       		
+        		new GsonBuilder().setPrettyPrinting().create().toJson(json, fw);
+       		
+        		fw.flush();
+        		fw.close();
+       		
+        		return file;
+        	}
+        }catch (IOException e) 
+        {
+        	e.printStackTrace();
+        }
+        
+		return file;
+	}
 	
 }

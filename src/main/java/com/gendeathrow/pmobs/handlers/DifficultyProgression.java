@@ -41,7 +41,7 @@ public class DifficultyProgression
 	 */
 	public double calculateProgressionDifficulty(double eachIncrease)
 	{
-		return  eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world);
+		return  eachIncrease * RaidersWorldDifficulty.calculateRaidDifficulty(raider.world);
 	}
 		
 	/**
@@ -65,7 +65,7 @@ public class DifficultyProgression
      * @return
      */
     public double calculateProgressionDifficulty(double eachIncrease, int startDifficulty, double Max){
-    	if(RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world) > startDifficulty){
+    	if(RaidersWorldDifficulty.calculateRaidDifficulty(raider.world) > startDifficulty){
     		return eachIncrease * RaidersWorldDifficulty.calculateRaidDifficulty(raider.world) > Max ? Max : eachIncrease * RaidersWorldDifficulty.INSTANCE.calculateRaidDifficulty(raider.world);
     	}
     	
