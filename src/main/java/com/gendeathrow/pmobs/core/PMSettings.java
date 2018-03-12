@@ -22,6 +22,14 @@ public class PMSettings
 	
 	public static boolean leapAttackAI = true;
 
+	
+	// Raiders Base Stats
+	public static double movementSpeedStat = 0.23D;
+	public static double attackDamageStat = 4.5D;
+	public static double armorStat = 3.0D;
+	public static double maxHealthStat = 15D;
+	
+	
 	// Raiders Classes
 	public static boolean raiderClass = true;
 	public static boolean pyroClass = true;
@@ -30,13 +38,13 @@ public class PMSettings
 	public static boolean screamerClass = true;
 	public static boolean rangerClass = true;
 	
-	public static int pyroWeight = 20;
-	public static int bruteWeight = 94;
-	public static int tweakerWeight = 60;
-	public static int noneWeight = 100;
-	public static int screamerWeight = 10;
-	public static int rangerWeight = 100;
-
+	public static int pyroWeight = 6;
+	public static int bruteWeight = 40;
+	public static int tweakerWeight = 18;
+	public static int noneWeight = 50;
+	public static int screamerWeight = 1;
+	public static int rangerWeight = 50;
+	public static int raidersSpawnWeight = 100;
 	
 	public static int rangerStartDiff = 1;
 	public static int screamerStartDiff = 0;
@@ -83,7 +91,6 @@ public class PMSettings
 	// SpawnSettings
 	public static boolean removeVanillaSpawners = false;
 	public static int raidersSpawnerWeight = 200;
-	public static int raidersSpawnWeight = 100;
 	public static boolean safeForaDay = false;	
 	public static int raidersMaxGroupSpawn = 3;
 

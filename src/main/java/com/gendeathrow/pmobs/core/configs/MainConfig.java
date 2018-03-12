@@ -56,16 +56,15 @@ public class MainConfig
 	
 		//PMSettings.safeForaDay = config.getBoolean("Safe for a Day", mobs, false, "Prevents All Mobs from Spawning during first day above Y lvl 50");
 		
-		//PMSettings.factionsEnabled = config.getBoolean("Enable Factions", mobs, true, "If true Some Raiders can belong to a friendly/hostile faction. If false they are all hostile");
-
+		PMSettings.factionsEnabled = config.getBoolean("Enable Factions", mobs, true, "If true Some Raiders can belong to a friendly/hostile faction. If false they are all hostile");
 		
 		config.setCategoryPropertyOrder(mobs, Arrays.asList("WhiteLists", 
 																"Remove Vanilla Mob Spawner",
 																"Mob Spawner Weight",
-																"Armor Max",
 																"Spawn in Daylight",
 																"Torches/GlowStone Stop Spawning",
-				 												"DayTime Speed Modifier"));
+				 												"DayTime Speed Modifier",
+				 												"Enable Factions"));
 
 	
 		
@@ -113,11 +112,15 @@ public class MainConfig
 																 "Knockback Resistance  Max"));
 		
 
-		//String items = "items";
- 		//ESM stuff
-		//PMSettings.dropSerum = config.getBoolean("Brutes Drop Serum Samples", items, true, "If false Brutes dont drop samples. THIS IS THE ONLY WAY TO GET THEM");
-		//PMSettings.dropTransmitter = config.getBoolean("Drop Tramsmitter Part", items, true, "If false Raiders dont drop samples. THIS IS THE ONLY WAY TO GET THEM");
-
+		
+		String baseCat = "Raider Base Stats";
+		config.addCustomCategoryComment(baseCat, "Set Base stats of a raider. All classes use these base stats and will add/multiply the stats for that class");
+		
+		PMSettings.movementSpeedStat = config.get(baseCat, "Movement Speed", PMSettings.movementSpeedStat).getDouble();
+		PMSettings.attackDamageStat = config.get(baseCat, "Attack Damage", PMSettings.attackDamageStat).getDouble();
+		PMSettings.armorStat = config.get(baseCat, "Armor", PMSettings.armorStat).getDouble();
+		PMSettings.maxHealthStat = config.get(baseCat, "Max Health", PMSettings.maxHealthStat).getDouble();
+		
 		config.removeCategory(remove);
 		
 		if(config.hasChanged())

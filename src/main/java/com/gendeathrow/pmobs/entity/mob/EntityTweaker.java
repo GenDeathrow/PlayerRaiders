@@ -49,6 +49,10 @@ public class EntityTweaker extends EntityRaiderBase{
     	return RaidersWorldDifficulty.calculateRaidDifficulty(this.world) >= PMSettings.tweakerStartDiff;
     };
     
+    @Override
+    protected boolean wearsArmor() {
+    	return false;
+    }
     
     @Override
 	@Nullable

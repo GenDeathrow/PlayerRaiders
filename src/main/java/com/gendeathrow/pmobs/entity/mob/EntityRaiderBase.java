@@ -10,6 +10,7 @@ import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.common.EnumFaction;
 import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.entity.ai.EntityAIShootLaser;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
@@ -137,16 +138,17 @@ public class EntityRaiderBase extends EntityMob {
 	{
 	        super.applyEntityAttributes();
 	        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(35.0D);
-	        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.23D);
-	        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.5D);
-	        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(3.0D);
-	        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(15);
+	        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(PMSettings.movementSpeedStat);
+	        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(PMSettings.attackDamageStat);
+	        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(PMSettings.armorStat);
+	        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(PMSettings.maxHealthStat);
 	}
 
     @Override
 	protected void initEntityAI() {
     	super.initEntityAI();
         this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(2, new EntityAIShootLaser(this));
         this.tasks.addTask(2, new EntityAIMoveTowardsRestriction(this, 1.0D));
 	}
     
@@ -453,7 +455,7 @@ public class EntityRaiderBase extends EntityMob {
     }
     
     @Override
-    public boolean canAttackClass(Class entity) 
+    public boolean canAttackClass(Class <? extends EntityLivingBase >  entity) 
     {
     	if(EntityPlayer.class.isAssignableFrom(entity))
     		return true;
@@ -495,27 +497,28 @@ public class EntityRaiderBase extends EntityMob {
         
         return super.getExperiencePoints(player);
     }
+
+    /**
+     * If a Raider should wear Armor
+     * @return
+     */
+    protected boolean wearsArmor() {
+    	return true;
+    }
     
     @Override
     protected void setEquipmentBasedOnDifficulty(DifficultyInstance difficulty)
     {
+    	if(!wearsArmor()) return;
+    	
+    	if(!PMSettings.isDifficultyProgressionEnabled)
+    		super.setEquipmentBasedOnDifficulty(difficulty);
 
     	if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05))
         {
-	    	System.out.println((0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05));
+	    	//System.out.println((0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05));
 	    	
-            int i = this.rand.nextInt(2);
-            
-            if (this.rand.nextFloat() < 0.095F)
-                ++i;
-
-            if (this.rand.nextFloat() < 0.095F)
-                ++i;
-
-            if (this.rand.nextFloat() < 0.095F)
-                ++i;
-            
-            
+           
             float f = this.world.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
 
             boolean armorflag = true;

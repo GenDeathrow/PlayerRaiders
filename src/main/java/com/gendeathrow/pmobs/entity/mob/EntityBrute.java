@@ -59,10 +59,10 @@ public class EntityBrute extends EntityRaiderBase{
     		livingdata = super.onInitialSpawn(difficulty, livingdata);
     		
     		this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(.7);
-    		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(.15);
+    		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(PMSettings.movementSpeedStat - 0.08);
     		this.stepHeight = 2F;
     		this.removeAllModifiers(SharedMonsterAttributes.MOVEMENT_SPEED);
-        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7);
+        	this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(PMSettings.attackDamageStat + 2.5D);
         	this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier("Brute Health", 1.25, 2));
         	
         	if(!this.getHeldItem(EnumHand.OFF_HAND).isEmpty()) this.setHeldItem(EnumHand.OFF_HAND, ItemStack.EMPTY);

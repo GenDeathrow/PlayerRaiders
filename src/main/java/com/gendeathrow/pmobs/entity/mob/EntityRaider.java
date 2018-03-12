@@ -38,8 +38,6 @@ public class EntityRaider extends EntityRaiderBase{
 	
 	private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.<Boolean>createKey(EntityRaiderBase.class, DataSerializers.BOOLEAN);
 	
-	
-	
 	public EntityRaider(World worldIn) {
 		super(worldIn);
 	}
@@ -136,7 +134,7 @@ public class EntityRaider extends EntityRaiderBase{
   
     		return livingdata;
     }
-    
+
     @Nullable
     protected ResourceLocation getLootTable()
     {

@@ -14,8 +14,6 @@ public class ConfigHandler {
 	public static void init() {
 		MainConfig.load();
 		raiderClassConfigs.readFile();
-
-
 	}
 	
 	public static void postInit() {

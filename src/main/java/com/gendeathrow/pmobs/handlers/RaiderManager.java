@@ -347,6 +347,9 @@ public class RaiderManager
 		raidersList.put("TheMattaBase", new RaiderData(new GameProfile(UUID.fromString("44ba40ef-fd8a-446f-834b-5aea42119c92"), "TheMattaBase"), 10));
 		raidersList.put("Jsl7", new RaiderData(new GameProfile(UUID.fromString("94c04938-0f86-4960-a175-e3413a07fe8b"), "Jsl7"), 10));
 		raidersList.put("Turkey2349", new RaiderData(new GameProfile(UUID.fromString("276130dd-8c9a-4814-8328-2578f034e422"), "Turkey2349"), 10));
+		raidersList.put("Technicalkaos", new RaiderData(new GameProfile(UUID.fromString("bae6421f-cb68-4521-b744-78a3547aed29"), "technicalkaos"), 10));  
+		raidersList.put("Mondad", new RaiderData(new GameProfile(UUID.fromString("191ace35-d40f-4703-afa0-fe398fce4afa"), "mondad"), 10));
+
 		
 		//invasion pack testers
 		raidersList.put("Bacon_Donut", new RaiderData(new GameProfile(UUID.fromString("024a0d05-3e3e-4ec5-b394-6e1a22d23fdc"), "Bacon_Donut"), 10));

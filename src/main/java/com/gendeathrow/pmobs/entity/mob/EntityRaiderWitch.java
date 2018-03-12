@@ -315,7 +315,10 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
         return damage;
     }
     
-    
+    @Override
+    protected boolean wearsArmor() {
+    	return false;
+    }
     
     @Nullable
     @Override
@@ -324,7 +327,7 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
         livingdata = super.onInitialSpawn(difficulty, livingdata);
 
         this.setRaiderFaction(EnumFaction.HOSTILE);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(PMSettings.maxHealthStat + 5);
         this.setHealth(this.getMaxHealth());
   	
 		return livingdata;

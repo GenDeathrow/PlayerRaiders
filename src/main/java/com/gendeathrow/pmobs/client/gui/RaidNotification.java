@@ -30,7 +30,7 @@ public class RaidNotification
 	public static void ScheduleNotice(ArrayList<String> lines, String sound)
 	{
 		//Temp fix for only having one notic
-		notices.add(new QuestNotice(lines, sound));
+		notices.add(0, new QuestNotice(lines, sound));
 
 	}
 	
@@ -89,7 +89,13 @@ public class RaidNotification
 		
 		
 		for(int i = 1; i < notice.lines.size(); i++) {
+			if(i >= 12) break;
+			
 			tmp = TextFormatting.YELLOW + "" + I18n.format(notice.getLine(i));
+			
+			if(i == 11)
+				tmp = TextFormatting.YELLOW + "Additional "+ (notice.getLinesSize() - 10) +" Changes";
+			
 			txtW = mc.fontRenderer.getStringWidth(tmp);
 			mc.fontRenderer.drawString(tmp, width/2 - txtW/2, height/4 + (12 * i), color, true);
 		}
@@ -124,6 +130,11 @@ public class RaidNotification
 				return true;
 			return false;
 		}
+		
+		public int getLinesSize() {
+			return lines.size();
+		}
+		
 		
 		public float getTime()
 		{

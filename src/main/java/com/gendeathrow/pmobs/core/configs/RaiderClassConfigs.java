@@ -97,49 +97,11 @@ public class RaiderClassConfigs extends JsonConfig{
 			this.setHasChanged(true);
 		}
 		
-		if(!json.has(startDiffID)) {
+		if(!json.has(startDiffID) && cat != "Raider") {
 			json.addProperty(startDiffID, startDiff);
 			this.setHasChanged(true);
 		}
-		
-//		if(!json.has(extraDropPercentageID)) {
-//			json.addProperty(extraDropPercentageID, extraDropPercentage);
-//			this.setHasChanged(true);
-//		}
-		
-//		if(!json.has(extraDropsID)) {
-//			JsonArray array = new JsonArray();
-//			
-//			if(object != null)
-//				for(Object[] drop : object) {
-//				
-//					if(drop.equals(null)) continue;
-//				
-//					ItemStack stack = ((ItemStack) drop[0]);
-//				
-//					if(stack.isEmpty()) continue;
-//					
-//					int weightIn = (int) drop[1];
-//				
-//					JsonObject itemJson = new JsonObject();
-//						itemJson.addProperty("itemid", stack.getItem().getRegistryName().toString());
-//						itemJson.addProperty("meta", stack.getMetadata());
-//						itemJson.addProperty("minAmt", 1);
-//						itemJson.addProperty("maxAmt", stack.getCount());
-//						itemJson.addProperty("weight", weightIn);
-//					
-//						if(stack.hasTagCompound())
-//							itemJson.addProperty("nbt", stack.getTagCompound().toString());
-//					
-//						array.add(itemJson);
-//				}
-//			
-//			json.add("extraDrops", array);
-//			
-//			this.setHasChanged(true);
-//		}
 
-		
 		return json;
 	}
 	

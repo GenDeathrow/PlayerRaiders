@@ -1,6 +1,7 @@
 package com.gendeathrow.pmobs.core.init;
 
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityBruteRenderer;
@@ -22,10 +23,11 @@ import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.entity.neutral.EntitySignalTransmitter;
 
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DungeonHooks;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -95,44 +97,39 @@ public class RegisterEntities {
 	}
 	
 	public static void RegisterSpawns() {
-	   	Biome[] biomes = new Biome[0];
+	   	List<Biome> biomes = new ArrayList<Biome>();
     	
 	   	for (Biome biomeEntry : ForgeRegistries.BIOMES.getValues()) 
 	   	{
-	   		boolean flag = true;
-  		  
-	   		if((BiomeDictionary.hasType(biomeEntry, BiomeDictionary.Type.NETHER) && !PMSettings.spawnNether) || 
-	   				(BiomeDictionary.hasType(biomeEntry, BiomeDictionary.Type.END) && !PMSettings.spawnEnd)  ||
-	   				(BiomeDictionary.hasType(biomeEntry, BiomeDictionary.Type.WATER)))			
-	   		{
-	   			flag = false;
-	   		}
-  		  
-	   		if (flag)
-	   		{
-	   			biomes = ArrayUtils.add(biomes,biomeEntry);
-	   		}
-	   		}
+	   		
+			for (Object obj : biomeEntry.getSpawnableList(EnumCreatureType.MONSTER))
+				if (obj instanceof SpawnListEntry) {
+					SpawnListEntry entry = (SpawnListEntry) obj;
+					if (entry.entityClass == EntityZombie.class) {
+						biomes.add(biomeEntry);
+					}
+				}
+	   	}
      	
-	   	RaidersMain.logger.info("Added "+ biomes.length +" biomes to Raiders spawn list.");
+	   	RaidersMain.logger.info("Added "+ biomes.size() +" biomes to Raiders spawn list.");
 	   	
 	   	if(PMSettings.raiderClass)
-	   		EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   		EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes.toArray(new Biome[biomes.size()]));
 	   	
 	   	if(PMSettings.bruteClass)
-	   		EntityRegistry.addSpawn(EntityBrute.class, PMSettings.bruteWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   		EntityRegistry.addSpawn(EntityBrute.class, PMSettings.bruteWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes.toArray(new Biome[biomes.size()]));
 	   	
 	   	if(PMSettings.screamerClass)
-	   		EntityRegistry.addSpawn(EntityRaiderWitch.class, PMSettings.screamerWeight, 1, 1, EnumCreatureType.MONSTER, biomes);
+	   		EntityRegistry.addSpawn(EntityRaiderWitch.class, PMSettings.screamerWeight, 1, 1, EnumCreatureType.MONSTER, biomes.toArray(new Biome[biomes.size()]));
 	   	
 	   	if(PMSettings.tweakersClass)
-	   		EntityRegistry.addSpawn(EntityTweaker.class, PMSettings.tweakerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   		EntityRegistry.addSpawn(EntityTweaker.class, PMSettings.tweakerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes.toArray(new Biome[biomes.size()]));
 	   	
 	   	if(PMSettings.pyroClass)
-	   		EntityRegistry.addSpawn(EntityPyromaniac.class, PMSettings.pyroWeight, 1, 1, EnumCreatureType.MONSTER, biomes);
+	   		EntityRegistry.addSpawn(EntityPyromaniac.class, PMSettings.pyroWeight, 1, 1, EnumCreatureType.MONSTER, biomes.toArray(new Biome[biomes.size()]));
 	   	
 	   	if(PMSettings.rangerClass)
-	   		EntityRegistry.addSpawn(EntityRanger.class, PMSettings.rangerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes);
+	   		EntityRegistry.addSpawn(EntityRanger.class, PMSettings.rangerWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes.toArray(new Biome[biomes.size()]));
 
 	}
 

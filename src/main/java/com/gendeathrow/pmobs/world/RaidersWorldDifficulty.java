@@ -56,7 +56,7 @@ public class RaidersWorldDifficulty {
 			decreaseWorldDifficulty(world);
 		}
 		
-		if(!lines.isEmpty())
+		if(!lines.isEmpty() && PMSettings.isDifficultyProgressionEnabled)
 			RaidersMain.network.sendToAll(new RaidNotificationPacket(lines));
 		
 		Raiders_WorldData.get(world).markDirty();
