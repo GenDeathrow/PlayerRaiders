@@ -39,7 +39,7 @@ public class RaidersMain
 	    
 	public static org.apache.logging.log4j.Logger logger;
 	    
-	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".ServerPoxy")
+	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".ServerProxy")
 	public static CommonProxy proxy;
 	
 	public static SimpleNetworkWrapper network;

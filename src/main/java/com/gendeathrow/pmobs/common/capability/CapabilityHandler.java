@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber
 public class CapabilityHandler
 {
-    public static final ResourceLocation PLAYERSDATA = new ResourceLocation(RaidersMain.MODID, "pr_playersdata");
+    public static final ResourceLocation PLAYERSDATAID = new ResourceLocation(RaidersMain.MODID, "pr_playersdata");
 
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Entity> event)
@@ -22,8 +22,8 @@ public class CapabilityHandler
     	// HardCoded fakeplayer for jei
         if (!(event.getObject() instanceof EntityPlayer) || (event.getObject() instanceof FakePlayer) || (event.getObject().getClass().getName().equals("mezz.jei.util.FakeClientPlayer"))) return;
 
-       if(!event.getCapabilities().containsKey(PLAYERSDATA)) {
-        	event.addCapability(PLAYERSDATA, new PlayerDataProvider());
+       if(!event.getCapabilities().containsKey(PLAYERSDATAID)) {
+        	event.addCapability(PLAYERSDATAID, new PlayerDataProvider());
        }
     }
 }
