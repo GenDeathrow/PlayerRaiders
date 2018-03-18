@@ -2,8 +2,8 @@ package com.gendeathrow.pmobs.entity.mob;
 
 import javax.annotation.Nullable;
 
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 

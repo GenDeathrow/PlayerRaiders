@@ -38,11 +38,11 @@ public class PMSettings
 	public static boolean screamerClass = true;
 	public static boolean rangerClass = true;
 	
-	public static int pyroWeight = 6;
+	public static int pyroWeight = 10;
 	public static int bruteWeight = 40;
 	public static int tweakerWeight = 18;
 	public static int noneWeight = 50;
-	public static int screamerWeight = 1;
+	public static int screamerWeight = 4;
 	public static int rangerWeight = 50;
 	public static int raidersSpawnWeight = 100;
 	

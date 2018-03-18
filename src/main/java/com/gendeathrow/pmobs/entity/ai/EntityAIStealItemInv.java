@@ -207,13 +207,13 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
                     ItemSword itemsword = (ItemSword)itemstack.getItem();
                     ItemSword itemsword1 = (ItemSword)stealItem.getItem();
 
-                    if (itemsword.getDamageVsEntity() == itemsword1.getDamageVsEntity())
+                    if (itemsword.getDamage(itemstack) == itemsword1.getDamage(stealItem))
                     {
                        flag = itemstack.getMetadata() > stealItem.getMetadata() || itemstack.hasTagCompound() && !stealItem.hasTagCompound();
                     }
                     else
                     {
-                        flag = itemsword.getDamageVsEntity() > itemsword1.getDamageVsEntity();
+                        flag = itemsword.getDamage(itemstack) > itemsword1.getDamage(stealItem);
                     }
 
                 }

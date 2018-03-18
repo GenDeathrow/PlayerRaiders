@@ -1,17 +1,14 @@
 package com.gendeathrow.pmobs.commands;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.gendeathrow.pmobs.core.RaidersMain;
-import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.gendeathrow.pmobs.network.RaidNotificationPacket;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentString;
 
 public class SendRaidNoticeTest extends Base_Command
 {

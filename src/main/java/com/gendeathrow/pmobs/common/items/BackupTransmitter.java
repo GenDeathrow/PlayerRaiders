@@ -3,10 +3,10 @@ package com.gendeathrow.pmobs.common.items;
 import java.util.Random;
 
 import com.gendeathrow.pmobs.common.EnumFaction;
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.common.capability.player.IPlayerData;
 import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
 import com.gendeathrow.pmobs.core.RaidersMain;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.mob.EntityRaider;
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.mob.EntityRanger;

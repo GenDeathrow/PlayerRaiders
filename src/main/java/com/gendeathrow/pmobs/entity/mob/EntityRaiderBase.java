@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 import com.gendeathrow.pmobs.client.LayerFeatures;
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.common.EnumFaction;
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.ai.EntityAIShootLaser;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
@@ -662,7 +662,7 @@ public class EntityRaiderBase extends EntityMob {
     }  
     
     @Override
-	protected SoundEvent getHurtSound() {
+	protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
 		return RaidersSoundEvents.RAIDERS_HURT;
 	}
 

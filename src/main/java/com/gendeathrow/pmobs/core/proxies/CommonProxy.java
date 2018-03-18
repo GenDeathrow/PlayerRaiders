@@ -1,6 +1,5 @@
 package com.gendeathrow.pmobs.core.proxies;
 
-import com.gendeathrow.pmobs.common.BruteSerumHandler;
 import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 
@@ -23,16 +22,7 @@ public class CommonProxy
 
 	public void registerHandlers()
 	{
-//        
-//		WorldLoader handler = new WorldLoader();
-//		
-//		MinecraftForge.EVENT_BUS.register(handler);
-//		
-//		MinecraftForge.EVENT_BUS.register(new EventHandler());
-//		MinecraftForge.EVENT_BUS.register(new EntityDropPod(null));
-//		MinecraftForge.EVENT_BUS.register(new CapabilityHandler());
-//		MinecraftForge.EVENT_BUS.register(new BruteSerumHandler());
-		
+
 		
 	}
 
@@ -49,7 +39,6 @@ public class CommonProxy
 	
 	public void Init(FMLInitializationEvent event) 
 	{
-		BruteSerumHandler.registerPotion(); 
 		PlayerDataProvider.register();
 		RegisterEntities.RegisterLootTables();
 

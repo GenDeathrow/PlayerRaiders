@@ -103,7 +103,7 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
     	this.pushBackCooldown--;
         
         EntityLivingBase entitylivingbase = this.raider.getAttackTarget();
-        double d0 = this.raider.getDistanceSqToEntity(entitylivingbase);
+        double d0 = this.raider.getDistance(entitylivingbase);
         boolean flag = this.raider.getEntitySenses().canSee(entitylivingbase);
         boolean flag1 = this.seeTime > 0;      
         
@@ -131,7 +131,7 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
 
         if (d0 <= (double)this.maxAttackDistance && this.seeTime >= 20)
         {
-            this.raider.getNavigator().clearPathEntity();
+            this.raider.getNavigator().clearPath();
             ++this.strafingTime;
         }
         else
@@ -328,7 +328,7 @@ public class EntityAIRaiderWitchAttack extends EntityAIBase
 
         EntityPotion entitypotion = new EntityPotion(this.raider.world, this.raider, PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potiontype));
         entitypotion.rotationPitch -= 0.0F;
-        entitypotion.setThrowableHeading(d1, d2 + (double)(f * 0.2F), d3, 0.75F, 8.0F);
+        entitypotion.shoot(d1, d2 + (double)(f * 0.2F), d3, 0.75F, 8.0F);
         this.raider.world.playSound((EntityPlayer)null, this.raider.posX, this.raider.posY, this.raider.posZ, SoundEvents.ENTITY_WITCH_THROW, this.raider.getSoundCategory(), 1.0F, 0.8F + this.raider.getRNG().nextFloat() * 0.4F);
         this.raider.world.spawnEntity(entitypotion);
         this.potionCooldown = 60 + (this.raider.getRNG().nextInt(15) - this.raider.getRNG().nextInt(10));

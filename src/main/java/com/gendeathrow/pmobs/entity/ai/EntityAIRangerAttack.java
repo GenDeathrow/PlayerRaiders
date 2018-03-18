@@ -146,7 +146,7 @@ public class EntityAIRangerAttack extends EntityAIBase{
 
         if (distance <= (double)this.maxAttackDistance && this.seeTime >= 20)
         {
-            this.entityHost.getNavigator().clearPathEntity();
+            this.entityHost.getNavigator().clearPath();
         }
         else
         {

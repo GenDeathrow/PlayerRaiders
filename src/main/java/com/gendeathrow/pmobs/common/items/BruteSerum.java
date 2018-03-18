@@ -1,7 +1,7 @@
 package com.gendeathrow.pmobs.common.items;
 
 import com.gendeathrow.pmobs.common.BruteSerumHandler;
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

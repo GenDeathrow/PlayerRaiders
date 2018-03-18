@@ -1,7 +1,6 @@
 package com.gendeathrow.pmobs.core;
 
 import com.gendeathrow.pmobs.commands.CommonCommands;
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.configs.ConfigHandler;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
@@ -10,8 +9,6 @@ import com.gendeathrow.pmobs.network.RaidNotificationPacket;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -24,7 +21,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = RaidersMain.MODID, name=RaidersMain.NAME, version = RaidersMain.VERSION, dependencies="after:BiomesOPlenty", acceptedMinecraftVersions="[1.11.2]")
+@Mod(modid = RaidersMain.MODID, name=RaidersMain.NAME, version = RaidersMain.VERSION, dependencies="after:BiomesOPlenty", acceptedMinecraftVersions="[1.12.2]")
 public class RaidersMain
 {
     public static final String MODID = "raiders";
@@ -39,7 +36,7 @@ public class RaidersMain
 	    
 	public static org.apache.logging.log4j.Logger logger;
 	    
-	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".ServerPoxy")
+	@SidedProxy(clientSide = PROXY + ".ClientProxy", serverSide = PROXY + ".ServerProxy")
 	public static CommonProxy proxy;
 	
 	public static SimpleNetworkWrapper network;
@@ -79,7 +76,6 @@ public class RaidersMain
     	ConfigHandler.init();
     	RegisterEntities.RegisterSpawns();
     	RegisterEntities.RegisterSpawners();
-		RaidersSoundEvents.register();
     }
     
     @EventHandler

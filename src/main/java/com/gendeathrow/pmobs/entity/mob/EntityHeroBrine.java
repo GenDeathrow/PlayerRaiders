@@ -438,7 +438,7 @@ public class EntityHeroBrine extends EntityRaiderBase
 
                     if (this.raider.shouldAttackPlayer((EntityPlayer)this.targetEntity))
                     {
-                        if (((EntityPlayer)this.targetEntity).getDistanceSqToEntity(this.raider) < 25.0D && this.teleportTime >= 40)
+                        if (((EntityPlayer)this.targetEntity).getDistanceSq(this.raider) < 25.0D && this.teleportTime >= 40)
                         {
                         	if(this.raider.rand.nextDouble() < 40)	
                         	{
@@ -456,7 +456,7 @@ public class EntityHeroBrine extends EntityRaiderBase
 
                         
                     }
-                    else if (((EntityPlayer)this.targetEntity).getDistanceSqToEntity(this.raider) > 128.0D && this.teleportTime >= 30 && this.raider.teleportToEntity(this.targetEntity))
+                    else if (((EntityPlayer)this.targetEntity).getDistanceSq(this.raider) > 128.0D && this.teleportTime >= 30 && this.raider.teleportToEntity(this.targetEntity))
                     {
                     	if(this.raider.rand.nextDouble() < 40)	
                     	{

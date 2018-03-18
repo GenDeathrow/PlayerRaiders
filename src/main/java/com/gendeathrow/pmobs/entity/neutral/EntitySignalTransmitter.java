@@ -4,7 +4,7 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.mob.EntityRaider;
 
 import net.minecraft.block.state.IBlockState;
@@ -143,7 +143,6 @@ public class EntitySignalTransmitter extends Entity implements IWorldNameable
         	else
         	{
 
-        		this.setBeenAttacked();
         		this.playSound(net.minecraft.init.SoundEvents.BLOCK_ANVIL_HIT, 1f, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
         		
         		this.setDamage(this.getDamage() + amount);

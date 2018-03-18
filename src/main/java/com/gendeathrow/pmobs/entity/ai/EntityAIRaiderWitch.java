@@ -1,6 +1,6 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderWitch;
 
 import net.minecraft.entity.ai.EntityAIBase;

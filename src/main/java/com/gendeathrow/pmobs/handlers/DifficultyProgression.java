@@ -6,15 +6,14 @@ import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderWitch;
 import com.gendeathrow.pmobs.world.RaiderClassDifficulty;
-import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 import com.gendeathrow.pmobs.world.RaiderClassDifficulty.DiffEntry;
 import com.gendeathrow.pmobs.world.RaiderClassDifficulty.EnumBonusDiff;
+import com.gendeathrow.pmobs.world.RaidersWorldDifficulty;
 
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.World;
 
 public class DifficultyProgression 
 {

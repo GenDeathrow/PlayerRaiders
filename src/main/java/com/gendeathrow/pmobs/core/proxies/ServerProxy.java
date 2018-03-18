@@ -24,16 +24,17 @@ public class ServerProxy extends CommonProxy
 	
 	public void preInit(FMLPreInitializationEvent event) 
 	{
+		super.preInit(event);
 	}
 	
 	public void Init(FMLInitializationEvent event) 
 	{
-
+		super.Init(event);
 		
 	}
 	public void postInit(FMLPostInitializationEvent event) 
 	{
-		
+		super.postInit(event);
 	}
 
 	public void registerRenderers() 

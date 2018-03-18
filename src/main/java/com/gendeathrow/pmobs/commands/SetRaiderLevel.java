@@ -1,13 +1,11 @@
 package com.gendeathrow.pmobs.commands;
 
-import net.minecraft.client.Minecraft;
+import com.gendeathrow.pmobs.core.PMSettings;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
-
-import com.gendeathrow.pmobs.commands.Base_Command;
-import com.gendeathrow.pmobs.core.PMSettings;
 
 public class SetRaiderLevel extends Base_Command
 {

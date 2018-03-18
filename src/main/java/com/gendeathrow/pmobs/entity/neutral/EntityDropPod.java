@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;

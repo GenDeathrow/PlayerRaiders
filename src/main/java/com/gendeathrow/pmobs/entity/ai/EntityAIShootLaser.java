@@ -2,6 +2,8 @@ package com.gendeathrow.pmobs.entity.ai;
 
 import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -15,8 +17,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.Loader;
-
-import com.mojang.authlib.GameProfile;
 
 public class EntityAIShootLaser extends EntityAIBase 
 {
@@ -70,7 +70,7 @@ public class EntityAIShootLaser extends EntityAIBase
 			if (!parentEntity.world.isRemote && parentEntity.getHeldItemMainhand() != null && parentEntity.getHeldItemMainhand() == stack) 
 			{
 				World world = parentEntity.world;
-				if (entitylivingbase.getDistanceSqToEntity(parentEntity) < 576 && entitylivingbase.getDistanceSqToEntity(parentEntity) > 9 && parentEntity.canEntityBeSeen(entitylivingbase)) 
+				if (entitylivingbase.getDistanceSq(parentEntity) < 576 && entitylivingbase.getDistanceSq(parentEntity) > 9 && parentEntity.canEntityBeSeen(entitylivingbase)) 
 				{
 					++attackTimer;
 					if (attackTimer == 10) 

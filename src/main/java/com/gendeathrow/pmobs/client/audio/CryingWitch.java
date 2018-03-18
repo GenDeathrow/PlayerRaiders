@@ -12,7 +12,7 @@ public class CryingWitch extends MovingSound{
 
     public CryingWitch(EntityRaiderWitch minecartIn)
     {
-        super(com.gendeathrow.pmobs.common.RaidersSoundEvents.RAIDERS_WITCH_CRY, SoundCategory.HOSTILE);
+        super(com.gendeathrow.pmobs.core.init.RaidersSoundEvents.RAIDERS_WITCH_CRY, SoundCategory.HOSTILE);
         this.raider = minecartIn;
         this.repeat = true;
         this.repeatDelay = 0;

@@ -1,5 +1,7 @@
 package com.gendeathrow.pmobs.common;
 
+import java.util.ArrayList;
+
 import com.gendeathrow.pmobs.common.capability.player.IPlayerData;
 import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
 import com.gendeathrow.pmobs.common.potion.BruteSerumEffect;
@@ -14,6 +16,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,10 +30,15 @@ public class BruteSerumHandler
 
 	public static ResourceLocation BRUTESERUMID = new ResourceLocation(RaidersMain.MODID,"bruteserum");
 	
-	public static void registerPotion()
+	public static ArrayList<EntityPlayer> applyNegativeEffectQueue = new ArrayList<EntityPlayer>();
+    
+	@SubscribeEvent
+	public static void register(RegistryEvent.Register<Potion> event)
 	{
-		Potion.REGISTRY.register(getSparePotionId(), BRUTESERUMID, new BruteSerumEffect());
+		Potion brutesPotion = new BruteSerumEffect();
+		event.getRegistry().register(brutesPotion);
 	}
+	
 	
     public static int getSparePotionId()
     {
@@ -81,8 +89,8 @@ public class BruteSerumHandler
     			playerdata.setBruteSize(false);
     			event.player.stepHeight = 0.6f;
     		}
-    }
-    	
+		}
+		
     }
     
     @SideOnly(Side.CLIENT)

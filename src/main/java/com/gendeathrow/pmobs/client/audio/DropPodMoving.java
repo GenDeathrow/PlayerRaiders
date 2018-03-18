@@ -1,6 +1,6 @@
 package com.gendeathrow.pmobs.client.audio;
 
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 
 import net.minecraft.client.audio.ISound;

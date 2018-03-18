@@ -9,16 +9,16 @@ import com.gendeathrow.pmobs.common.items.BruteSerum;
 import com.gendeathrow.pmobs.core.RaidersMain;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber
 public class RegisterItems {
@@ -46,17 +46,19 @@ public class RegisterItems {
 		itemRegistry.registerAll(backupTransmitter, satTransmitterPart, bruteSerum, bruteSerumSample);
 	}
 	
-	public static void registerRenderer() {
+    @SubscribeEvent
+	public static void registerRenderer(ModelRegistryEvent event) {
 		//Register Items
 		try {
 			for (Field field : RegisterItems.class.getDeclaredFields()) {
 				Object obj = field.get(null);
+				
 				if (obj instanceof Item) {
 					Item item = (Item) obj;
 					
 					NonNullList<ItemStack> list = NonNullList.<ItemStack>create();
 			
-					item.getSubItems(item, RaidersMain.RaidersTab, list);
+					item.getSubItems(RaidersMain.RaidersTab, list);
 			
 					if(list.size() > 1)
 						for(ItemStack metaitem : list)
@@ -80,23 +82,10 @@ public class RegisterItems {
 		bruteSerum = setUpItem(new BruteSerum(), "brute_serum");
 		
 		satTransmitterPart = setUpItem(new Item(){
-			@Override
-			public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
-			{
-				tooltip.add("Drops from Raiders");
-			}
-
 		}.setNoRepair(), "sat_transmitter_part");
 		
 
 		bruteSerumSample = setUpItem(new Item(){
-				
-				@Override
-				public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
-				{
-					tooltip.add("Drops from Brute Raiders");
-				}
-
 			}.setNoRepair(), "brute_serum_sample");
 	}
 }

@@ -6,8 +6,8 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.gendeathrow.pmobs.common.EnumFaction;
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitch;
 import com.gendeathrow.pmobs.entity.ai.EntityAIRaiderWitchAttack;
@@ -146,11 +146,11 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
                 	else
                 		potiontype = PotionTypes.HEALING;
                 }
-                else if (this.rand.nextFloat() < 0.5F && this.getAttackTarget() != null && !this.isPotionActive(MobEffects.SPEED) && this.getAttackTarget().getDistanceSqToEntity(this) > 121.0D)
+                else if (this.rand.nextFloat() < 0.5F && this.getAttackTarget() != null && !this.isPotionActive(MobEffects.SPEED) && this.getAttackTarget().getDistanceSq(this) > 121.0D)
                 {
                     potiontype = PotionTypes.SWIFTNESS;
                 }
-                else if(!hasCastInvisability && this.rand.nextFloat() < 0.01F && this.getAttackTarget() != null && !this.isPotionActive(MobEffects.INVISIBILITY) && this.getAttackTarget().getDistanceSqToEntity(this) < 5.0D)
+                else if(!hasCastInvisability && this.rand.nextFloat() < 0.01F && this.getAttackTarget() != null && !this.isPotionActive(MobEffects.INVISIBILITY) && this.getAttackTarget().getDistanceSq(this) < 5.0D)
                 {
                 	if(this.rand.nextFloat() > 0.4F)
                 		potiontype = PotionTypes.INVISIBILITY;
@@ -217,7 +217,7 @@ public class EntityRaiderWitch extends AbstractRangeAttacker {
         double d1 = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - arrow.posY;
         double d2 = target.posZ - arrow.posZ;
         double d3 = (double)MathHelper.sqrt(d0 * d0 + d2 * d2);
-		arrow.setThrowableHeading(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, (float)(14 - this.world.getDifficulty().getDifficultyId() * 4));
+		arrow.shoot(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, (float)(14 - this.world.getDifficulty().getDifficultyId() * 4));
 		
 	}
 	

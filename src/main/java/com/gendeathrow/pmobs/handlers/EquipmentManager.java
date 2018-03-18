@@ -28,11 +28,7 @@ import com.google.gson.JsonParseException;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.WeightedRandom;
-import net.minecraftforge.client.event.GuiScreenEvent.PotionShiftEvent;
 //TODO
 public class EquipmentManager 
 {

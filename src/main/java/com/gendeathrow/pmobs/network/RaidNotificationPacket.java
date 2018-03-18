@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.Level;
 
 import com.gendeathrow.pmobs.client.gui.RaidNotification;
-import com.gendeathrow.pmobs.common.RaidersSoundEvents;
 import com.gendeathrow.pmobs.core.RaidersMain;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;

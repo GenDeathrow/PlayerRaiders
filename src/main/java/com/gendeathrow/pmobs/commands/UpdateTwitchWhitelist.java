@@ -1,12 +1,11 @@
 package com.gendeathrow.pmobs.commands;
 
+import com.gendeathrow.pmobs.handlers.RaiderManager;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-
-import com.gendeathrow.pmobs.commands.Base_Command;
-import com.gendeathrow.pmobs.handlers.RaiderManager;
 
 public class UpdateTwitchWhitelist extends Base_Command
 {

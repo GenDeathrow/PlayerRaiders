@@ -3,12 +3,8 @@ package com.gendeathrow.pmobs.core.configs;
 import java.io.File;
 
 import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.core.init.RegisterItems;
 import com.gendeathrow.pmobs.util.JsonConfig;
 import com.google.gson.JsonObject;
-
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 
 public class RaiderClassConfigs extends JsonConfig{
 

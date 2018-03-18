@@ -1,7 +1,6 @@
 package com.gendeathrow.pmobs.core.proxies;
 
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
-import com.gendeathrow.pmobs.core.init.RegisterItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -69,19 +68,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void registerRenderers()
 	{
-		RegisterItems.registerRenderer();
 		RegisterEntities.RegisterRenderers();
-		
-		//RenderingRegistry.registerEntityRenderingHandler(EntityRaider.class, EntityRaiderRenderer.FACTORY);
-		
-
-//		
-//		RenderingRegistry.registerEntityRenderingHandler(HiredRaider.class, HiredRaiderRenderer.FACTORY);
-//		
-//		RenderingRegistry.registerEntityRenderingHandler(EntityDropPod.class, DropPodRenderer.FACTORY);
-//		
-//		RenderingRegistry.registerEntityRenderingHandler(EntitySignalTransmitter.class, SignalTransmitterRenderer.FACTORY);
-
  	}
 	
 	

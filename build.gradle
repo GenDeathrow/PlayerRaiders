@@ -3,13 +3,10 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -25,9 +22,11 @@ group = modgroup // http://maven.apache.org/guides/mini/guide-naming-conventions
 archivesBaseName = modname +"-"+ mcversion
 
 
-sourceCompatibility=1.8
-targetCompatibility=1.8
- 
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
 minecraft {
     version = mcversion + "-" + forgeversion + forgeversion_suffix
     runDir = "run"

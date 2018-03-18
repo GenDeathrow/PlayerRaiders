@@ -108,7 +108,7 @@ public class ClientEventHandler
 				if(entity.isWitchActive())
 				{
 					witchNear = true;
-					float percentage = (float) Math.pow(entity.getDistanceToEntity(player)/maxDistance, 5);
+					float percentage = (float) Math.pow(entity.getDistanceSq(player)/maxDistance, 5);
 					fogDistance = (float) percentage * event.getFarPlaneDistance();
 					break;
 				}
