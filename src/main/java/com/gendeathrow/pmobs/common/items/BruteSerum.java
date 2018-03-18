@@ -1,5 +1,7 @@
 package com.gendeathrow.pmobs.common.items;
 
+import com.gendeathrow.pmobs.common.BruteSerumHandler;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -12,8 +14,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-
-import com.gendeathrow.pmobs.common.BruteSerumHandler;
 
 public class BruteSerum  extends Item
 {

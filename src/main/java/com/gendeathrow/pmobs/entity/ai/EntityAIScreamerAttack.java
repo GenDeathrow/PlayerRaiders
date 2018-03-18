@@ -1,5 +1,7 @@
 package com.gendeathrow.pmobs.entity.ai;
 
+import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -15,8 +17,6 @@ import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 public class EntityAIScreamerAttack extends EntityAIBase
 {
@@ -232,14 +232,14 @@ public class EntityAIScreamerAttack extends EntityAIBase
             if (this.attackStep > 1)
             {
             	this.raider.setArmsRaised(true);
-                float f = MathHelper.sqrt_float(MathHelper.sqrt_double(d0)) * 0.5F;
-                this.raider.worldObj.playEvent((EntityPlayer)null, 1018, new BlockPos((int)this.raider.posX, (int)this.raider.posY, (int)this.raider.posZ), 0);
+                float f = MathHelper.sqrt(MathHelper.sqrt(d0)) * 0.5F;
+                this.raider.world.playEvent((EntityPlayer)null, 1018, new BlockPos((int)this.raider.posX, (int)this.raider.posY, (int)this.raider.posZ), 0);
 
                 for (int i = 0; i < 1; ++i)
                 {
-                    EntitySmallFireball entitysmallfireball = new EntitySmallFireball(this.raider.worldObj, this.raider, d1 + this.raider.getRNG().nextGaussian() * (double)f, d2, d3 + this.raider.getRNG().nextGaussian() * (double)f);
+                    EntitySmallFireball entitysmallfireball = new EntitySmallFireball(this.raider.world, this.raider, d1 + this.raider.getRNG().nextGaussian() * (double)f, d2, d3 + this.raider.getRNG().nextGaussian() * (double)f);
                     entitysmallfireball.posY = this.raider.posY + (double)(this.raider.height / 2.0F) + 0.5D;
-                    this.raider.worldObj.spawnEntityInWorld(entitysmallfireball);
+                    this.raider.world.spawnEntity(entitysmallfireball);
                 }
             }
         }
@@ -254,7 +254,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
 	       if(strikes <= maxStrikes)
 	       {
 	    	   this.raider.setArmsRaised(true);
-	    	   this.raider.worldObj.addWeatherEffect(new EntityLightningBolt(this.raider.worldObj, target.posX + getRandomPosition(), target.posY, target.posZ + getRandomPosition(), false));
+	    	   this.raider.world.addWeatherEffect(new EntityLightningBolt(this.raider.world, target.posX + getRandomPosition(), target.posY, target.posZ + getRandomPosition(), false));
 	    	   strikes++;
 	       }
 	       else
@@ -274,7 +274,7 @@ public class EntityAIScreamerAttack extends EntityAIBase
         double d1 = target.posX + target.motionX - this.raider.posX;
         double d2 = d0 - this.raider.posY;
         double d3 = target.posZ + target.motionZ - this.raider.posZ;
-        float f = MathHelper.sqrt_double(d1 * d1 + d3 * d3);
+        float f = MathHelper.sqrt(d1 * d1 + d3 * d3);
         PotionType potiontype = PotionTypes.HARMING;
 
         if (f >= 8.0F && !target.isPotionActive(MobEffects.SLOWNESS))
@@ -290,11 +290,11 @@ public class EntityAIScreamerAttack extends EntityAIBase
             potiontype = PotionTypes.WEAKNESS;
         }
 
-        EntityPotion entitypotion = new EntityPotion(this.raider.worldObj, this.raider, PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potiontype));
+        EntityPotion entitypotion = new EntityPotion(this.raider.world, this.raider, PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), potiontype));
         entitypotion.rotationPitch -= 0.0F;
         entitypotion.setThrowableHeading(d1, d2 + (double)(f * 0.2F), d3, 0.75F, 8.0F);
-        this.raider.worldObj.playSound((EntityPlayer)null, this.raider.posX, this.raider.posY, this.raider.posZ, SoundEvents.ENTITY_WITCH_THROW, this.raider.getSoundCategory(), 1.0F, 0.8F + this.raider.getRNG().nextFloat() * 0.4F);
-        this.raider.worldObj.spawnEntityInWorld(entitypotion);
+        this.raider.world.playSound((EntityPlayer)null, this.raider.posX, this.raider.posY, this.raider.posZ, SoundEvents.ENTITY_WITCH_THROW, this.raider.getSoundCategory(), 1.0F, 0.8F + this.raider.getRNG().nextFloat() * 0.4F);
+        this.raider.world.spawnEntity(entitypotion);
         this.attackTime = 60;
     }
     

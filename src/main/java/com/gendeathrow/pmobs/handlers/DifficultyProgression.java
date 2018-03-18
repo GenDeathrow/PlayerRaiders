@@ -2,15 +2,14 @@ package com.gendeathrow.pmobs.handlers;
 
 import java.util.Random;
 
-import net.minecraft.entity.EntityLivingBase;
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
-
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 
 public class DifficultyProgression 
 {
@@ -74,7 +73,7 @@ public class DifficultyProgression
      */
     public int getDay()
     {
-    	return (int)(raider.worldObj.getWorldTime()/24000);
+    	return (int)(raider.world.getWorldTime()/24000);
     }
     
     public static int getDay(World worldObj)

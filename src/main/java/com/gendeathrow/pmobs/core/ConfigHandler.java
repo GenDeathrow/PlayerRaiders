@@ -4,19 +4,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.ConfigCategory;
-import net.minecraftforge.common.config.Configuration;
-
 import org.apache.logging.log4j.Level;
 
 import com.gendeathrow.pmobs.client.data.KillCounter;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
-import com.typesafe.config.ConfigSyntax;
+
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.ConfigCategory;
+import net.minecraftforge.common.config.Configuration;
 
 public class ConfigHandler 
 {
@@ -257,14 +256,12 @@ public class ConfigHandler
 		
 		public static ItemDrop getItemDrop(String data) throws NumberFormatException
 		{
-			
 			String[] split = data.split(":");
 
 			String itemID = split[0]+":"+split[1];
 			int metaID = Integer.parseInt(split[2]);
 			double chance= Double.parseDouble(split[4]);
 			int qty = Integer.parseInt(split[3]);
-			
 
 			return new ItemDrop(itemID, metaID,chance,qty);
 		}

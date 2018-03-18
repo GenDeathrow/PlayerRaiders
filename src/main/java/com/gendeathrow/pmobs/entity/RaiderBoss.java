@@ -2,11 +2,6 @@ package com.gendeathrow.pmobs.entity;
 
 import java.util.Map;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 import com.gendeathrow.pmobs.client.RaidersSkinManager;
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
@@ -14,6 +9,11 @@ import com.google.common.collect.Iterables;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.authlib.properties.Property;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 public class RaiderBoss extends EntityRaiderBase
 {

@@ -1,5 +1,7 @@
 package com.gendeathrow.pmobs.entity.ai;
 
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.state.IBlockState;
@@ -7,8 +9,6 @@ import net.minecraft.entity.ai.EntityAIMoveToBlock;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class EntityAIStealFarmland extends EntityAIMoveToBlock
 {
@@ -30,7 +30,7 @@ public class EntityAIStealFarmland extends EntityAIMoveToBlock
     {
         if (this.runDelay <= 0)
         {
-            if (!this.theRaider.worldObj.getGameRules().getBoolean("mobGriefing"))
+            if (!this.theRaider.world.getGameRules().getBoolean("mobGriefing"))
             {
                 return false;
             }
@@ -76,7 +76,7 @@ public class EntityAIStealFarmland extends EntityAIMoveToBlock
 
         if (this.getIsAboveDestination())
         {
-            World world = this.theRaider.worldObj;
+            World world = this.theRaider.world;
             BlockPos blockpos = this.destinationBlock.up();
             IBlockState iblockstate = world.getBlockState(blockpos);
             Block block = iblockstate.getBlock();

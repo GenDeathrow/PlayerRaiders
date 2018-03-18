@@ -3,14 +3,14 @@ package com.gendeathrow.pmobs.commands.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gendeathrow.pmobs.commands.Base_Command;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-
-import com.gendeathrow.pmobs.commands.Base_Command;
 
 public class CommonCommands extends CommandBase
 {
@@ -24,13 +24,13 @@ public class CommonCommands extends CommandBase
 	}
 	
 	@Override
-	public String getCommandName() 
+	public String getName() 
 	{
 		return "pr";
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender sender) 
+	public String getUsage(ICommandSender sender) 
 	{
 		String txt = "";
 		
@@ -55,7 +55,7 @@ public class CommonCommands extends CommandBase
 	}
 	
 	@Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] strings, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] strings, BlockPos pos)
     {
 		if(strings.length == 1)
 		{
@@ -90,7 +90,7 @@ public class CommonCommands extends CommandBase
 	{
 		if(args.length < 1)
 		{
-			throw new WrongUsageException(this.getCommandUsage(sender));
+			throw new WrongUsageException(this.getUsage(sender));
 		}
 
 		for(Base_Command c : coms)
@@ -108,7 +108,8 @@ public class CommonCommands extends CommandBase
 			}
 		}
 		
-		throw new WrongUsageException(this.getCommandUsage(sender));
+		throw new WrongUsageException(this.getUsage(sender));
 	}
+
 
 }

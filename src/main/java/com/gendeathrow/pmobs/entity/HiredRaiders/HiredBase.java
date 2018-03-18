@@ -5,6 +5,17 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.client.LayerFeatures;
+import com.gendeathrow.pmobs.client.RaidersSkinManager;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+import com.gendeathrow.pmobs.handlers.DifficultyProgression;
+import com.gendeathrow.pmobs.handlers.RaiderManager;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -30,7 +41,6 @@ import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,24 +59,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.gendeathrow.pmobs.client.LayerFeatures;
-import com.gendeathrow.pmobs.client.RaidersSkinManager;
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-import com.gendeathrow.pmobs.handlers.DifficultyProgression;
-import com.gendeathrow.pmobs.handlers.EquipmentManager;
-import com.gendeathrow.pmobs.handlers.RaiderManager;
-import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 
 public class HiredBase extends EntityCreature{
 
@@ -252,9 +247,9 @@ public class HiredBase extends EntityCreature{
     		
     		if(stack != null)
     		{
-    			EntityItem entity = new EntityItem(worldObj, this.posX, this.posY, this.posZ, stack);
+    			EntityItem entity = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
     			
-    			this.worldObj.spawnEntityInWorld(entity);
+    			this.world.spawnEntity(entity);
     		}
     	}
     }
@@ -322,7 +317,7 @@ public class HiredBase extends EntityCreature{
     @Override
     public int getMaxSpawnedInChunk()
     {
-    	if(this.worldObj.isDaytime())
+    	if(this.world.isDaytime())
     	{
     		return 2;
     	}
@@ -347,7 +342,7 @@ public class HiredBase extends EntityCreature{
 	@Override
 	public void onLivingUpdate()
 	{
-		if (this.worldObj.isDaytime() && !this.worldObj.isRemote && !this.isChild())
+		if (this.world.isDaytime() && !this.world.isRemote && !this.isChild())
 		{
 			float f = this.getBrightness(1.0F);
 			BlockPos blockpos = this.getRidingEntity() instanceof EntityBoat ? (new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ)).up() : new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ);
@@ -361,7 +356,7 @@ public class HiredBase extends EntityCreature{
 	
     public boolean isNotColliding()
     {
-        return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.worldObj.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
+        return this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
     }
 
    		
@@ -375,7 +370,7 @@ public class HiredBase extends EntityCreature{
     {
     	super.updateEquipmentIfNeeded(itemEntity);
     	
-        if (!itemEntity.isDead && !this.worldObj.isRemote)
+        if (!itemEntity.isDead && !this.world.isRemote)
         {
   			ItemStack returnStack = this.getRaidersInventory().addItem(itemEntity.getEntityItem());
   			
@@ -410,7 +405,7 @@ public class HiredBase extends EntityCreature{
 
 		if (hasHitTarget)
 		{
-			int i = this.worldObj.getDifficulty().getDifficultyId();
+			int i = this.world.getDifficulty().getDifficultyId();
 
 			if (this.getHeldItemMainhand() == null && this.isBurning() && this.rand.nextFloat() < (float)i * 0.3F)
 			{

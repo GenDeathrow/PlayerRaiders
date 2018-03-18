@@ -6,12 +6,17 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+import com.google.common.collect.Maps;
+
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -31,12 +36,6 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-import com.google.common.collect.Maps;
 
 public class SpecialSpawnEgg extends Item
 {
@@ -211,7 +210,7 @@ public class SpecialSpawnEgg extends Item
 	                    entityliving.rotationYawHead = entityliving.rotationYaw;
 	                    entityliving.renderYawOffset = entityliving.rotationYaw;
 	                    entityliving.CreateRaider(worldIn.getDifficultyForLocation(new BlockPos(entityliving)), (IEntityLivingData)null, egginfo.role, egginfo.faction);
-	                    worldIn.spawnEntityInWorld(entity);
+	                    worldIn.spawnEntity(entity);
 	                    entityliving.playLivingSound();
 	                }
 	            }

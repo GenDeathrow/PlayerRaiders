@@ -2,14 +2,18 @@ package com.gendeathrow.pmobs.common.items;
 
 import java.util.Random;
 
+import com.gendeathrow.pmobs.common.SoundEvents;
+import com.gendeathrow.pmobs.common.capability.player.IPlayerData;
+import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
+import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -23,18 +27,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
-
-import com.gendeathrow.pmobs.common.SoundEvents;
-import com.gendeathrow.pmobs.common.capability.player.IPlayerData;
-import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.EntityDropPod;
-import com.gendeathrow.pmobs.entity.EntityPlayerRaider;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-import com.gendeathrow.pmobs.entity.ai.EntityAIShootLaser;
-import com.gendeathrow.pmobs.handlers.EquipmentManager;
 
 public class BackupTransmitter extends Item
 {
@@ -60,7 +52,7 @@ public class BackupTransmitter extends Item
 				if(playerdata.canCallDropPod(worldIn) || playerIn.isCreative())
 				{
 					playerdata.setLastDropPodCall(worldIn.getWorldTime());
-					playerIn.addChatComponentMessage(new TextComponentTranslation("Calling in Mercenaries"));
+					playerIn.sendMessage(new TextComponentTranslation("Calling in Mercenaries"));
 					for(int i = worldIn.rand.nextInt(3)+3; i > 0; i--)
 					{
 						onCallDropPods(worldIn.rand, worldIn, playerIn);
@@ -76,7 +68,7 @@ public class BackupTransmitter extends Item
 					long minute = (millis / 1200) % 60;
 					//long hour = (millis / (1000 * 60 * 60)) % 24;
 					
-					playerIn.addChatComponentMessage(new TextComponentTranslation("Cant use this item for another "+String.format("%02d", minute) +":"+ String.format("%02d", second)));
+					playerIn.sendMessage(new TextComponentTranslation("Cant use this item for another "+String.format("%02d", minute) +":"+ String.format("%02d", second)));
 				}
 				
 				
@@ -161,8 +153,8 @@ public class BackupTransmitter extends Item
 		int randX = rand.nextInt(range) - (range/2);
 		int randZ = rand.nextInt(range) - (range/2);
 		
-		randX = randX > 0 ? MathHelper.clamp_int(randX, 5, (range/2)) : MathHelper.clamp_int(randX, -(range/2), -5);
-		randZ = randZ > 0 ? MathHelper.clamp_int(randZ, 5, (range/2)) : MathHelper.clamp_int(randZ, -(range/2), -5);
+		randX = randX > 0 ? MathHelper.clamp(randX, 5, (range/2)) : MathHelper.clamp(randX, -(range/2), -5);
+		randZ = randZ > 0 ? MathHelper.clamp(randZ, 5, (range/2)) : MathHelper.clamp(randZ, -(range/2), -5);
 		
 		IBlockState ground = worldObj.getGroundAboveSeaLevel(new BlockPos(player.posX + randX, 300, player.posZ + randZ));
 		

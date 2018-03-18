@@ -3,15 +3,14 @@ package com.gendeathrow.pmobs.commands.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-
 import com.gendeathrow.pmobs.commands.Base_Command;
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
+
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 
 public class AddNewPlayer extends Base_Command
 {
@@ -81,12 +80,12 @@ public class AddNewPlayer extends Base_Command
 			
 			if(RaiderManager.raidersList.containsKey(ownerName))
 			{
-				sender.addChatMessage(new TextComponentString(ownerName + " already exist!"));
+				sender.sendMessage(new TextComponentString(ownerName + " already exist!"));
 			}
 			else
 			{
 				RaiderManager.addNewRaider(ownerName, weight);	
-				sender.addChatMessage(new TextComponentString(ownerName + " was added!"));
+				sender.sendMessage(new TextComponentString(ownerName + " was added!"));
 			}
 			
 		}
@@ -95,11 +94,11 @@ public class AddNewPlayer extends Base_Command
 			if(RaiderManager.raidersList.containsKey(ownerName))
 			{
 				RaiderManager.removeRaider(ownerName);	
-				sender.addChatMessage(new TextComponentString(ownerName + " was removed!"));
+				sender.sendMessage(new TextComponentString(ownerName + " was removed!"));
 			}
 			else
 			{
-				sender.addChatMessage(new TextComponentString(ownerName + " doesn't exist!"));
+				sender.sendMessage(new TextComponentString(ownerName + " doesn't exist!"));
 			}
 		}
 	}

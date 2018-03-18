@@ -1,15 +1,11 @@
 package com.gendeathrow.pmobs.entity.New;
 
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.HorseType;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 

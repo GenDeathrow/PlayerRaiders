@@ -93,7 +93,7 @@ public class EntitySignalTransmitter extends Entity implements IWorldNameable
     @Override
 //	public boolean attackEntityFrom(DamageSource source, float amount)
 //    {
-//        if (!this.worldObj.isRemote && !this.isDead)
+//        if (!this.world.isRemote && !this.isDead)
 //        {
 //            if (this.isEntityInvulnerable(source))
 //            {
@@ -130,7 +130,7 @@ public class EntitySignalTransmitter extends Entity implements IWorldNameable
 //    }
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
-        if (!this.isDead && !this.worldObj.isRemote)
+        if (!this.isDead && !this.world.isRemote)
         {
         	
         	if (this.isEntityInvulnerable(source))
@@ -163,9 +163,9 @@ public class EntitySignalTransmitter extends Entity implements IWorldNameable
     {
         this.setDead();
 
-        this.worldObj.createExplosion((Entity)null, this.posX, this.posY, this.posZ, .5F, true);
+        this.world.createExplosion((Entity)null, this.posX, this.posY, this.posZ, .5F, true);
 
-        if (this.worldObj.getGameRules().getBoolean("doEntityDrops"))
+        if (this.world.getGameRules().getBoolean("doEntityDrops"))
         {
 //            ItemStack itemstack = new ItemStack(Items.MINECART, 1);
 //
@@ -183,7 +183,7 @@ public class EntitySignalTransmitter extends Entity implements IWorldNameable
 	{
 		this.setGlowing(true);
 		
-		if (worldObj.isRemote) 
+		if (world.isRemote) 
 		{
 			prevAnimationTicks = animationTicks;
 			if (animationTicks < 360)
@@ -229,26 +229,26 @@ public class EntitySignalTransmitter extends Entity implements IWorldNameable
 		int randX = this.rand.nextInt(range) - (range/2);
 		int randZ = this.rand.nextInt(range) - (range/2);
 		
-		randX = randX > 0 ? MathHelper.clamp_int(randX, 5, (range/2)) : MathHelper.clamp_int(randX, -(range/2), -5);
-		randZ = randZ > 0 ? MathHelper.clamp_int(randZ, 5, (range/2)) : MathHelper.clamp_int(randZ, -(range/2), -5);
+		randX = randX > 0 ? MathHelper.clamp(randX, 5, (range/2)) : MathHelper.clamp(randX, -(range/2), -5);
+		randZ = randZ > 0 ? MathHelper.clamp(randZ, 5, (range/2)) : MathHelper.clamp(randZ, -(range/2), -5);
 		
 //		System.out.println(randX +":"+ randZ);
-		IBlockState ground = this.worldObj.getGroundAboveSeaLevel(new BlockPos(this.posX + randX, 300, this.posZ + randZ));
+		IBlockState ground = this.world.getGroundAboveSeaLevel(new BlockPos(this.posX + randX, 300, this.posZ + randZ));
 		
 		
-		EntityDropPod droppod = new EntityDropPod(this.worldObj);
+		EntityDropPod droppod = new EntityDropPod(this.world);
 		droppod.setPosition(this.posX + randX, 300, this.posZ + randZ);
-		this.worldObj.spawnEntityInWorld(droppod);
+		this.world.spawnEntity(droppod);
 		droppod.playSound(com.gendeathrow.pmobs.common.SoundEvents.SONIC_BOOM, 17, 1f);
 
 
-		EntityLiving raider = new EntityPlayerRaider(this.worldObj);
-		raider.onInitialSpawn(this.worldObj.getDifficultyForLocation(this.getPosition()),  (IEntityLivingData)null);
+		EntityLiving raider = new EntityPlayerRaider(this.world);
+		raider.onInitialSpawn(this.world.getDifficultyForLocation(this.getPosition()),  (IEntityLivingData)null);
 		raider.hurtResistantTime = 60;
 		raider.setLocationAndAngles(droppod.posX, droppod.posY, droppod.posZ, raider.rotationYaw, 0.0F);
 		//raider.enablePersistence();
 		
-		this.worldObj.spawnEntityInWorld(raider);	
+		this.world.spawnEntity(raider);	
 		//System.out.println(raider.getPosition().toString());
 
 		raider.startRiding(droppod, true);

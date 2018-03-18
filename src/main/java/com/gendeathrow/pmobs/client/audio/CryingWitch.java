@@ -1,12 +1,9 @@
 package com.gendeathrow.pmobs.client.audio;
 
-import net.minecraft.client.audio.MovingSound;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.MathHelper;
-
 import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
+
+import net.minecraft.client.audio.MovingSound;
+import net.minecraft.util.SoundCategory;
 
 public class CryingWitch extends MovingSound{
 

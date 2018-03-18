@@ -5,6 +5,12 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.ai.EntityAIRangedAttack;
+import com.gendeathrow.pmobs.entity.ai.EntityAIScreamer;
+import com.gendeathrow.pmobs.entity.ai.EntityAIScreamerAttack;
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -21,8 +27,6 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -48,12 +52,6 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.ai.EntityAIRangedAttack;
-import com.gendeathrow.pmobs.entity.ai.EntityAIScreamer;
-import com.gendeathrow.pmobs.entity.ai.EntityAIScreamerAttack;
-import com.gendeathrow.pmobs.handlers.EquipmentManager;
 
 public class EntityRangedAttacker extends EntityRider implements IRangedAttackMob
 {
@@ -175,16 +173,16 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 	
 	private void rangerAttack(EntityLivingBase target, float p_82196_2_)
 	{
-	       EntityTippedArrow entitytippedarrow = new EntityTippedArrow(this.worldObj, this);
+	       EntityTippedArrow entitytippedarrow = new EntityTippedArrow(this.world, this);
 	       double d0 = target.posX - this.posX;
 	       double d1 = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - entitytippedarrow.posY;
 	       double d2 = target.posZ - this.posZ;
-	       double d3 = (double)MathHelper.sqrt_double(d0 * d0 + d2 * d2);
-	       entitytippedarrow.setThrowableHeading(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, (float)(14 - this.worldObj.getDifficulty().getDifficultyId() * 4));
+	       double d3 = (double)MathHelper.sqrt(d0 * d0 + d2 * d2);
+	       entitytippedarrow.setThrowableHeading(d0, d1 + d3 * 0.20000000298023224D, d2, 1.6F, (float)(14 - this.world.getDifficulty().getDifficultyId() * 4));
 	       int i = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.POWER, this);
 	       int j = EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.PUNCH, this);
-	       DifficultyInstance difficultyinstance = this.worldObj.getDifficultyForLocation(new BlockPos(this));
-	       entitytippedarrow.setDamage((double)(p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double)((float)this.worldObj.getDifficulty().getDifficultyId() * 0.11F));
+	       DifficultyInstance difficultyinstance = this.world.getDifficultyForLocation(new BlockPos(this));
+	       entitytippedarrow.setDamage((double)(p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double)((float)this.world.getDifficulty().getDifficultyId() * 0.11F));
 
 	       if (i > 0)
 	       {
@@ -212,7 +210,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 	       }
 
 	       this.playSound(SoundEvents.ENTITY_ARROW_SHOOT, 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
-	       this.worldObj.spawnEntityInWorld(entitytippedarrow);
+	       this.world.spawnEntity(entitytippedarrow);
 	}
 	
 
@@ -300,7 +298,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     
     private void setWitchPreCombat()
     {
-        this.tasks.addTask(0, new EntityAIScreamer(this));
+        this.tasks.addTask(0, new EntityAIScreamer(this));  
         this.tasks.addTask(9, new EntityAILookDepressed(this));
         this.tasks.removeTask(attackPlayerAI);
         this.tasks.removeTask(attackVillagerAI);
@@ -333,13 +331,13 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     private boolean hasCastInvisability = false;
     public void onLivingUpdate()
     {
-        if (!this.worldObj.isRemote && this.getRaiderRole().equals(EnumRaiderRole.WITCH))
+        if (!this.world.isRemote && this.getRaiderRole().equals(EnumRaiderRole.WITCH))
         {
 
         	if(preCombatSet && cryTick-- <= 0)
             {
             	// not working correctly
-         	   //this.worldObj.playRecord(this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_WITCH_CRY);
+         	   //this.world.playRecord(this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_WITCH_CRY);
          	   cryTick = 600;
             }
              
@@ -403,7 +401,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
                     this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, stack);
                     this.witchAttackTimer = this.getHeldItemMainhand().getMaxItemUseDuration();
                     this.setAggressive(true);
-                    this.worldObj.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_WITCH_DRINK, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
+                    this.world.playSound((EntityPlayer)null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_WITCH_DRINK, this.getSoundCategory(), 1.0F, 0.8F + this.rand.nextFloat() * 0.4F);
                     IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
                     iattributeinstance.removeModifier(MODIFIER);
                     iattributeinstance.applyModifier(MODIFIER);
@@ -412,11 +410,9 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
 
             if (this.rand.nextFloat() < 7.5E-4F)
             {
-                this.worldObj.setEntityState(this, (byte)15);
+                this.world.setEntityState(this, (byte)15);
             }
             
-            if(this.isWitchActive())
-            	this.RemoveEntitiesfromArea(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(30.0D, 10.0D, 30.0D)));
 
         }
 
@@ -424,13 +420,14 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     }
 
     @SideOnly(Side.CLIENT)
+    @Override
     public void handleStatusUpdate(byte id)
     {
         if (id == 15)
         {
             for (int i = 0; i < this.rand.nextInt(35) + 10; ++i)
             {
-                this.worldObj.spawnParticle(EnumParticleTypes.SPELL_WITCH, this.posX + this.rand.nextGaussian() * 0.12999999523162842D, this.getEntityBoundingBox().maxY + 0.5D + this.rand.nextGaussian() * 0.12999999523162842D, this.posZ + this.rand.nextGaussian() * 0.12999999523162842D, 0.0D, 0.0D, 0.0D, new int[0]);
+                this.world.spawnParticle(EnumParticleTypes.SPELL_WITCH, this.posX + this.rand.nextGaussian() * 0.12999999523162842D, this.getEntityBoundingBox().maxY + 0.5D + this.rand.nextGaussian() * 0.12999999523162842D, this.posZ + this.rand.nextGaussian() * 0.12999999523162842D, 0.0D, 0.0D, 0.0D, new int[0]);
             }
         }
         else
@@ -479,9 +476,10 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     {
         super.setItemStackToSlot(slotIn, stack);
 
-        if (!this.worldObj.isRemote && slotIn == EntityEquipmentSlot.MAINHAND)
+        if (!this.world.isRemote && slotIn == EntityEquipmentSlot.MAINHAND)
         {
             this.setCombatTask();
+            
         }
     }
     
@@ -499,7 +497,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
     
     public void setCombatTask()
     {
-      if (this.worldObj != null && !this.worldObj.isRemote)
+      if (this.world != null && !this.world.isRemote)
         {
     	  
     	  if(this.getRaiderRole() != EnumRaiderRole.RANGED) return;
@@ -512,7 +510,7 @@ public class EntityRangedAttacker extends EntityRider implements IRangedAttackMo
             {
                 int i = 20;
 
-                if (this.worldObj.getDifficulty() != EnumDifficulty.HARD)
+                if (this.world.getDifficulty() != EnumDifficulty.HARD)
                 {
                     i = 40;
                 }

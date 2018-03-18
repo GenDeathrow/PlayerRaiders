@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -35,9 +38,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 public class EntityHeroBrine extends EntityRaiderBase
 {
@@ -89,7 +89,7 @@ public class EntityHeroBrine extends EntityRaiderBase
 
             if (!this.isSilent())
             {
-                this.worldObj.playSound(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ, SoundEvents.ENTITY_ENDERMEN_STARE, this.getSoundCategory(), 2.5F, 1.0F, false);
+                this.world.playSound(this.posX, this.posY + (double)this.getEyeHeight(), this.posZ, SoundEvents.ENTITY_ENDERMEN_STARE, this.getSoundCategory(), 2.5F, 1.0F, false);
             }
         }
     }
@@ -97,7 +97,7 @@ public class EntityHeroBrine extends EntityRaiderBase
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
-        if (SCREAMING.equals(key) && this.isScreaming() && this.worldObj.isRemote &&  isHeroBrine())
+        if (SCREAMING.equals(key) && this.isScreaming() && this.world.isRemote &&  isHeroBrine())
         {
             this.playEndermanSound();
         }
@@ -111,9 +111,9 @@ public class EntityHeroBrine extends EntityRaiderBase
     	
     	if(this.isHeroBrine())
     	{
-    		EnchantmentFrostWalker.freezeNearby(this, this.worldObj, pos, 2);
+    		EnchantmentFrostWalker.freezeNearby(this, this.world, pos, 2);
     		
-    		coolLavaNearby(this,this.worldObj, pos, 2);
+    		coolLavaNearby(this,this.world, pos, 2);
     	}
     	
     	else super.frostWalk(pos);
@@ -143,7 +143,7 @@ public class EntityHeroBrine extends EntityRaiderBase
                         if (iblockstate1.getMaterial() == Material.LAVA && ((Integer)iblockstate1.getValue(BlockLiquid.LEVEL)).intValue() == 0 && worldIn.canBlockBePlaced(Blocks.OBSIDIAN, blockpos$mutableblockpos1, false, EnumFacing.DOWN, (Entity)null, (ItemStack)null))
                         {
                             worldIn.setBlockState(blockpos$mutableblockpos1, Blocks.OBSIDIAN.getDefaultState());
-                            worldIn.scheduleUpdate(blockpos$mutableblockpos1.toImmutable(), Blocks.OBSIDIAN, MathHelper.getRandomIntegerInRange(living.getRNG(), 60, 120));
+                            worldIn.scheduleUpdate(blockpos$mutableblockpos1.toImmutable(), Blocks.OBSIDIAN, MathHelper.getInt(living.getRNG(), 60, 120));
                         }
                     }
                 }
@@ -180,14 +180,14 @@ public class EntityHeroBrine extends EntityRaiderBase
 	public void onLivingUpdate()
 	{
 		
-		if (this.worldObj.isRemote && isHeroBrine())
+		if (this.world.isRemote && isHeroBrine())
 		{
 			for (int i = 0; i < 2; ++i)
 			{
-				this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D, new int[0]);
+				this.world.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (this.rand.nextDouble() - 0.5D) * (double)this.width, this.posY + this.rand.nextDouble() * (double)this.height - 0.25D, this.posZ + (this.rand.nextDouble() - 0.5D) * (double)this.width, (this.rand.nextDouble() - 0.5D) * 2.0D, -this.rand.nextDouble(), (this.rand.nextDouble() - 0.5D) * 2.0D, new int[0]);
 			}
 		}
-		else if(!this.worldObj.isRemote && isHeroBrine())
+		else if(!this.world.isRemote && isHeroBrine())
 		{
 			if(this.getActivePotionEffects().size() > 0)
 			{
@@ -211,7 +211,7 @@ public class EntityHeroBrine extends EntityRaiderBase
     		{
 
     			
-    			if (!this.worldObj.isRemote && (this.isPlayer() || this.recentlyHit > 0 && this.canDropLoot() && this.worldObj.getGameRules().getBoolean("doMobLoot")))
+    			if (!this.world.isRemote && (this.isPlayer() || this.recentlyHit > 0 && this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot")))
     			{
     				int i = this.getExperiencePoints(this.attackingPlayer);
     				i = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i);
@@ -219,7 +219,7 @@ public class EntityHeroBrine extends EntityRaiderBase
     				{	
     					int j = EntityXPOrb.getXPSplit(i);
     					i -= j;
-    					this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+    					this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
     				}
     			}
 
@@ -228,9 +228,9 @@ public class EntityHeroBrine extends EntityRaiderBase
     				double d2 = this.rand.nextGaussian() * 0.02D;
     				double d0 = this.rand.nextGaussian() * 0.02D;
     				double d1 = this.rand.nextGaussian() * 0.02D;
-    				this.worldObj.spawnParticle(EnumParticleTypes.DRAGON_BREATH, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
-    				this.worldObj.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
-    				this.worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
+    				this.world.spawnParticle(EnumParticleTypes.DRAGON_BREATH, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
+    				this.world.spawnParticle(EnumParticleTypes.PORTAL, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
+    				this.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1, new int[0]);
     			}
     			
 
@@ -312,7 +312,7 @@ public class EntityHeroBrine extends EntityRaiderBase
 
         if (flag)
         {
-            this.worldObj.playSound((EntityPlayer)null, this.prevPosX, this.prevPosY, this.prevPosZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
+            this.world.playSound((EntityPlayer)null, this.prevPosX, this.prevPosY, this.prevPosZ, SoundEvents.ENTITY_ENDERMEN_TELEPORT, this.getSoundCategory(), 1.0F, 1.0F);
             this.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
         }
 
@@ -407,7 +407,7 @@ public class EntityHeroBrine extends EntityRaiderBase
         public boolean shouldExecute()
         {
             double d0 = this.getTargetDistance();
-            this.player = this.raider.worldObj.getNearestAttackablePlayer(this.raider.posX, this.raider.posY, this.raider.posZ, d0, d0, (Function<EntityPlayer, Double>)null, new Predicate<EntityPlayer>()
+            this.player = this.raider.world.getNearestAttackablePlayer(this.raider.posX, this.raider.posY, this.raider.posZ, d0, d0, (Function<EntityPlayer, Double>)null, new Predicate<EntityPlayer>()
             {
                 public boolean apply(@Nullable EntityPlayer p_apply_1_)
                 {

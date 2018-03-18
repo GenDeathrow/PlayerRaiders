@@ -8,10 +8,7 @@ import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
-import net.minecraft.client.gui.GuiOptionSlider;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.world.DifficultyInstance;
 
 public class RaidersReportGUI extends GuiScreen
 {
@@ -48,8 +45,8 @@ public class RaidersReportGUI extends GuiScreen
 	@Override
     public void initGui()
     {
-		if(Minecraft.getMinecraft().theWorld != null)
-			DiffProg = new DifficultyProgression(new EntityRaiderBase(Minecraft.getMinecraft().theWorld));
+		if(Minecraft.getMinecraft().world != null)
+			DiffProg = new DifficultyProgression(new EntityRaiderBase(Minecraft.getMinecraft().world));
 		else Minecraft.getMinecraft().displayGuiScreen(null);
     }
 	

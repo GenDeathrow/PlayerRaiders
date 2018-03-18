@@ -2,24 +2,6 @@ package com.gendeathrow.pmobs.client;
 
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGameOver;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
-import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 import com.gendeathrow.pmobs.client.audio.CryingWitch;
 import com.gendeathrow.pmobs.client.audio.DropPodMoving;
 import com.gendeathrow.pmobs.client.data.KillCounter;
@@ -32,6 +14,23 @@ import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGameOver;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
+import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler 
@@ -90,17 +89,17 @@ public class ClientEventHandler
 			
     		if(EquipmentManager.ErrorList.size() > 0)
     		{
-    			event.player.addChatComponentMessage(new TextComponentTranslation(EquipmentManager.ErrorList.size() + " Errors were found in Raiders Equipment json. Check Console for more info."));
+    			event.player.sendMessage(new TextComponentTranslation(EquipmentManager.ErrorList.size() + " Errors were found in Raiders Equipment json. Check Console for more info."));
     		}
     		//RaidersSkinManager.INSTANCE.cacheSkins();
     		RaidersSkinManager.INSTANCE.cacheSkins();
     	}
     	  
     	
-    	if(event.player.worldObj == null || !event.player.worldObj.isRemote) return;
-    	if(event.player.worldObj.getWorldTime() % 1000 != 0 || event.phase == Phase.END) return;
+    	if(event.player.world == null || !event.player.world.isRemote) return;
+    	if(event.player.world.getWorldTime() % 1000 != 0 || event.phase == Phase.END) return;
     	
-    	int diff = DifficultyProgression.getRaidDifficulty(event.player.worldObj);
+    	int diff = DifficultyProgression.getRaidDifficulty(event.player.world);
     
     	if(PMSettings.lastRaidCheck != diff)
     	{
@@ -122,7 +121,7 @@ public class ClientEventHandler
 		this.witchNear = false;
 		float fogDistance = 0;
 		
-		if(event.getEntity() instanceof EntityPlayer && event.getEntity().worldObj != null)
+		if(event.getEntity() instanceof EntityPlayer && event.getEntity().world != null)
 		{
 
 			EntityPlayer player = (EntityPlayer) event.getEntity();
@@ -130,7 +129,7 @@ public class ClientEventHandler
 					
 			if(box == null) return;
 			
-			List<EntityRaiderBase> list = player.worldObj.getEntitiesWithinAABB(EntityRaiderBase.class, box.expand(maxDistance, maxDistance, maxDistance));
+			List<EntityRaiderBase> list = player.world.getEntitiesWithinAABB(EntityRaiderBase.class, box.expand(maxDistance, maxDistance, maxDistance));
 			
 			for(EntityRaiderBase entity : list)
 			{

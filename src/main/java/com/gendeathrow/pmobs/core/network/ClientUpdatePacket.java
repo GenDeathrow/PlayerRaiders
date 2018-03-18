@@ -1,5 +1,8 @@
 package com.gendeathrow.pmobs.core.network;
 
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.RaidersCore;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
@@ -7,12 +10,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import com.gendeathrow.pmobs.client.ClientEventHandler;
-import com.gendeathrow.pmobs.client.data.KillCounter;
-import com.gendeathrow.pmobs.core.ConfigHandler;
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.core.RaidersCore;
 
 public class ClientUpdatePacket implements IMessage 
 {

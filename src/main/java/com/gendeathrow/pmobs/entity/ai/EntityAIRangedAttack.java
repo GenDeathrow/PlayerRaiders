@@ -1,12 +1,12 @@
 package com.gendeathrow.pmobs.entity.ai;
 
+import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBow;
 import net.minecraft.util.EnumHand;
-
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 public class EntityAIRangedAttack extends EntityAIBase
 {

@@ -4,6 +4,13 @@ package com.gendeathrow.pmobs.client.renderer;
 
 import java.util.HashMap;
 
+import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
+import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
@@ -17,13 +24,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
-import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 
 @SideOnly(Side.CLIENT)
 public class EntityRaiderRenderer extends RenderBiped<EntityRaiderBase> 

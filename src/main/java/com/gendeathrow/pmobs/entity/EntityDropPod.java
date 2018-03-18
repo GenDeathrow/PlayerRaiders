@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockLeaves;
@@ -13,7 +15,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,13 +26,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.google.common.collect.Lists;
 
 public class EntityDropPod extends Entity
 {
@@ -133,12 +130,12 @@ public class EntityDropPod extends Entity
             this.motionY -= 0.03999999910593033D;
         }
 
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.move(this.motionX, this.motionY, this.motionZ);
         this.motionX *= 0.9800000190734863D;
         this.motionY *= 0.9800000190734863D;
         this.motionZ *= 0.9800000190734863D;
 
-        if (!this.worldObj.isRemote)
+        if (!this.world.isRemote)
         {
             
           	this.destroyBlocksInAABB(this.getCollisionBoundingBox().expand(2, 2, 2));
@@ -147,7 +144,7 @@ public class EntityDropPod extends Entity
 
             if (this.onGround)
             {
-                IBlockState iblockstate = this.worldObj.getBlockState(blockpos1);
+                IBlockState iblockstate = this.world.getBlockState(blockpos1);
 
                 this.motionX *= 0.699999988079071D;
                 this.motionZ *= 0.699999988079071D;
@@ -155,7 +152,7 @@ public class EntityDropPod extends Entity
             }
             else
             {
-            	this.HitEntitiesFalling(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(.25, .25, .25)));
+            	this.HitEntitiesFalling(this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox().expand(.25, .25, .25)));
             }
 
             
@@ -175,12 +172,12 @@ public class EntityDropPod extends Entity
       
     private boolean destroyBlocksInAABB(AxisAlignedBB p_70972_1_)
     {
-        int i = MathHelper.floor_double(p_70972_1_.minX);
-        int j = MathHelper.floor_double(p_70972_1_.minY);
-        int k = MathHelper.floor_double(p_70972_1_.minZ);
-        int l = MathHelper.floor_double(p_70972_1_.maxX);
-        int i1 = MathHelper.floor_double(p_70972_1_.maxY);
-        int j1 = MathHelper.floor_double(p_70972_1_.maxZ);
+        int i = MathHelper.floor(p_70972_1_.minX);
+        int j = MathHelper.floor(p_70972_1_.minY);
+        int k = MathHelper.floor(p_70972_1_.minZ);
+        int l = MathHelper.floor(p_70972_1_.maxX);
+        int i1 = MathHelper.floor(p_70972_1_.maxY);
+        int j1 = MathHelper.floor(p_70972_1_.maxZ);
         boolean flag = false;
         boolean flag1 = false;
 
@@ -191,18 +188,18 @@ public class EntityDropPod extends Entity
                 for (int i2 = k; i2 <= j1; ++i2)
                 {
                     BlockPos blockpos = new BlockPos(k1, l1, i2);
-                    IBlockState iblockstate = this.worldObj.getBlockState(blockpos);
+                    IBlockState iblockstate = this.world.getBlockState(blockpos);
                     Block block = iblockstate.getBlock();
 
-                    if (!block.isAir(iblockstate, this.worldObj, blockpos) && iblockstate.getMaterial() != Material.FIRE)
+                    if (!block.isAir(iblockstate, this.world, blockpos) && iblockstate.getMaterial() != Material.FIRE)
                     {
-                    	if (block.canEntityDestroy(iblockstate, this.worldObj, blockpos, this))
+                    	if (block.canEntityDestroy(iblockstate, this.world, blockpos, this))
                         {
                     		
-                            if (block.isReplaceable(this.worldObj, blockpos) || block.isLeaves(iblockstate, this.worldObj, blockpos) || block instanceof BlockLeaves || iblockstate.getMaterial() == Material.VINE)
+                            if (block.isReplaceable(this.world, blockpos) || block.isLeaves(iblockstate, this.world, blockpos) || block instanceof BlockLeaves || iblockstate.getMaterial() == Material.VINE)
                             {
                             	if(!BlockFalling.canFallThrough(iblockstate))
-                            		flag = this.worldObj.setBlockToAir(blockpos);
+                            		flag = this.world.setBlockToAir(blockpos);
                             }
                             else
                             {
@@ -235,7 +232,7 @@ public class EntityDropPod extends Entity
     
     public boolean processInitialInteract(EntityPlayer player, @Nullable ItemStack stack, EnumHand hand)
     {
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityMountEvent(player, this, this.worldObj, true))) return true;
+        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityMountEvent(player, this, this.world, true))) return true;
 
         if (player.isSneaking())
         {
@@ -247,7 +244,7 @@ public class EntityDropPod extends Entity
         }
         else
         {
-            if (!this.worldObj.isRemote)
+            if (!this.world.isRemote)
             {
                 player.startRiding(this);
             }
@@ -259,11 +256,11 @@ public class EntityDropPod extends Entity
     @Override
     public void fall(float distance, float damageMultiplier)
     {
-            int i = MathHelper.ceiling_float_int(distance - 1.0F);
+            int i = MathHelper.ceil(distance - 1.0F);
 
             if (i > 0)
             {
-                List<Entity> list = Lists.newArrayList(this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox()));
+                List<Entity> list = Lists.newArrayList(this.world.getEntitiesWithinAABBExcludingEntity(this, this.getEntityBoundingBox()));
                 DamageSource damagesource = DamageSource.anvil;
 
                 for (Entity entity : list)
@@ -278,13 +275,13 @@ public class EntityDropPod extends Entity
     {
         DamageSource damagesource = DamageSource.anvil;
         
-        int i = MathHelper.ceiling_float_int(distance - 1.0F);
+        int i = MathHelper.ceil(distance - 1.0F);
 
         	if(entity instanceof EntityDropPod)
         		entity.setDead();
         	else if(!this.isRidingOrBeingRiddenBy(entity))
         	{
-        		entity.attackEntityFrom(damagesource, (float)Math.min(MathHelper.floor_float((float)i * this.fallHurtAmount), this.fallHurtMax));
+        		entity.attackEntityFrom(damagesource, (float)Math.min(MathHelper.floor((float)i * this.fallHurtAmount), this.fallHurtMax));
         	}
         		
         	
@@ -347,11 +344,11 @@ public class EntityDropPod extends Entity
 
 					CalledDrop call = dropPodqueue.get(0);
 					
-					if(call == null || call.raider == null || call.dropPod == null || call.raider.worldObj == null) return;
-					if(event.world == call.raider.worldObj && this.nextCall-- < 0)
+					if(call == null || call.raider == null || call.dropPod == null || call.raider.world == null) return;
+					if(event.world == call.raider.world && this.nextCall-- < 0)
 					{
-						event.world.spawnEntityInWorld(call.dropPod);
-						event.world.spawnEntityInWorld(call.raider);
+						event.world.spawnEntity(call.dropPod);
+						event.world.spawnEntity(call.raider);
 						call.raider.startRiding(call.dropPod);
 					
 						call.dropPod.playSound(com.gendeathrow.pmobs.common.SoundEvents.SONIC_BOOM,25, 1f);

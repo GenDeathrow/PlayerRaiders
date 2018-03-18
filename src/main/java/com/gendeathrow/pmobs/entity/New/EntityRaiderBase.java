@@ -7,6 +7,27 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.client.LayerFeatures;
+import com.gendeathrow.pmobs.client.RaidersSkinManager;
+import com.gendeathrow.pmobs.core.ConfigHandler.ItemDrop;
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.core.init.ModItems;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
+import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
+import com.gendeathrow.pmobs.entity.ai.EntityAIShootLaser;
+import com.gendeathrow.pmobs.entity.ai.EntityAIStealFarmland;
+import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
+import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
+import com.gendeathrow.pmobs.handlers.DifficultyProgression;
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
+import com.gendeathrow.pmobs.handlers.RaiderManager;
+import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
+import com.gendeathrow.pmobs.world.Raiders_WorldData;
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftSessionService;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.resources.DefaultPlayerSkin;
@@ -63,27 +84,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-
-import com.gendeathrow.pmobs.client.LayerFeatures;
-import com.gendeathrow.pmobs.client.RaidersSkinManager;
-import com.gendeathrow.pmobs.core.ConfigHandler.ItemDrop;
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.core.init.ModItems;
-import com.gendeathrow.pmobs.entity.EntityDropPod;
-import com.gendeathrow.pmobs.entity.ai.EntityAIPyromaniac;
-import com.gendeathrow.pmobs.entity.ai.EntityAIShootLaser;
-import com.gendeathrow.pmobs.entity.ai.EntityAIStealFarmland;
-import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
-import com.gendeathrow.pmobs.entity.ai.TwitchersAttack;
-import com.gendeathrow.pmobs.handlers.DifficultyProgression;
-import com.gendeathrow.pmobs.handlers.EquipmentManager;
-import com.gendeathrow.pmobs.handlers.RaiderManager;
-import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
-import com.gendeathrow.pmobs.world.Raiders_WorldData;
-import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftSessionService;
 
 
 public class EntityRaiderBase extends EntityMob
@@ -377,7 +377,7 @@ public class EntityRaiderBase extends EntityMob
     {
         this.getDataManager().set(IS_CHILD, Boolean.valueOf(childZombie));
 
-        if (this.worldObj != null && !this.worldObj.isRemote)
+        if (this.world != null && !this.world.isRemote)
         {
         	
             IAttributeInstance iattributeinstance = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
@@ -412,9 +412,9 @@ public class EntityRaiderBase extends EntityMob
     		
     		if(stack != null)
     		{
-    			EntityItem entity = new EntityItem(worldObj, this.posX, this.posY, this.posZ, stack);
+    			EntityItem entity = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
     			
-    			this.worldObj.spawnEntityInWorld(entity);
+    			this.world.spawnEntity(entity);
     		}
     	}
     }
@@ -505,7 +505,7 @@ public class EntityRaiderBase extends EntityMob
     @Override
     public int getMaxSpawnedInChunk()
     {
-//    	if(this.worldObj.isDaytime())
+//    	if(this.world.isDaytime())
 //    	{
 //    		return 2;
 //    	}
@@ -522,7 +522,7 @@ public class EntityRaiderBase extends EntityMob
     @Override
     public boolean getCanSpawnHere()
     {
-    	if (this.worldObj.getDifficulty() == EnumDifficulty.PEACEFUL) return false;
+    	if (this.world.getDifficulty() == EnumDifficulty.PEACEFUL) return false;
     	
     	
     	return this.isValidLightLevel();
@@ -532,13 +532,13 @@ public class EntityRaiderBase extends EntityMob
 //    		
 //     		if(PMSettings.torchStopSpawns)
 //    		{
-//    			if(!this.worldObj.canSeeSky(this.getPosition()))
+//    			if(!this.world.canSeeSky(this.getPosition()))
 //    			{
 //					boolean flag = false;
 //					
 //    				for(MutableBlockPos blockpos : this.getPosition().getAllInBoxMutable(this.getPosition().add(3, 3, 3), this.getPosition().add(-3, -3, -3)))
 //    				{
-//    					Block block = this.worldObj.getBlockState(blockpos).getBlock();
+//    					Block block = this.world.getBlockState(blockpos).getBlock();
 //
 //    					if(block instanceof BlockTorch || block instanceof BlockGlowstone)
 //    					{
@@ -547,7 +547,7 @@ public class EntityRaiderBase extends EntityMob
 //    					}
 //    				}
 //    				
-//					if(flag && this.worldObj.getLightBrightness(this.getPosition()) < 8)
+//					if(flag && this.world.getLightBrightness(this.getPosition()) < 8)
 //					{
 //						//System.out.println("light level too low");
 //						return true;
@@ -581,7 +581,7 @@ public class EntityRaiderBase extends EntityMob
      	if(PMSettings.shouldDaylightSpawm) 
     	{
      		BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
-     		if (this.worldObj.getLightFor(EnumSkyBlock.BLOCK, blockpos) >= 8)
+     		if (this.world.getLightFor(EnumSkyBlock.BLOCK, blockpos) >= 8)
      		{
      			return false;
      		}
@@ -594,7 +594,7 @@ public class EntityRaiderBase extends EntityMob
 	@Override
     public boolean isNotColliding()
     {
-        return this.worldObj.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.worldObj.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
+        return this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
     }
 
 	@Override
@@ -609,7 +609,7 @@ public class EntityRaiderBase extends EntityMob
 	public void onLivingUpdate()
 	{
 
-		if (this.worldObj.isDaytime() && !this.worldObj.isRemote && !this.isChild())
+		if (this.world.isDaytime() && !this.world.isRemote && !this.isChild())
 		{
 			float f = this.getBrightness(1.0F);
 			BlockPos blockpos = this.getRidingEntity() instanceof EntityBoat ? (new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ)).up() : new BlockPos(this.posX, (double)Math.round(this.posY), this.posZ);
@@ -619,7 +619,7 @@ public class EntityRaiderBase extends EntityMob
 		
 		if(!this.isChild()&& this.getRaiderFaction() != EnumFaction.FRIENDLY && this.getRaiderRole() != EnumRaiderRole.WITCH && !this.isHeroBrine() && this.getRaiderRole() != EnumRaiderRole.BRUTE && this.getRaiderRole() != EnumRaiderRole.DROPPERS)
 		{
-			if(this.worldObj.isDaytime())
+			if(this.world.isDaytime())
 			{
 				if(!iattributeinstance.hasModifier(DAY_SPEED_MODIFIER))
 				{
@@ -638,14 +638,14 @@ public class EntityRaiderBase extends EntityMob
 
 		}
 		
-		if(!this.worldObj.isRemote && this.getRaiderRole() == EnumRaiderRole.TWEAKER)
+		if(!this.world.isRemote && this.getRaiderRole() == EnumRaiderRole.TWEAKER)
 		{
 
 			if(this.getAttackTarget() != null)
 			{
 				if(ScreamTick++ > 200 && this.canEntityBeSeen(this.getAttackTarget()))
 				{
-					this.worldObj.playSound(null, this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_SCREAM, SoundCategory.HOSTILE, 2.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
+					this.world.playSound(null, this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_SCREAM, SoundCategory.HOSTILE, 2.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
 					this.ScreamTick = this.getRNG().nextInt(100);
 				}
 				if(!this.isSprinting()) this.setSprinting(true);
@@ -670,7 +670,7 @@ public class EntityRaiderBase extends EntityMob
     {
     	super.updateEquipmentIfNeeded(itemEntity);
     	
-        if (!itemEntity.isDead && !this.worldObj.isRemote)
+        if (!itemEntity.isDead && !this.world.isRemote)
         {
   			ItemStack returnStack = this.getRaidersInventory().addItem(itemEntity.getEntityItem());
   			
@@ -694,9 +694,9 @@ public class EntityRaiderBase extends EntityMob
 				entitylivingbase = (EntityLivingBase)source.getEntity();
 			}
 
-			int i = MathHelper.floor_double(this.posX);
-			int j = MathHelper.floor_double(this.posY);
-			int k = MathHelper.floor_double(this.posZ);
+			int i = MathHelper.floor(this.posX);
+			int j = MathHelper.floor(this.posY);
+			int k = MathHelper.floor(this.posZ);
 			
 			if(entitylivingbase != null && this.getRNG().nextInt(2) == 0)
 			{
@@ -727,7 +727,7 @@ public class EntityRaiderBase extends EntityMob
 
 		if (hasHitTarget)
 		{
-			int i = this.worldObj.getDifficulty().getDifficultyId();
+			int i = this.world.getDifficulty().getDifficultyId();
 
 			if (this.getHeldItemMainhand() == null && this.isBurning() && this.rand.nextFloat() < (float)i * 0.3F)
 			{
@@ -737,8 +737,8 @@ public class EntityRaiderBase extends EntityMob
 			if(lastBurnTick > 600 && this.getHeldItemOffhand() != null && this.getHeldItemOffhand().getItem() == Items.FLINT_AND_STEEL && this.rand.nextFloat() < (float)i * 0.3F )
 			{
 				this.swingArm(EnumHand.OFF_HAND);
-    			this.worldObj.playSound(null, entityIn.getPosition(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
-    			this.worldObj.playSound(null, this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_LAUGH, SoundCategory.HOSTILE, 1.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
+    			this.world.playSound(null, entityIn.getPosition(), SoundEvents.ITEM_FLINTANDSTEEL_USE, SoundCategory.BLOCKS, 1.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
+    			this.world.playSound(null, this.getPosition(), com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_LAUGH, SoundCategory.HOSTILE, 1.0F, this.getRNG().nextFloat() * 0.4F + 0.8F);
 				entityIn.setFire(2 * i);
 				lastBurnTick = 0;
 			}
@@ -767,9 +767,9 @@ public class EntityRaiderBase extends EntityMob
 
 				stack.getTagCompound().setString("SkullOwner", this.getOwner());
 
-				EntityItem skull = new EntityItem(worldObj, this.posX, this.posY, this.posZ, stack);
+				EntityItem skull = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
 				
-				this.worldObj.spawnEntityInWorld(skull);
+				this.world.spawnEntity(skull);
 			}
 			
 			if(PMSettings.dropSerum && this.getRaiderRole() == EnumRaiderRole.BRUTE && this.getRNG().nextDouble() <= 0.10)
@@ -873,7 +873,7 @@ public class EntityRaiderBase extends EntityMob
 
 	        if (this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null)
 	        {
-	            Calendar calendar = this.worldObj.getCurrentDate();
+	            Calendar calendar = this.world.getCurrentDate();
 
 	            if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31 && this.rand.nextFloat() < 0.25F)
 	            {
@@ -896,7 +896,7 @@ public class EntityRaiderBase extends EntityMob
 	        {
 	        	this.setRaiderRole(EnumRaiderRole.getRandomRole(this, this.difficultyManager));
 	        	
-	        	if(PMSettings.tweakerOnlyNight && this.worldObj.isDaytime() && this.getRaiderRole() == EnumRaiderRole.TWEAKER)
+	        	if(PMSettings.tweakerOnlyNight && this.world.isDaytime() && this.getRaiderRole() == EnumRaiderRole.TWEAKER)
 	        	{
 	        		this.setRaiderRole(EnumRaiderRole.NONE);
 	        	}
@@ -935,7 +935,7 @@ public class EntityRaiderBase extends EntityMob
 	        }
 	        
 
-	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) 
+	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.world.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) 
 	        {
 	        	this.setChild(true); 
 	        	//this.setFeatures(0);
@@ -978,7 +978,7 @@ public class EntityRaiderBase extends EntityMob
 		    	//System.out.println((0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05));
 		    	
 	            int i = this.rand.nextInt(2);
-	            float f = this.worldObj.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
+	            float f = this.world.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
 
 	            boolean armorflag = true;
 	            boolean handflag = true;

@@ -1,5 +1,9 @@
 package com.gendeathrow.pmobs.common;
 
+import com.gendeathrow.pmobs.common.Potion.BruteSerumEffect;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.util.ObfHelper;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,10 +18,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.gendeathrow.pmobs.common.Potion.BruteSerumEffect;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.util.ObfHelper;
 
 public class BruteSerumHandler 
 {

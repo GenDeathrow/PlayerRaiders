@@ -1,5 +1,15 @@
 package com.gendeathrow.pmobs.handlers;
 
+import com.gendeathrow.pmobs.core.ConfigHandler;
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.core.network.ClientUpdatePacket;
+import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+
+import funwayguy.epicsiegemod.api.EsmTaskEvent;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,19 +29,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import com.gendeathrow.pmobs.core.ConfigHandler;
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.core.network.ClientUpdatePacket;
-import com.gendeathrow.pmobs.core.network.RaiderDeathCntPacket;
-import com.gendeathrow.pmobs.entity.EntityDropPod;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-
-import funwayguy.epicsiegemod.api.EsmTaskEvent;
 
 @Optional.Interface(iface="funwayguy.epicsiegemod.api.EsmTaskEvent", modid="epicsiegemod")
 
@@ -81,10 +79,10 @@ public class EventHandler
 	@SubscribeEvent
 	public void playerKilled(LivingDeathEvent event)
 	{
-		if (event.getEntity().worldObj.isRemote || event.getSource() == null || event.getSource().getSourceOfDamage() == null || event.isCanceled())
+		if (event.getEntity().world.isRemote || event.getSource() == null || event.getSource().getSourceOfDamage() == null || event.isCanceled())
 			return;
 		
-		if(!event.getEntity().worldObj.isRemote && event.getEntity() instanceof EntityPlayerMP)
+		if(!event.getEntity().world.isRemote && event.getEntity() instanceof EntityPlayerMP)
 		{
 
 			if (event.getSource().getSourceOfDamage() instanceof EntityLiving)
@@ -258,7 +256,7 @@ public class EventHandler
     public void onPlayerTick(TickEvent.PlayerTickEvent event) 
     {
     	
-    	if(!event.player.worldObj.isRemote)	return;
+    	if(!event.player.world.isRemote)	return;
 
     }
 		

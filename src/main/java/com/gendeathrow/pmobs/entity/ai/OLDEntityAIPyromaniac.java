@@ -1,5 +1,8 @@
 package com.gendeathrow.pmobs.entity.ai;
 
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockDoublePlant;
@@ -14,9 +17,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class OLDEntityAIPyromaniac extends EntityAIMoveToBlock
 {
@@ -48,7 +48,7 @@ public class OLDEntityAIPyromaniac extends EntityAIMoveToBlock
 	  {
 		  if (this.runDelay <= 0)
 		  {
-			  if (!this.theRaider.worldObj.getGameRules().getBoolean("mobGriefing"))
+			  if (!this.theRaider.world.getGameRules().getBoolean("mobGriefing"))
 			  {
 				  return false;
 			  }
@@ -95,7 +95,7 @@ public class OLDEntityAIPyromaniac extends EntityAIMoveToBlock
 
       if (this.getIsAboveDestination())
       {
-          World worldIn = this.theRaider.worldObj;
+          World worldIn = this.theRaider.world;
           BlockPos blockpos = this.destinationBlock;
           IBlockState iblockstate = worldIn.getBlockState(blockpos);
           Block block = iblockstate.getBlock();

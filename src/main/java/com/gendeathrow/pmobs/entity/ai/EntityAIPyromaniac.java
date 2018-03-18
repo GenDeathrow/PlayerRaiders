@@ -1,5 +1,7 @@
 package com.gendeathrow.pmobs.entity.ai;
 
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockDoublePlant;
@@ -13,9 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
-
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class EntityAIPyromaniac extends EntityAIBase
 {
@@ -47,7 +46,7 @@ public class EntityAIPyromaniac extends EntityAIBase
 	  {
 		  if (this.runDelay-- <= 0)
 		  {
-			  if (!this.theRaider.worldObj.getGameRules().getBoolean("mobGriefing"))
+			  if (!this.theRaider.world.getGameRules().getBoolean("mobGriefing"))
 			  {
 				  return false;
 			  }
@@ -97,21 +96,21 @@ public class EntityAIPyromaniac extends EntityAIBase
     	  try
     	  {
     		  
-    		  RayTraceResult rayTrace = theRaider.worldObj.rayTraceBlocks(new Vec3d(theRaider.posX, theRaider.posY + theRaider.getEyeHeight(), theRaider.posZ), new Vec3d(blockpos$mutableblockpos.getX() + 0.5, blockpos$mutableblockpos.getY() + 0.5, blockpos$mutableblockpos.getZ() + 0.5));
+    		  RayTraceResult rayTrace = theRaider.world.rayTraceBlocks(new Vec3d(theRaider.posX, theRaider.posY + theRaider.getEyeHeight(), theRaider.posZ), new Vec3d(blockpos$mutableblockpos.getX() + 0.5, blockpos$mutableblockpos.getY() + 0.5, blockpos$mutableblockpos.getZ() + 0.5));
 
     		  if(rayTrace.typeOfHit == Type.BLOCK)
     		  {
     			  BlockPos pos = rayTrace.getBlockPos().offset(rayTrace.sideHit);
     		  
-    			  Block block = theRaider.worldObj.getBlockState(rayTrace.getBlockPos()).getBlock();
+    			  Block block = theRaider.world.getBlockState(rayTrace.getBlockPos()).getBlock();
     			  
-    			  if (block.isFlammable(this.theRaider.worldObj, rayTrace.getBlockPos(), rayTrace.sideHit) && !(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass))
+    			  if (block.isFlammable(this.theRaider.world, rayTrace.getBlockPos(), rayTrace.sideHit) && !(block instanceof BlockDoublePlant)  && !(block instanceof BlockCrops) && !(block instanceof BlockTallGrass))
     			  {
-    				  if (theRaider.worldObj.isAirBlock(pos))
+    				  if (theRaider.world.isAirBlock(pos))
     				  {
     					  this.theRaider.getLookHelper().setLookPosition((double)pos.getX() + 0.5D, (double)(pos.getY() + 1), (double)pos.getZ() + 0.5D, 10.0F, (float)this.theRaider.getVerticalFaceSpeed());
     					  theRaider.playSound(SoundEvents.ITEM_FLINTANDSTEEL_USE,  1.0F, theRaider.getRNG().nextFloat() * 0.4F + 0.8F);
-    					  theRaider.worldObj.setBlockState(pos, Blocks.FIRE.getDefaultState(), 11);
+    					  theRaider.world.setBlockState(pos, Blocks.FIRE.getDefaultState(), 11);
     			       	  this.theRaider.swingArm(EnumHand.MAIN_HAND);
     			       	  this.runDelay = 500 + this.theRaider.getRNG().nextInt(200);
     			       	  break;

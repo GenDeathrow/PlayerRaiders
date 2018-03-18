@@ -1,11 +1,11 @@
 package com.gendeathrow.pmobs.entity.ai;
 
+import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
+
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DifficultyInstance;
-
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
 
 public class EntityAIScreamer  extends EntityAIBase{
 
@@ -25,7 +25,7 @@ public class EntityAIScreamer  extends EntityAIBase{
       
    public boolean shouldExecute()
    {
-       return this.raider.worldObj.isAnyPlayerWithinRangeAt(this.raider.posX, this.raider.posY, this.raider.posZ, 10.0D) || this.triggered;
+       return this.raider.world.isAnyPlayerWithinRangeAt(this.raider.posX, this.raider.posY, this.raider.posZ, 10.0D) || this.triggered;
    }
    
    
@@ -39,7 +39,7 @@ public class EntityAIScreamer  extends EntityAIBase{
     */
    public void updateTask()
    {
-       DifficultyInstance difficultyinstance = this.raider.worldObj.getDifficultyForLocation(new BlockPos(this.raider));
+       DifficultyInstance difficultyinstance = this.raider.world.getDifficultyForLocation(new BlockPos(this.raider));
 
        if(strikes <= maxStrikes)
        {
@@ -48,11 +48,11 @@ public class EntityAIScreamer  extends EntityAIBase{
     		   if(!hasScreamed)
     			   this.raider.playSound(com.gendeathrow.pmobs.common.SoundEvents.RAIDERS_WITCH_SCREAM, 3, 1); 
 
-    		   this.raider.worldObj.addWeatherEffect(new EntityLightningBolt(this.raider.worldObj, this.raider.posX + getRandomPosition(), this.raider.posY, this.raider.posZ + getRandomPosition(), true));
-    		   if(!this.raider.worldObj.isRaining())
+    		   this.raider.world.addWeatherEffect(new EntityLightningBolt(this.raider.world, this.raider.posX + getRandomPosition(), this.raider.posY, this.raider.posZ + getRandomPosition(), true));
+    		   if(!this.raider.world.isRaining())
     		   {
-    			   this.raider.worldObj.getWorldInfo().setThundering(true);
-    			   this.raider.worldObj.getWorldInfo().setThunderTime(600);
+    			   this.raider.world.getWorldInfo().setThundering(true);
+    			   this.raider.world.getWorldInfo().setThunderTime(600);
     		   }
     		   
     		   this.triggered = true;

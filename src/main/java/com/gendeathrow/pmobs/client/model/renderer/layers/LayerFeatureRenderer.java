@@ -1,5 +1,9 @@
 package com.gendeathrow.pmobs.client.model.renderer.layers;
 
+import com.gendeathrow.pmobs.client.LayerFeatures;
+import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -7,10 +11,6 @@ import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
-
-import com.gendeathrow.pmobs.client.LayerFeatures;
-import com.gendeathrow.pmobs.client.model.renderer.RaiderModel;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class LayerFeatureRenderer implements LayerRenderer<EntityLivingBase>
 {

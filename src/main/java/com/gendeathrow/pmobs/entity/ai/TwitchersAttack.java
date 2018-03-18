@@ -1,8 +1,8 @@
 package com.gendeathrow.pmobs.entity.ai;
 
-import net.minecraft.entity.ai.EntityAIAttackMelee;
-
 import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+
+import net.minecraft.entity.ai.EntityAIAttackMelee;
 
 public class TwitchersAttack extends EntityAIAttackMelee{
 

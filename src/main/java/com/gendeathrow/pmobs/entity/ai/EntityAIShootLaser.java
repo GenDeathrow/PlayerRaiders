@@ -2,6 +2,8 @@ package com.gendeathrow.pmobs.entity.ai;
 
 import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -15,8 +17,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.Loader;
-
-import com.mojang.authlib.GameProfile;
 
 public class EntityAIShootLaser extends EntityAIBase 
 {
@@ -67,15 +67,15 @@ public class EntityAIShootLaser extends EntityAIBase
 		ItemStack stack = parentEntity.getHeldItemMainhand();
 		if (entitylivingbase != null) 
 		{
-			if (!parentEntity.worldObj.isRemote && parentEntity.getHeldItemMainhand() != null && parentEntity.getHeldItemMainhand() == stack) 
+			if (!parentEntity.world.isRemote && parentEntity.getHeldItemMainhand() != null && parentEntity.getHeldItemMainhand() == stack) 
 			{
-				World world = parentEntity.worldObj;
+				World world = parentEntity.world;
 				if (entitylivingbase.getDistanceSqToEntity(parentEntity) < 576 && entitylivingbase.getDistanceSqToEntity(parentEntity) > 9 && parentEntity.canEntityBeSeen(entitylivingbase)) 
 				{
 					++attackTimer;
 					if (attackTimer == 10) 
 					{
-						stack.getItem().onItemRightClick(stack, parentEntity.worldObj, getFakePlayer(), EnumHand.MAIN_HAND);
+						stack.getItem().onItemRightClick(stack, parentEntity.world, getFakePlayer(), EnumHand.MAIN_HAND);
 						attackTimer = -1;
 					}
 				}
@@ -86,7 +86,7 @@ public class EntityAIShootLaser extends EntityAIBase
 
 	public EntityPlayer getFakePlayer() 
 	{
-		EntityPlayerMP fakePlayer = FakePlayerFactory.get((WorldServer)parentEntity.worldObj, new GameProfile(UUID.nameUUIDFromBytes("Laser Raider".getBytes()), "Laser Raider"));
+		EntityPlayerMP fakePlayer = FakePlayerFactory.get((WorldServer)parentEntity.world, new GameProfile(UUID.nameUUIDFromBytes("Laser Raider".getBytes()), "Laser Raider"));
 		fakePlayer.copyLocationAndAnglesFrom(parentEntity);
 		fakePlayer.setRotationYawHead(parentEntity.getRotationYawHead());
 		return fakePlayer;

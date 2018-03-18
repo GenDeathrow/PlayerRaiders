@@ -1,16 +1,16 @@
 package com.gendeathrow.pmobs.core.proxies;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
 import com.gendeathrow.pmobs.common.BruteSerumHandler;
 import com.gendeathrow.pmobs.common.capability.CapabilityHandler;
 import com.gendeathrow.pmobs.core.init.ModItems;
 import com.gendeathrow.pmobs.entity.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.EventHandler;
 import com.gendeathrow.pmobs.world.WorldLoader;
+
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public class CommonProxy 
 {

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +12,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.util.WeightedRandom;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import com.gendeathrow.pmobs.core.ConfigHandler;
 import com.gendeathrow.pmobs.core.PMSettings;
@@ -30,6 +26,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
+
+import net.minecraft.util.WeightedRandom;
 
 public class RaiderManager 
 {
@@ -220,7 +218,7 @@ public class RaiderManager
 	            RaidersCore.logger.error((String)"Couldn\'t save stats", (Throwable)ioexception);
 	        }finally 
 	        {
-	        	IOUtils.closeQuietly(fo);
+	        	org.apache.commons.io.IOUtils.closeQuietly(fo);
 	        }
 	}
 

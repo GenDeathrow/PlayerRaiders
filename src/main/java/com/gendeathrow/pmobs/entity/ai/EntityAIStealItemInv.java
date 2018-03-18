@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.ai.EntityAIMoveToBlock;
@@ -24,8 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class EntityAIStealItemInv extends EntityAIMoveToBlock
 {
@@ -61,7 +61,7 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
         
         if (this.runDelay <= 0)
         {
-            if (!this.raider.worldObj.getGameRules().getBoolean("mobGriefing"))
+            if (!this.raider.world.getGameRules().getBoolean("mobGriefing"))
             {
                 return false;
             }
@@ -104,7 +104,7 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
 
         if (this.raider.getDistanceSqToCenter(this.destinationBlock) < 1.0D)
         {
-            World world = this.raider.worldObj;
+            World world = this.raider.world;
             BlockPos blockpos = this.destinationBlock;
             IBlockState iblockstate = null;
             Block block;

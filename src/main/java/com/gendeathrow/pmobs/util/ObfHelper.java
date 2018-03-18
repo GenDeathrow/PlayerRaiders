@@ -3,9 +3,7 @@ package com.gendeathrow.pmobs.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 
 public class ObfHelper 
 {

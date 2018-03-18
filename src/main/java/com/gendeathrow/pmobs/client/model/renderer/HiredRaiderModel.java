@@ -1,5 +1,8 @@
 package com.gendeathrow.pmobs.client.model.renderer;
 
+import com.gendeathrow.pmobs.entity.HiredRaiders.HiredRaider;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
+
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,9 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.common.util.EnumHelper;
-
-import com.gendeathrow.pmobs.entity.HiredRaiders.HiredRaider;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
 
 public class HiredRaiderModel extends ModelBiped
 {

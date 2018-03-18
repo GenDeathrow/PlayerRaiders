@@ -5,12 +5,22 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.gendeathrow.pmobs.client.RaidersSkinManager;
+import com.gendeathrow.pmobs.core.PMSettings;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
+import com.gendeathrow.pmobs.handlers.EquipmentManager;
+import com.gendeathrow.pmobs.handlers.RaiderManager;
+import com.google.common.collect.Iterables;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.authlib.properties.Property;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -20,20 +30,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
-
-import com.gendeathrow.pmobs.client.RaidersSkinManager;
-import com.gendeathrow.pmobs.core.PMSettings;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.New.EntityRangedAttacker;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumFaction;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase.EnumRaiderRole;
-import com.gendeathrow.pmobs.handlers.EquipmentManager;
-import com.gendeathrow.pmobs.handlers.RaiderManager;
-import com.google.common.collect.Iterables;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mojang.authlib.properties.Property;
 
 public class EntityPlayerRaider extends EntityRangedAttacker
 {
@@ -76,7 +72,7 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 
 	        if (this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null)
 	        {
-	            Calendar calendar = this.worldObj.getCurrentDate();
+	            Calendar calendar = this.world.getCurrentDate();
 
 	            if (calendar.get(2) + 1 == 10 && calendar.get(5) == 31 && this.rand.nextFloat() < 0.25F)
 	            {
@@ -152,7 +148,7 @@ public class EntityPlayerRaider extends EntityRangedAttacker
 	        }
 	        
 
-	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.worldObj.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) 
+	        if(this.getRaiderRole() == EnumRaiderRole.NONE && this.world.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance && !this.getOwner().equalsIgnoreCase("herobrine") && !((EntityRangedAttacker)this).isRangedAttacker) 
 	        	this.setChild(true); 
   
 	        

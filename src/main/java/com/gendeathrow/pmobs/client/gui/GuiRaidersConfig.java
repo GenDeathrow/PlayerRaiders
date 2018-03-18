@@ -2,15 +2,14 @@ package com.gendeathrow.pmobs.client.gui;
 
 import java.util.ArrayList;
 
-import net.minecraft.client.gui.GuiButton;
+import com.gendeathrow.pmobs.core.ConfigHandler;
+import com.gendeathrow.pmobs.core.RaidersCore;
+
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
-
-import com.gendeathrow.pmobs.core.ConfigHandler;
-import com.gendeathrow.pmobs.core.RaidersCore;
 
 public class GuiRaidersConfig extends GuiConfig
 {

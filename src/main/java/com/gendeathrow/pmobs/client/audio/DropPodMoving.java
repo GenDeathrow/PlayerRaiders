@@ -1,13 +1,12 @@
 package com.gendeathrow.pmobs.client.audio;
 
+import com.gendeathrow.pmobs.common.SoundEvents;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
+
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-
-import com.gendeathrow.pmobs.entity.EntityDropPod;
-import com.gendeathrow.pmobs.common.*;
 
 public class DropPodMoving extends MovingSound
 {
@@ -31,11 +30,11 @@ public class DropPodMoving extends MovingSound
 	{
 		 if (!this.droppod.isDead)
 		 {
-            float f = MathHelper.sqrt_double(this.droppod.motionY * this.droppod.motionY);
+            float f = MathHelper.sqrt(this.droppod.motionY * this.droppod.motionY);
 
             if ((double)f >= 0.01D)
             {
-                this.volume = 0.0F + MathHelper.clamp_float(f, 0.0F, 1.0F) * 0.75F;
+                this.volume = 0.0F + MathHelper.clamp(f, 0.0F, 1.0F) * 0.75F;
             }
             else
             {

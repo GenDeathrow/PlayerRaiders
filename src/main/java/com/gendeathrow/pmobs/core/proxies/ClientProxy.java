@@ -1,5 +1,18 @@
 package com.gendeathrow.pmobs.core.proxies;
 
+import com.gendeathrow.pmobs.client.ClientEventHandler;
+import com.gendeathrow.pmobs.client.IItemColorHandler;
+import com.gendeathrow.pmobs.client.gui.RaidNotification;
+import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
+import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
+import com.gendeathrow.pmobs.client.renderer.HiredRaiderRenderer;
+import com.gendeathrow.pmobs.client.renderer.SignalTransmitterRenderer;
+import com.gendeathrow.pmobs.core.init.ModItems;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
+import com.gendeathrow.pmobs.entity.EntitySignalTransmitter;
+import com.gendeathrow.pmobs.entity.HiredRaiders.HiredRaider;
+import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -13,19 +26,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.gendeathrow.pmobs.client.ClientEventHandler;
-import com.gendeathrow.pmobs.client.IItemColorHandler;
-import com.gendeathrow.pmobs.client.gui.RaidNotification;
-import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
-import com.gendeathrow.pmobs.client.renderer.EntityRaiderRenderer;
-import com.gendeathrow.pmobs.client.renderer.HiredRaiderRenderer;
-import com.gendeathrow.pmobs.client.renderer.SignalTransmitterRenderer;
-import com.gendeathrow.pmobs.core.init.ModItems;
-import com.gendeathrow.pmobs.entity.EntityDropPod;
-import com.gendeathrow.pmobs.entity.EntitySignalTransmitter;
-import com.gendeathrow.pmobs.entity.HiredRaiders.HiredRaider;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class ClientProxy extends CommonProxy
 {

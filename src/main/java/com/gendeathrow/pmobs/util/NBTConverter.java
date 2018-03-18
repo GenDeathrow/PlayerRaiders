@@ -3,6 +3,14 @@ package com.gendeathrow.pmobs.util;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.Level;
+
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -16,14 +24,6 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-
-import org.apache.logging.log4j.Level;
-
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 /**
  * 
  * @author Funwayguy

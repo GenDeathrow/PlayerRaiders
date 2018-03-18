@@ -1,11 +1,10 @@
 package com.gendeathrow.pmobs.common.capability.player;
 
-import java.util.concurrent.Callable;
-
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 public class PlayerDataProvider implements ICapabilitySerializable<NBTBase>
@@ -15,6 +14,13 @@ public class PlayerDataProvider implements ICapabilitySerializable<NBTBase>
     public static final Capability<IPlayerData> PLAYERDATA = null;
     
     private IPlayerData instance = PLAYERDATA.getDefaultInstance();
+	
+    
+	public static void register()
+	{
+		CapabilityManager.INSTANCE.register(IPlayerData.class, new PlayersDataStorage(), PlayersData.class);
+	}
+
 	
 	@Override
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) 

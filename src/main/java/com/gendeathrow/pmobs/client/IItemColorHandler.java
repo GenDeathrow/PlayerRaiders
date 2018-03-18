@@ -1,10 +1,10 @@
 package com.gendeathrow.pmobs.client;
 
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.item.ItemStack;
-
 import com.gendeathrow.pmobs.common.items.SpecialSpawnEgg;
 import com.gendeathrow.pmobs.common.items.SpecialSpawnEgg.RaiderEggInfo;
+
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.item.ItemStack;
 
 public class IItemColorHandler implements IItemColor
 {

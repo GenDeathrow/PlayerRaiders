@@ -1,16 +1,15 @@
 package com.gendeathrow.pmobs.client.renderer;
 
+import com.gendeathrow.pmobs.client.model.renderer.DropPodModel;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.EntityDropPod;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
-
-import com.gendeathrow.pmobs.client.model.renderer.DropPodModel;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.EntityDropPod;
-import com.gendeathrow.pmobs.entity.New.EntityRaiderBase;
 
 public class DropPodRenderer extends Render<EntityDropPod>
 {

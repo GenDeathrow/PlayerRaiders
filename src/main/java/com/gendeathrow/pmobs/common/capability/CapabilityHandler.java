@@ -1,16 +1,13 @@
 package com.gendeathrow.pmobs.common.capability;
 
-import java.util.Iterator;
+import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
+import com.gendeathrow.pmobs.core.RaidersCore;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent.Entity;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
-import com.gendeathrow.pmobs.core.RaidersCore;
 
 public class CapabilityHandler
 {

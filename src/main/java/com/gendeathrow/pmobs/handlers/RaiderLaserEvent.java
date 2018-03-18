@@ -24,7 +24,7 @@ public class RaiderLaserEvent {
 			EntityLivingBase raider = (EntityLivingBase) event.getEntity();
 			if (raider instanceof EntityZombie) 
 			{
-				World world = raider.worldObj;
+				World world = raider.world;
 				if (!world.isRemote) 
 				{
 					if (raider.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND) == null) 

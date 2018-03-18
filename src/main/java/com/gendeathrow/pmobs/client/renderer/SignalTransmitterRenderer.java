@@ -1,16 +1,15 @@
 package com.gendeathrow.pmobs.client.renderer;
 
+import com.gendeathrow.pmobs.client.model.renderer.SignalTransmitterModel;
+import com.gendeathrow.pmobs.core.RaidersCore;
+import com.gendeathrow.pmobs.entity.EntitySignalTransmitter;
+
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
-
-import com.gendeathrow.pmobs.client.model.renderer.DropPodModel;
-import com.gendeathrow.pmobs.client.model.renderer.SignalTransmitterModel;
-import com.gendeathrow.pmobs.core.RaidersCore;
-import com.gendeathrow.pmobs.entity.EntitySignalTransmitter;
 
 public class SignalTransmitterRenderer extends Render<EntitySignalTransmitter>
 {

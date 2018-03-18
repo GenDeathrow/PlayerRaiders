@@ -22,16 +22,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.oredict.OreDictionary;
-
 import org.apache.logging.log4j.Level;
-	
 
 import com.gendeathrow.pmobs.core.RaidersCore;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.oredict.OreDictionary;
 
 	public class Tools 
 	{

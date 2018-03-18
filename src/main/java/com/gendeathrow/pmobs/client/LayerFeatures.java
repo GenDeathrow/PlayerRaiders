@@ -7,9 +7,9 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.util.ResourceLocation;
-
 import com.gendeathrow.pmobs.core.RaidersCore;
+
+import net.minecraft.util.ResourceLocation;
 
 public enum LayerFeatures
 {
