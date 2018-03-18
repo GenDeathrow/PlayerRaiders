@@ -2,15 +2,18 @@ package com.gendeathrow.pmobs.common.potion;
 
 import java.awt.Color;
 
+import com.gendeathrow.pmobs.common.PlayerDelaySerumEffect;
 import com.gendeathrow.pmobs.core.RaidersMain;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.common.MinecraftForge;
 
 public class BruteSerumEffect  extends Potion 
 {
@@ -61,17 +64,9 @@ public class BruteSerumEffect  extends Potion
         }
         
     	
-    	if(entityLivingBaseIn instanceof EntityPlayer)
-    	{
-    		((EntityPlayer)entityLivingBaseIn).eyeHeight =((EntityPlayer)entityLivingBaseIn).getDefaultEyeHeight();;
-    		((EntityPlayer)entityLivingBaseIn).stepHeight -= 1.4;
-    	}
-    	
-    	
-		entityLivingBaseIn.addPotionEffect(new PotionEffect(MobEffects.WEAKNESS, 1200));
-		entityLivingBaseIn.addPotionEffect(new PotionEffect(MobEffects.HUNGER, 600, 3));
-		entityLivingBaseIn.addPotionEffect(new PotionEffect(MobEffects.MINING_FATIGUE, 1200, 2));
-		entityLivingBaseIn.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 600, 1));
+    	if(entityLivingBaseIn instanceof EntityPlayerMP) 
+			MinecraftForge.EVENT_BUS.register(new PlayerDelaySerumEffect(20, (EntityPlayer) entityLivingBaseIn));
+
     }
 	
 }
