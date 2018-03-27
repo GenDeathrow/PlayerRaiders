@@ -61,7 +61,7 @@ public class InventoryStroageModifiable extends ItemStackHandler
 	{
 		return true;
 	}
-		
+	
 	public void readFromNBT(NBTTagCompound nbt) {
 
 		NBTTagCompound tags = nbt.getCompoundTag(this.ID);

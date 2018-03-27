@@ -1,5 +1,6 @@
 package com.gendeathrow.pmobs.entity.mob;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -210,7 +211,11 @@ public class EntityRaiderBase extends EntityMob {
         	{
         		ItemStack returnStack = this.getRaidersInventory().insertItem(i, itemEntity.getItem(), false);
   			
-        		if(returnStack.isEmpty()) itemEntity.setDead();
+        		if(returnStack.isEmpty()) 
+        		{
+        			itemEntity.setDead();
+        			break;
+        		}
         		else itemEntity.setItem(returnStack);
         	}
         }
@@ -473,15 +478,21 @@ public class EntityRaiderBase extends EntityMob {
     public void onDeath(DamageSource cause) {
     	super.onDeath(cause);
     	
-    	for(int i = 0; i < this.raidersInventory.getSlots(); i++) {
-    		
-    		ItemStack stack = this.raidersInventory.getStackInSlot(i);
-    		
-    		if(stack != null) {
-    			EntityItem entity = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
-    			this.world.spawnEntity(entity);
-    		}
-    	}
+   	
+        if (!this.world.isRemote) {
+        	
+            Entity entity = cause.getTrueSource();
+            EntityLivingBase entitylivingbase = this.getAttackingEntity();
+            
+        	ArrayList<EntityItem> raiderDrops= new ArrayList<EntityItem>();
+        	
+        	for(int i = 0; i < this.raidersInventory.getSlots(); i++) {
+        		ItemStack stack = this.raidersInventory.extractItemInternal(i, this.raidersInventory.getSlotLimit(i), false);
+        		if(!stack.isEmpty()) {
+                	entity.entityDropItem(stack, 1);
+        		}
+        	}
+        }
     }
     
     @Override
