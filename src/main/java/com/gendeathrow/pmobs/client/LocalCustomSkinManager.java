@@ -29,6 +29,16 @@ public class LocalCustomSkinManager {
         this.textureManager=textureManagerInstance;
     }
     
+    
+    public static void setupDirectory() {
+    	
+    	File dir= new File(assestsDir, "skins");
+    	File dir2= new File(assestsDir, "overlays");
+    	
+    	if(!dir.isDirectory())
+    		dir.mkdirs();
+    }
+    
     public static ResourceLocation loadSkin(RaiderData raiderProfile){
 
         final ResourceLocation resourcelocation = raiderProfile.getCustomSkin();

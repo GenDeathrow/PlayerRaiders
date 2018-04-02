@@ -1,5 +1,6 @@
 package com.gendeathrow.pmobs.core.configs;
 
+import com.gendeathrow.pmobs.client.LocalCustomSkinManager;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
 
 public class ConfigHandler {
@@ -14,6 +15,7 @@ public class ConfigHandler {
 	public static void init() {
 		MainConfig.load();
 		raiderClassConfigs.readFile();
+		LocalCustomSkinManager.setupDirectory();
 	}
 	
 	public static void postInit() {
