@@ -2,6 +2,7 @@ package com.gendeathrow.pmobs.handlers;
 
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedRandom;
 
 public class RaiderData extends WeightedRandom.Item
@@ -9,6 +10,8 @@ public class RaiderData extends WeightedRandom.Item
 	private GameProfile gameProfile;
 	private boolean hasUpdated = false;
 	private boolean isEnabled = true;
+	private ResourceLocation customSkin = null;
+	
 	private String comment = " ";
 	//private int weight;
 	
@@ -57,5 +60,17 @@ public class RaiderData extends WeightedRandom.Item
 
 	public boolean hasUpdatedProfile() {
 		return hasUpdated;
+	}
+
+	public boolean hasCustomSkin() {
+		return this.customSkin != null;
+	}
+
+	public ResourceLocation getCustomSkin() {
+		return this.customSkin;
+	}
+	
+	public void setCustomSkin(ResourceLocation locIn) {
+		this.customSkin = locIn;
 	}
 }

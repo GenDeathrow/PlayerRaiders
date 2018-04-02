@@ -9,8 +9,10 @@ import com.gendeathrow.pmobs.common.items.BruteSerum;
 import com.gendeathrow.pmobs.core.RaidersMain;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -18,6 +20,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod.EventBusSubscriber
@@ -75,6 +78,25 @@ public class RegisterItems {
 
 	}
 
+	public static void RegisterRecipes()
+	{
+		ResourceLocation optionalGroup = new ResourceLocation("");
+		
+		GameRegistry.addShapedRecipe(new ResourceLocation(RaidersMain.MODID, "backup_transmitter_recipe"), optionalGroup, new ItemStack(backupTransmitter), 
+				"RPR", 
+				"ICI", 
+				"IEI",
+				'C', satTransmitterPart,
+				'R', Items.REPEATER,
+				'P', Items.COMPARATOR,
+				'E', Items.EMERALD,
+				'I', Items.IRON_INGOT);
+		
+
+		GameRegistry.addShapelessRecipe(new ResourceLocation(RaidersMain.MODID, "brute_serum_recipe"), optionalGroup,new ItemStack(bruteSerum), new Ingredient[] { Ingredient.fromItem(bruteSerumSample), Ingredient.fromItem(bruteSerumSample), Ingredient.fromItem(bruteSerumSample), Ingredient.fromItem(bruteSerumSample)});
+		
+
+	}
 	
 	static 
 	{

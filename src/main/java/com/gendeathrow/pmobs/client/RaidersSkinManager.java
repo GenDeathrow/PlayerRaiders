@@ -78,13 +78,19 @@ public class RaidersSkinManager
 	 * Download players skin from mojang
 	 * @return
 	 */
-	@SuppressWarnings(value = { "unchecked" })
     public static ResourceLocation DownloadPlayersSkin(EntityRaiderBase raider){
 		ResourceLocation resourcelocation =  DefaultPlayerSkin.getDefaultSkinLegacy();
-		
+	
 		RaiderData playerSkinProfile = RaiderManager.getRaiderProfile(raider.getPlayerProfile());
-
-		if (raider.getPlayerProfile() != null && playerSkinProfile != null)
+		
+		if (raider.getPlayerProfile() == null || playerSkinProfile == null)
+			return resourcelocation;
+			
+		if(playerSkinProfile.hasCustomSkin())
+		{
+			return LocalCustomSkinManager.loadSkin(playerSkinProfile);
+		}
+		else 
 		{
 			if(playerSkinProfile.hasUpdatedProfile()) {
 				Minecraft minecraft = Minecraft.getMinecraft();
@@ -102,4 +108,15 @@ public class RaidersSkinManager
     	
     }
 	
+    
+    
+    /// Testing fucntion for
+	static LocalCustomSkinManager raidermanager = new LocalCustomSkinManager(Minecraft.getMinecraft().getTextureManager());
+	
+//	public static ResourceLocation test() {
+//		
+//		File f = new File(MainConfig.configDir, "/assets/skins/imp.png");
+//		return raidermanager.loadSkin(f.getAbsolutePath(), "imp" );
+//	}
+//	
 }

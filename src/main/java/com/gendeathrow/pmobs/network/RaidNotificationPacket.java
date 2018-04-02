@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.Level;
 
 import com.gendeathrow.pmobs.client.gui.RaidNotification;
+import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersMain;
 import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -74,7 +76,17 @@ public class RaidNotificationPacket implements IMessage
 				@Override
 				public void run() 
 				{
-					RaidNotification.ScheduleNotice(message.lines,  RaidersSoundEvents.RAID_DAY_SUSPENSE.getRegistryName().toString());
+					if(PMSettings.debugMode) {
+						RaidersMain.logger.warn("!!Client recieve notification packet!!");
+					}
+					
+					
+					if(PMSettings.renderRaidNotifications)
+						RaidNotification.ScheduleNotice(message.lines,  RaidersSoundEvents.RAID_DAY_SUSPENSE.getRegistryName().toString());
+					else
+						for(String line : message.lines)
+							Minecraft.getMinecraft().player.sendMessage(new TextComponentString(line));	
+	
 				}
 			});
 			return null;

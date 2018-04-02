@@ -34,6 +34,7 @@ public class MainConfig
 		
 		PMSettings.renderNameTags = config.getBoolean("Render Name Tags", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders Name tags about thier heads.");
 		PMSettings.renderOverlays = config.getBoolean("Render Skin Overlays", Configuration.CATEGORY_CLIENT, true, "Renders the Raiders skins overlay features.");
+		PMSettings.renderRaidNotifications = config.getBoolean("Show Raid Notification GUI", Configuration.CATEGORY_CLIENT, true, "Renders the Raid Notifications");
 	}
 	
 	public static void load()

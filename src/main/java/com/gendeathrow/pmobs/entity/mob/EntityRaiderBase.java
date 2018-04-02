@@ -1,6 +1,5 @@
 package com.gendeathrow.pmobs.entity.mob;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -476,23 +475,19 @@ public class EntityRaiderBase extends EntityMob {
     
     @Override
     public void onDeath(DamageSource cause) {
-    	super.onDeath(cause);
-    	
-   	
+
         if (!this.world.isRemote) {
-        	
-            Entity entity = cause.getTrueSource();
-            EntityLivingBase entitylivingbase = this.getAttackingEntity();
-            
-        	ArrayList<EntityItem> raiderDrops= new ArrayList<EntityItem>();
-        	
+        	try {
         	for(int i = 0; i < this.raidersInventory.getSlots(); i++) {
-        		ItemStack stack = this.raidersInventory.extractItemInternal(i, this.raidersInventory.getSlotLimit(i), false);
+        		ItemStack stack = this.raidersInventory.extractItemInternal(i, 64, false);
         		if(!stack.isEmpty()) {
-                	entity.entityDropItem(stack, 1);
+                	this.entityDropItem(stack, 1);
         		}
-        	}
+        	}}
+        	catch(Exception e) {}
         }
+        
+    	super.onDeath(cause);
     }
     
     @Override

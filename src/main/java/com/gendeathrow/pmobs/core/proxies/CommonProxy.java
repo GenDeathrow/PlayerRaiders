@@ -2,6 +2,7 @@ package com.gendeathrow.pmobs.core.proxies;
 
 import com.gendeathrow.pmobs.common.capability.player.PlayerDataProvider;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
+import com.gendeathrow.pmobs.core.init.RegisterItems;
 
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -41,6 +42,7 @@ public class CommonProxy
 	{
 		PlayerDataProvider.register();
 		RegisterEntities.RegisterLootTables();
+		RegisterItems.RegisterRecipes();
 
 	}
 	public void postInit(FMLPostInitializationEvent event) 

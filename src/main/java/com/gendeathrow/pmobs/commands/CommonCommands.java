@@ -22,6 +22,7 @@ public class CommonCommands extends CommandBase
 		coms.add(new UpdateTwitchWhitelist());
 		//coms.add(new SetRaiderLevel());
 		coms.add(new SendRaidNoticeTest());
+		coms.add(new DebugModCommand());
 	}
 	
 	@Override

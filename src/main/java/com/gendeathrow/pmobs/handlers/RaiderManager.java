@@ -28,6 +28,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.WeightedRandom;
 
 public class RaiderManager 
@@ -209,6 +210,7 @@ public class RaiderManager
 	                	UUID uuid = null;
 	                	boolean isEnabled = true;
 	                	
+	                	
 	                	if(playerData.has("weight"))
 	                		weight = playerData.get("weight").getAsInt();
 	                	
@@ -219,6 +221,10 @@ public class RaiderManager
 	                	GameProfile playerProfile = new GameProfile(uuid, playerOwner);
 	                	
 	                	RaiderData raiderData = new RaiderData(playerProfile, weight, isEnabled);
+	                	
+	                	if(playerData.has("customSkin")) {
+	                		raiderData.setCustomSkin(new ResourceLocation(playerData.get("customSkin").getAsString()));
+	                	}
 	                	
 	                	if(playerData.has("_comment"))
 	                		raiderData.setComment(playerData.get("_comment").getAsString());
@@ -246,12 +252,12 @@ public class RaiderManager
 	        // Example
 	        JsonObject jsonobject1 = new JsonObject();
 	        
-	        jsonobject1.addProperty("_weight", "True Weight System, So you can tweak which skins you want to see more.");
+	        jsonobject1.addProperty("weight", "True Weight System, So you can tweak which skins you want to see more.");
 	                
-	        jsonobject1.addProperty("_enabled", "After you get your Twitch list, you may have broken skins because ppl have changed names. So you can disable them here.");
+	        jsonobject1.addProperty("enabled", "After you get your Twitch list, you may have broken skins because ppl have changed names. So you can disable them here.");
 
-	        //jsonobject1.addProperty("_lootdrop", "So you can add custom drop for a particular skin.");
-	        
+	        jsonobject1.addProperty("customSkin", "Give resourcelocation of custom skin. Use raiders build in resource loading, by adding a file into 'assets/skins/<filename>.png', than set custom skin to 'raiders:skins/<filename>'. You may also use any other resourceloader.");
+	         
 	        jsonobject1.addProperty("_comment", " Comment section is for you leave a comment if you disabled something to know why. or just any comment you want.");
 	                
 	        jsonobject.add("_exampleRaider", jsonobject1);

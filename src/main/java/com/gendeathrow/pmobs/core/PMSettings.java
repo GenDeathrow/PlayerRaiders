@@ -108,5 +108,9 @@ public class PMSettings
 	public static boolean torchStopSpawns = true;
 
 	public static boolean isDifficultyProgressionEnabled = true;
+
+	public static boolean renderRaidNotifications;
+
+	public static boolean debugMode = false;
 	
 }
