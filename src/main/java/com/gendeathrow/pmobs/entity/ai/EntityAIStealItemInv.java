@@ -12,6 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.ai.EntityAIMoveToBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBow;
@@ -122,24 +123,19 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
             if(te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP)) {
             	chestInventory = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP);
             	
-                ItemStack stealItem = null;
+                ItemStack stealItem = ItemStack.EMPTY;
                 int slot = 0;
-                boolean flag = false;
-          
+                
                 for (int i = 0; i < chestInventory.getSlots(); ++i) {
-                	if(shouldStealItem(stealItem, chestInventory.getStackInSlot(i))) {
+                	if(shouldStealItem(chestInventory.getStackInSlot(i))) {
                 		stealItem = chestInventory.getStackInSlot(i);
                 		slot = i;
+                		break;
                 	}
                 }
                 
 
-                if (stealItem != null)
-                {
-                	flag = true;
-                }
-
-                if (flag)
+                if (!stealItem.isEmpty())
                 {
                 	hasStolen = true;
                 	this.currentTask = -1;
@@ -156,13 +152,7 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
                 		ItemStack extracted = chestInventory.extractItem(slot, chestInventory.getStackInSlot(slot).getCount(), false);
                 		
                 		if(!extracted.isEmpty())
-                			for(int i = 0; i < radiersInv.getSlots(); i++){
-                				if(radiersInv.canInsertSlot(i, extracted)) {
-                					radiersInv.insertItem(slot, extracted, false);
-                					break;
-                				}
-                				
-                			}
+                				this.raider.updateEquipmentIfNeeded(extracted);
                 	}
                 	catch(NullPointerException e)
                 	{
@@ -183,73 +173,47 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
 
 	
 	@Nullable
-    private boolean shouldStealItem(ItemStack stealItem, ItemStack itemstack)
+    private boolean shouldStealItem(ItemStack itemstack)
     {
         boolean flag = false;
             
-            if(itemstack == null) 
+            if(itemstack.isEmpty()) 
             {
             	return false;
             }
             else
             {
-                
-            	if(stealItem == null) 
-            	{
-            		flag = true;
-            	}
-            	else if((itemstack.getItem() instanceof ItemSword || itemstack.getItem() instanceof ItemArmor || itemstack.getItem() instanceof ItemBow) && !(stealItem.getItem() instanceof ItemSword || stealItem.getItem() instanceof ItemArmor || stealItem.getItem() instanceof ItemBow))
-            	{
-            		flag = true;
-            	}
-                else if (itemstack.getItem() instanceof ItemSword && stealItem.getItem() instanceof ItemSword)
+            	ItemStack mainHandWeapon = this.raider.getHeldItemMainhand();
+
+            	if (itemstack.getItem() instanceof ItemSword && mainHandWeapon.getItem() instanceof ItemSword)
                 {
                     ItemSword itemsword = (ItemSword)itemstack.getItem();
-                    ItemSword itemsword1 = (ItemSword)stealItem.getItem();
+                    ItemSword itemsword1 = (ItemSword)mainHandWeapon.getItem();
 
-                    if (itemsword.getDamage(itemstack) == itemsword1.getDamage(stealItem))
-                    {
-                       flag = itemstack.getMetadata() > stealItem.getMetadata() || itemstack.hasTagCompound() && !stealItem.hasTagCompound();
-                    }
+                    if (itemsword.getDamage(itemstack) == itemsword1.getDamage(mainHandWeapon))
+                       flag = itemstack.getMetadata() > mainHandWeapon.getMetadata() || itemstack.hasTagCompound() && !mainHandWeapon.hasTagCompound();
                     else
-                    {
-                        flag = itemsword.getDamage(itemstack) > itemsword1.getDamage(stealItem);
-                    }
-
+                       flag = itemsword.getDamage(itemstack) > itemsword1.getDamage(mainHandWeapon);
                 }
-                else if (itemstack.getItem() instanceof ItemBow && stealItem.getItem() instanceof ItemBow)
-                {
-                   flag = itemstack.hasTagCompound() && !stealItem.hasTagCompound();
+                else if (itemstack.getItem() instanceof ItemBow && mainHandWeapon.getItem() instanceof ItemBow) {
+                   flag = itemstack.hasTagCompound() && !mainHandWeapon.hasTagCompound();
                 }
-                else if (itemstack.getItem() instanceof ItemArmor && stealItem.getItem() instanceof ItemArmor)
+                else if (itemstack.getItem() instanceof ItemArmor)
                 {
+                	EntityEquipmentSlot slottype = EntityRaiderBase.getSlotForItemStack(itemstack);
                     ItemArmor itemarmor = (ItemArmor)itemstack.getItem();
-                    ItemArmor itemarmor1 = (ItemArmor)stealItem.getItem();
-
-                    if (itemarmor.damageReduceAmount == itemarmor1.damageReduceAmount)
-                    {
-                        flag = itemstack.getMetadata() > stealItem.getMetadata() || itemstack.hasTagCompound() && !stealItem.hasTagCompound();
+                    ItemStack itemarmor1 = this.raider.getItemStackFromSlot(slottype);
+                   	
+                    if(itemarmor1.isEmpty()) {
+                    	flag = true;
                     }
+                    else if (itemarmor.damageReduceAmount == ((ItemArmor)itemarmor1.getItem()).damageReduceAmount)
+                        flag = itemstack.getMetadata() > mainHandWeapon.getMetadata() || itemstack.hasTagCompound() && !itemarmor1.hasTagCompound();
                     else
-                    {
-                        flag = itemarmor.damageReduceAmount > itemarmor1.damageReduceAmount;
-                    }
+                        flag = itemarmor.damageReduceAmount > ((ItemArmor)itemarmor1.getItem()).damageReduceAmount;
+                }else {
+                	return this.raider.world.rand.nextFloat() < 0.3333;
                 }
-                else if((itemstack.getItem() instanceof ItemFood) && (stealItem.getItem() instanceof ItemFood))
-                {
-                	ItemFood itemfood = (ItemFood)itemstack.getItem();
-                	ItemFood itemfood1 = (ItemFood)stealItem.getItem();
-                	
-
-                	if(itemfood.getSaturationModifier(itemstack) >=  itemfood1.getSaturationModifier(stealItem))
-                	{
-                		flag = true;
-                	}else if(itemfood.getHealAmount(itemstack) >=  itemfood1.getHealAmount(stealItem))
-                	{
-                		flag = true;
-                	}
-                }
-                else if(!(stealItem.getItem() instanceof ItemSword || stealItem.getItem() instanceof ItemArmor || stealItem.getItem() instanceof ItemBow || stealItem.getItem() instanceof ItemFood) && this.raider.getRNG().nextDouble() < .20) flag = true;
 
             }
 

@@ -81,47 +81,55 @@ public class EntityRaider extends EntityRaiderBase{
             	if(entityraider$groupdata.isChild)
             		this.setChild(true);
             	
+            	boolean flagAP = false;
+            	if(entityraider$groupdata.isAnimalPatrol)
+            		flagAP = true;
+            	
             	if((double)this.world.rand.nextFloat() < 0.5D) 
             	{
-            		if ((double)this.world.rand.nextFloat() < 0.05D)
+            		if ((double)this.world.rand.nextFloat() < 0.05D || flagAP)
             		{
             			List<EntityChicken> list = this.world.<EntityChicken>getEntitiesWithinAABB(EntityChicken.class, this.getEntityBoundingBox().grow(5.0D, 3.0D, 5.0D), EntitySelectors.IS_STANDALONE);
-
+            			EntityChicken entitychicken;
             			if (!list.isEmpty())
             			{
-            				EntityChicken entitychicken = (EntityChicken)list.get(0);
+            				entitychicken = (EntityChicken)list.get(0);
             				entitychicken.setChickenJockey(true);
-            				this.startRiding(entitychicken);
+
             			}
-            		}
-            		else if ((double)this.world.rand.nextFloat() < 0.05D)
-            		{
-            			EntityChicken entitychicken1 = new EntityChicken(this.world);
-            			entitychicken1.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-            			entitychicken1.onInitialSpawn(difficulty, (IEntityLivingData)null);
-            			entitychicken1.setChickenJockey(true);
-            			this.world.spawnEntity(entitychicken1);
-            			this.startRiding(entitychicken1);
+            			else
+            			{
+            				entitychicken = new EntityChicken(this.world);
+            				entitychicken.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+            				entitychicken.onInitialSpawn(difficulty, (IEntityLivingData)null);
+            				entitychicken.setChickenJockey(true);
+            				this.world.spawnEntity(entitychicken);
+            			}
+            			
+            			if(entitychicken != null) {
+            				this.startRiding(entitychicken);
+            				this.setChild(true);
+            			}
             		}
             	}
-            	else {
-            		if ((double)this.world.rand.nextFloat() < 0.05D)
+            	else if(!this.isChild()){
+            		if ((double)this.world.rand.nextFloat() < 0.05D || flagAP)
             		{
             			List<EntityPig> list = this.world.<EntityPig>getEntitiesWithinAABB(EntityPig.class, this.getEntityBoundingBox().grow(5.0D, 3.0D, 5.0D), EntitySelectors.IS_STANDALONE);
+            			EntityPig entityPig;
             			
-            			if (!list.isEmpty())
-            			{
-            				EntityPig entityPig = (EntityPig)list.get(0);
+            			if (!list.isEmpty()){
+            				entityPig = (EntityPig)list.get(0);
+            			}
+            			else {
+                			entityPig = new EntityPig(this.world);
+                			entityPig.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
+                			entityPig.onInitialSpawn(difficulty, (IEntityLivingData)null);
+                			this.world.spawnEntity(entityPig);
+            			}
+            			if(entityPig != null) {
             				this.startRiding(entityPig);
             			}
-            		}
-            		else if ((double)this.world.rand.nextFloat() < 0.05D)
-            		{
-            			EntityPig entitypig1 = new EntityPig(this.world);
-            			entitypig1.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, 0.0F);
-            			entitypig1.onInitialSpawn(difficulty, (IEntityLivingData)null);
-            			this.world.spawnEntity(entitypig1);
-            			this.startRiding(entitypig1);
             		}
             	}
             }

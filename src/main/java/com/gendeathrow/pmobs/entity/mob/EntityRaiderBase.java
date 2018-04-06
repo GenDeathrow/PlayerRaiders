@@ -11,6 +11,8 @@ import com.gendeathrow.pmobs.common.EnumFaction;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 import com.gendeathrow.pmobs.entity.ai.EntityAIShootLaser;
+import com.gendeathrow.pmobs.entity.ai.EntityAIStealFarmland;
+import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
@@ -31,6 +33,7 @@ import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -39,6 +42,7 @@ import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -150,6 +154,9 @@ public class EntityRaiderBase extends EntityMob {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(2, new EntityAIShootLaser(this));
         this.tasks.addTask(2, new EntityAIMoveTowardsRestriction(this, 1.0D));
+        this.tasks.addTask(4, new EntityAIOpenDoor(this, false));
+        this.tasks.addTask(4, new EntityAIStealItemInv(this, 1.0D, 10));
+        this.tasks.addTask(7, new EntityAIStealFarmland(this, 0.6D));
 	}
     
     
@@ -203,7 +210,6 @@ public class EntityRaiderBase extends EntityMob {
     protected void updateEquipmentIfNeeded(EntityItem itemEntity)
     {
     	super.updateEquipmentIfNeeded(itemEntity);
-    	
         if (!itemEntity.isDead && !this.world.isRemote)
         {
         	for(int i = 0; i < this.getRaidersInventory().getSlots(); i++)
@@ -219,6 +225,14 @@ public class EntityRaiderBase extends EntityMob {
         	}
         }
     }
+    
+    
+    public void updateEquipmentIfNeeded(ItemStack stack) {
+    	EntityItem fakeEntityItem = new EntityItem(world);
+    	fakeEntityItem.setItem(stack);
+    	updateEquipmentIfNeeded(fakeEntityItem);
+    }
+    
 
 	// Raider attacks Target
 	public boolean attackEntityAsMob(Entity entityIn)
@@ -270,7 +284,7 @@ public class EntityRaiderBase extends EntityMob {
     		
             if (livingdata == null)
             {
-                livingdata = new EntityRaiderBase.GroupData(this.world.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance, EnumFaction.getRandomFaction(this, this.difficultyManager));
+                livingdata = new EntityRaiderBase.GroupData(this.world.rand.nextFloat() < net.minecraftforge.common.ForgeModContainer.zombieBabyChance, EnumFaction.getRandomFaction(this, this.difficultyManager), this.world.rand.nextFloat() < 0.025f);
             }
             
             if (livingdata instanceof EntityRaiderBase.GroupData)
@@ -455,6 +469,8 @@ public class EntityRaiderBase extends EntityMob {
     	{
     		return this.getRaiderFaction() == ((EntityRaiderBase) entityIn).getRaiderFaction();
     	}
+    	else if(this.isRidingSameEntity(entityIn) || (entityIn.isBeingRidden() && entityIn.getPassengers().get(0) instanceof EntityRaiderBase))
+    		return true;
     	else return this.isOnScoreboardTeam(entityIn.getTeam());
     }
     
@@ -467,9 +483,10 @@ public class EntityRaiderBase extends EntityMob {
     		return true;
     	else if(EntityRaiderBase.class.isAssignableFrom(entity))
     		return true;
-    	else if (EntityLiving.class.isAssignableFrom(entity))
+    	else if (EntityAnimal.class.isAssignableFrom(entity))
     		return true;
-    	
+    	else if (EntityVillager.class.isAssignableFrom(entity))
+    		return true;
     	return false;
     }
     
@@ -744,11 +761,14 @@ public class EntityRaiderBase extends EntityMob {
     {
         public boolean isChild;
         public EnumFaction faction;
+        public boolean isAnimalPatrol;
 
-        private GroupData(boolean p_i47328_2_, EnumFaction factionIn)
+        private GroupData(boolean ischildIn, EnumFaction factionIn, boolean animalpatrolIn)
         {
-            this.isChild = p_i47328_2_;
+            this.isChild = ischildIn;
             this.faction = factionIn;
+            this.isAnimalPatrol = animalpatrolIn;
         }
+
     }
 }

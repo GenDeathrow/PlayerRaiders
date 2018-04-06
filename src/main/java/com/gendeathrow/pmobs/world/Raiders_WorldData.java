@@ -38,7 +38,7 @@ public class Raiders_WorldData extends WorldSavedData
 	{
 		lastHerobrineSpotted = nbt.getInteger(HEROBRINEID);
 		RaiderClassDifficulty.readNBT(nbt);
-		RaidersWorldDifficulty.INSTANCE.writeNBT(nbt);
+		RaidersWorldDifficulty.INSTANCE.readNBT(nbt);
 	}
 
 	@Override
