@@ -15,17 +15,16 @@ public class RaiderClassConfigs extends JsonConfig{
 	private String isEnabledID = "isEnabled"; 
 	private String spawnWeightID = "spawnWeight";
 	private String startDiffID = "startDiff";
-	private String extraDropPercentageID = "extraDropPercentage";
-	private String extraDropsID = "extraDrops";
 	
 	public void readFile() {
-
 		
+		this.Load();
+
 		JsonObject raiderObject = defaultClassJson("Raider", PMSettings.raidersSpawnWeight, 0);
 			PMSettings.raiderClass = isEnabled(raiderObject);
 			PMSettings.raidersSpawnWeight = getWeight(raiderObject);
 			//TODO Drops
-			
+
 		JsonObject bruteObject = defaultClassJson("Brute", PMSettings.bruteWeight, 0);
 			PMSettings.bruteClass = isEnabled(bruteObject);
 			PMSettings.bruteWeight = getWeight(bruteObject);
@@ -36,7 +35,7 @@ public class RaiderClassConfigs extends JsonConfig{
 			PMSettings.pyroClass = isEnabled(pyromaniacObject);
 			PMSettings.pyroWeight = getWeight(pyromaniacObject);
 			PMSettings.pyroStartDiff = getStartDiff(pyromaniacObject);
-		
+
 		JsonObject tweakerObject = defaultClassJson("Tweaker", PMSettings.tweakerWeight, 0);
 			if(!tweakerObject.has("spawnOnlyAtNight")) {
 				tweakerObject.addProperty("spawnOnlyAtNight", false);
@@ -56,7 +55,7 @@ public class RaiderClassConfigs extends JsonConfig{
 			PMSettings.screamerWeight = getWeight(witchObject);
 			PMSettings.screamerStartDiff = getStartDiff(witchObject);
 			PMSettings.screamerFogOn =  witchObject.get("hasFogEffect").getAsBoolean();
-			
+
 		JsonObject archerObject = defaultClassJson("Archer", PMSettings.rangerWeight, 1);
 			PMSettings.rangerClass = isEnabled(archerObject);
 			PMSettings.rangerWeight = getWeight(archerObject);
@@ -82,12 +81,12 @@ public class RaiderClassConfigs extends JsonConfig{
 	public JsonObject defaultClassJson(String cat, int weight, int startDiff) {
 		
 		JsonObject json  = this.getCategory(cat);
-		 
+		
 		if(!json.has(isEnabledID)) {
 			json.addProperty(isEnabledID, true);
 			this.setHasChanged(true);
 		}
-		
+
 		if(!json.has(spawnWeightID)) {
 			json.addProperty(spawnWeightID, weight);
 			this.setHasChanged(true);
@@ -97,7 +96,7 @@ public class RaiderClassConfigs extends JsonConfig{
 			json.addProperty(startDiffID, startDiff);
 			this.setHasChanged(true);
 		}
-
+		
 		return json;
 	}
 	

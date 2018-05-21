@@ -55,7 +55,7 @@ public class MainConfig
 
 		PMSettings.torchStopSpawns = config.getBoolean("Torches/GlowStone Stop Spawning", mobs, true, "GlowStone and torches will still stop a 7x7x7 spawn area. If cant see sky. Only works with 'Spawn in Daylight' == true");
 	
-		//PMSettings.safeForaDay = config.getBoolean("Safe for a Day", mobs, false, "Prevents All Mobs from Spawning during first day above Y lvl 50");
+		PMSettings.safeForaDay = config.getBoolean("Safe for a Day", mobs, false, "Prevents All Mobs from Spawning during first day above Y lvl 50");
 		
 		PMSettings.factionsEnabled = config.getBoolean("Enable Factions", mobs, true, "If true Some Raiders can belong to a friendly/hostile faction. If false they are all hostile");
 		
@@ -63,6 +63,7 @@ public class MainConfig
 																"Remove Vanilla Mob Spawner",
 																"Mob Spawner Weight",
 																"Spawn in Daylight",
+																"Safe for a Day",
 																"Torches/GlowStone Stop Spawning",
 				 												"DayTime Speed Modifier",
 				 												"Enable Factions"));

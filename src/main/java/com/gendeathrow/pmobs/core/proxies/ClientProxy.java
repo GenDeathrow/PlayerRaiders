@@ -1,5 +1,6 @@
 package com.gendeathrow.pmobs.core.proxies;
 
+import com.gendeathrow.pmobs.client.LocalCustomSkinManager;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
 
 import net.minecraft.block.Block;
@@ -41,7 +42,7 @@ public class ClientProxy extends CommonProxy
 	{
 		super.Init(event);
 		
-
+		LocalCustomSkinManager.setupDirectory();
 	}
 	
 	@Override

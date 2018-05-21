@@ -79,7 +79,11 @@ public class EntityRaiderBase extends EntityMob {
 	@SubscribeEvent
 	public static void onSpawnEvent(LivingSpawnEvent event) {
 		if(event.getEntity() instanceof EntityRaiderBase) {
+			
 			boolean canspawn = ((EntityRaiderBase)event.getEntity()).canSpawnAtDifficulty();
+		
+			if(RaidersWorldDifficulty.getDay(event.getWorld()) < 1 && PMSettings.safeForaDay && event.getEntity().posY <= event.getWorld().getSeaLevel())
+				canspawn = false;
 			
 			if(!canspawn)
 				event.setResult(Result.DENY);
@@ -461,7 +465,7 @@ public class EntityRaiderBase extends EntityMob {
     @Override
     public boolean isOnSameTeam(Entity entityIn)
     {
-    	if(entityIn instanceof EntityPlayer && this.getRaiderFaction() == EnumFaction.FRIENDLY)
+    	if((entityIn instanceof EntityPlayer || entityIn instanceof EntityVillager) && this.getRaiderFaction() == EnumFaction.FRIENDLY)
     	{
     		return true;
     	}

@@ -16,7 +16,6 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.tileentity.TileEntity;
