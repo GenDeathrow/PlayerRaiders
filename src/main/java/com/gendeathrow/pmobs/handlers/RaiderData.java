@@ -11,6 +11,7 @@ public class RaiderData extends WeightedRandom.Item
 	private boolean hasUpdated = false;
 	private boolean isEnabled = true;
 	private ResourceLocation customSkin = null;
+	private String customName = null;
 	
 	private String comment = " ";
 	//private int weight;

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.core.RaidersMain;
+import com.gendeathrow.pmobs.core.init.RaidersSoundEvents;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -38,6 +39,10 @@ public class RaidNotification
 		notices.add(0, new QuestNotice(lines, sound));
 	}
 	
+	public static void ScheduleErrorNotice(ArrayList<String> lines)
+	{
+		notices.add(0, new QuestNotice(lines).setLength(25F));
+	}
 	
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent event) {
@@ -85,7 +90,7 @@ public class RaidNotification
 
 		if(notice.init){
 		
-			if(notice.getTime() >= 6F)
+			if(notice.getTime() >= notice.length)
 			{
 				notices.remove(0);
 				return;
@@ -99,7 +104,8 @@ public class RaidNotification
 			width = MathHelper.ceil(width/scale);
 			height = MathHelper.ceil(height/scale);
 		
-			float alpha = notice.getTime() <= 4F? Math.min(1F, notice.getTime()) : Math.max(0F, 5F - notice.getTime());
+			float alpha = notice.getTime() <= (notice.length-2)? Math.min(1F, notice.getTime()) : Math.max(0F, (notice.length-1) - notice.getTime());
+			
 			alpha = MathHelper.clamp(alpha, 0.02F, 1F);
 			int color = new Color(1F, 1F, 1F, alpha).getRGB();
 			
@@ -137,6 +143,13 @@ public class RaidNotification
 		public ArrayList<String> lines = new ArrayList<String>();
 		public ItemStack icon = null;
 		public String sound = "random.levelup";
+		public boolean neverRemove = false;
+		public float length = 6F;
+		
+		public QuestNotice(ArrayList<String> linesIn)
+		{
+			this(linesIn, RaidersSoundEvents.RAID_DAY_SUSPENSE.getRegistryName().toString());
+		}
 		
 		public QuestNotice(ArrayList<String> linesIn, String sound)
 		{
@@ -144,6 +157,17 @@ public class RaidNotification
 			lines = linesIn;
 			this.sound = sound;
 		}
+		
+		public QuestNotice setNeverRemove(boolean val) {
+			this.neverRemove = val;
+			return this;
+		}
+		
+		public QuestNotice setLength(Float val) {
+			this.length = val;
+			return this;
+		}
+		
 		
 		public String getLine(int line) {
 			if(validate(line))

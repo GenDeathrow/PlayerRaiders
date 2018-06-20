@@ -77,7 +77,7 @@ public class AddNewPlayer extends Base_Command
 				}
 			}
 			
-			if(RaiderManager.raidersList.containsKey(ownerName))
+			if(RaiderManager.raidersListActive.containsKey(ownerName))
 			{
 				sender.sendMessage(new TextComponentString(ownerName + " already exist!"));
 			}
@@ -90,7 +90,7 @@ public class AddNewPlayer extends Base_Command
 		}
 		else if(args[1].equalsIgnoreCase("remove"))
 		{
-			if(RaiderManager.raidersList.containsKey(ownerName))
+			if(RaiderManager.raidersListActive.containsKey(ownerName))
 			{
 				RaiderManager.removeRaider(ownerName);	
 				sender.sendMessage(new TextComponentString(ownerName + " was removed!"));

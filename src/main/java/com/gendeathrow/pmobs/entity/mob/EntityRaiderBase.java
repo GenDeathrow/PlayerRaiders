@@ -16,6 +16,7 @@ import com.gendeathrow.pmobs.entity.ai.EntityAIStealItemInv;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 import com.gendeathrow.pmobs.handlers.EquipmentManager;
+import com.gendeathrow.pmobs.handlers.RaiderData;
 import com.gendeathrow.pmobs.handlers.RaiderManager;
 import com.gendeathrow.pmobs.handlers.random.ArmorSetWeigthedItem;
 import com.gendeathrow.pmobs.storage.InventoryStroageModifiable;
@@ -658,19 +659,23 @@ public class EntityRaiderBase extends EntityMob {
 
 		if(source.getTrueSource() != null && source.getTrueSource() instanceof EntityPlayer)
 		{
-			double dropit = this.rand.nextDouble();
+			RaiderData raider = RaiderManager.getRaiderProfile(this.getPlayerProfile());
 			
-			if( dropit < (.025)) //lootingModifier*0.025 + 
+			if(raider != null && !raider.hasCustomSkin())
 			{
-				ItemStack stack = new ItemStack(Items.SKULL, 1, 3);
+				double dropit = this.rand.nextDouble();
+				if( dropit < (.025)) //lootingModifier*0.025 + 
+				{
+					ItemStack stack = new ItemStack(Items.SKULL, 1, 3);
 				
-				if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
+					if(stack.getTagCompound() == null) stack.setTagCompound(new NBTTagCompound());
 
-				stack.getTagCompound().setString("SkullOwner", this.getOwner());
+					stack.getTagCompound().setString("SkullOwner", this.getOwner());
 
-				EntityItem skull = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
+					EntityItem skull = new EntityItem(world, this.posX, this.posY, this.posZ, stack);
 				
-				this.world.spawnEntity(skull);
+					this.world.spawnEntity(skull);
+				}
 			}
 
 		}
