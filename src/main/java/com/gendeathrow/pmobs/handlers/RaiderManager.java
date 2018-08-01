@@ -282,7 +282,7 @@ public class RaiderManager
 	                
 	        jsonobject1.addProperty("enabled", "After you get your Twitch list, you may have broken skins because ppl have changed names. So you can disable them here.");
 
-	        jsonobject1.addProperty("customSkin", "Give resourcelocation of custom skin. Use raiders build in resource loading, by adding a file into 'assets/skins/<filename>.png', than set custom skin to 'raiders:skins/<filename>'. You may also use any other resourceloader.");
+	        jsonobject1.addProperty("customSkin", "Give resourcelocation of custom skin. Use raiders build in resource loading, by adding an image into assets/skins/filename.png Than set custom skin to raiders:skins/filename. You may also use any other resourceloader.");
 	         
 	        jsonobject1.addProperty("_comment", " Comment section is for you leave a comment if you disabled something to know why. or just any comment you want.");
 	                
