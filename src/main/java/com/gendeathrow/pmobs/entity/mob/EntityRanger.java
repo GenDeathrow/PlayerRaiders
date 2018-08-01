@@ -65,7 +65,7 @@ public class EntityRanger extends AbstractRangeAttacker{
 	{
 		super.initEntityAI();
 
-		this.tasks.addTask(4, new EntityAIAttackRanged(this, 1.0D, 20, 15.0F));
+		this.tasks.addTask(4, new EntityAIAttackRanged(this, 1.0D, PMSettings.rangerMaxAttackTime, 15.0F));
 	    this.tasks.addTask(8, new EntityAIWander(this, 1.0D));
         this.tasks.addTask(9, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(9, new EntityAILookIdle(this));

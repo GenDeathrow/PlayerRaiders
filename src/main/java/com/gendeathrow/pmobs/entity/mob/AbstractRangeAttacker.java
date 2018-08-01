@@ -2,7 +2,6 @@ package com.gendeathrow.pmobs.entity.mob;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
-import net.minecraft.entity.ai.EntityAIAttackRanged;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -21,7 +20,6 @@ public abstract class AbstractRangeAttacker extends EntityRaiderBase implements 
     @Override
 	protected void initEntityAI() {
 		super.initEntityAI();
-		this.tasks.addTask(1, new EntityAIAttackRanged(this, 1.25D, 20, 10.0F));
 	}
     
 	@Override

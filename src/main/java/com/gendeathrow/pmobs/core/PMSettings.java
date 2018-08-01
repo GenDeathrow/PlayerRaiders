@@ -53,6 +53,10 @@ public class PMSettings
 	public static int pyroStartDiff = 0;
 
 	public static boolean tweakerOnlyNight = false;
+	
+	public static int rangerMaxAttackTime;
+	
+	public static boolean screamerFogOn = true;
 
 	//Factions
 	public static boolean factionsEnabled = true;
@@ -103,8 +107,6 @@ public class PMSettings
 	public static int esmDiamondToolsRaidDiff = 2;
 	public static int esmDigginRaidDiff = 0;
 
-	public static boolean screamerFogOn = true;
-
 	public static boolean torchStopSpawns = true;
 
 	public static boolean isDifficultyProgressionEnabled = true;
@@ -112,5 +114,7 @@ public class PMSettings
 	public static boolean renderRaidNotifications;
 
 	public static boolean debugMode = false;
+
+
 	
 }

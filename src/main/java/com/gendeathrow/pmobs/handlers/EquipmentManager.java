@@ -472,12 +472,15 @@ public class EquipmentManager
         		
         		arrowTipArray.add(object);
         		
-        		//********8
-        		
-        		writeJson(armorFile, ArmorSet);
-        		writeJson(mainHandFile, MainHand);
-        		writeJson(offHandFile, OffHandSlots);
-        		writeJson(arrorwsFile, arrowTipArray);
+        		//********
+        		if(!armorFile.exists())
+        			writeJson(armorFile, ArmorSet);
+        		if(!mainHandFile.exists())
+        			writeJson(mainHandFile, MainHand);
+        		if(!offHandFile.exists())
+        			writeJson(offHandFile, OffHandSlots);
+        		if(!arrorwsFile.exists())
+        			writeJson(arrorwsFile, arrowTipArray);
           		
         		//new GsonBuilder().setPrettyPrinting().create().toJson(json, fw);
         			

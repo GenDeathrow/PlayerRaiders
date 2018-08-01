@@ -60,6 +60,11 @@ public class RaiderClassConfigs extends JsonConfig{
 			PMSettings.rangerClass = isEnabled(archerObject);
 			PMSettings.rangerWeight = getWeight(archerObject);
 			PMSettings.rangerStartDiff = getStartDiff(archerObject);
+			if(!archerObject.has("attackSpeedInTicks")) {
+				archerObject.addProperty("attackSpeedInTicks", 20);
+				this.setHasChanged(true);
+			}
+			PMSettings.rangerMaxAttackTime = archerObject.get("attackSpeedInTicks").getAsInt();
 		
 		if(this.hasChanged())
 			this.Save();
