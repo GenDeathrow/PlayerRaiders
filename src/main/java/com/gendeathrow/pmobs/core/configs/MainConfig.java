@@ -83,7 +83,8 @@ public class MainConfig
 		
 		PMSettings.isDifficultyProgressionEnabled = config.getBoolean("Enable Difficulty Progression", progCat, true, "If you want to use progressive raider difficulty set true. If not raiders will stay at default stats. ");
 		PMSettings.dayDifficultyProgression = config.getInt("Raid Difficulty Progression", progCat, 5, 1, 500, "This is the Raid difficulty. Each set amount of days the mobs get harder(Raid Difficulty increases +1). \n Every x Days you set the Mobs will get more difficult. So if you set it to 5, every 5 days mobs get harder. ");
-
+		PMSettings.armorOverrideChance = config.get(progCat, "Added Armor Chance", 0, "Adds an override to bobs chance to get armor. Only active when Raid Difficulty is turned off").getDouble();
+		
 		PMSettings.HealthIncrease = config.getInt("Health Increase", progCat, PMSettings.HealthIncrease, 10, 100, "Each point = Half a Heart.");
 		PMSettings.HealthMaxOut = config.getInt("Health Max", progCat, PMSettings.HealthMaxOut, -1, 100, "Sets what Raid Difficulty the health will max out at(Does not mean max health). -1 Means there is no max Difficulty.");
 		
@@ -101,7 +102,8 @@ public class MainConfig
 
 	
 		config.setCategoryPropertyOrder(progCat, Arrays.asList("Enable Difficulty Progression", 
-																"Raid Difficulty Progression", 
+																"Raid Difficulty Progression",
+																"Added Armor Chance",
 																"Health Increase",
 																"Health Max",
 																 "Armor Increase",

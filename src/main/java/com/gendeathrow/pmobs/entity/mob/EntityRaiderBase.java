@@ -539,13 +539,16 @@ public class EntityRaiderBase extends EntityMob {
     {
     	if(!wearsArmor()) return;
     	
-    	if(!PMSettings.isDifficultyProgressionEnabled)
-    		super.setEquipmentBasedOnDifficulty(difficulty);
+    	double addedDifficulty = 0;
+    	
+    	if(PMSettings.isDifficultyProgressionEnabled)
+    		addedDifficulty = this.difficultyManager.calculateProgressionDifficulty(.05);
+    	else
+    		addedDifficulty = PMSettings.armorOverrideChance;
 
-    	if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05))
+    	if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + addedDifficulty)
         {
-	    	//System.out.println((0.25F * difficulty.getClampedAdditionalDifficulty()) + this.difficultyManager.calculateProgressionDifficulty(.05));
-	    	
+	  	
            
             float f = this.world.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
 

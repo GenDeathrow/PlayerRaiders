@@ -115,6 +115,8 @@ public class PMSettings
 
 	public static boolean debugMode = false;
 
+	public static double armorOverrideChance = 0;
+
 
 	
 }

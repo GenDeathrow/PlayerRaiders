@@ -3,6 +3,7 @@ package com.gendeathrow.pmobs.core;
 import com.gendeathrow.pmobs.commands.CommonCommands;
 import com.gendeathrow.pmobs.core.configs.ConfigHandler;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
+import com.gendeathrow.pmobs.core.init.RegisterItems;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
 import com.gendeathrow.pmobs.network.RaidNotificationPacket;
 
@@ -21,7 +22,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
-@Mod(modid = RaidersMain.MODID, name=RaidersMain.NAME, version = RaidersMain.VERSION, dependencies="after:BiomesOPlenty", acceptedMinecraftVersions="[1.12.2]")
+@Mod(modid = RaidersMain.MODID, name=RaidersMain.NAME, version = RaidersMain.VERSION, dependencies="after:biomesoplenty", acceptedMinecraftVersions="[1.12.2]")
 public class RaidersMain
 {
     public static final String MODID = "raiders";
@@ -46,7 +47,7 @@ public class RaidersMain
 		@Override
 		public ItemStack getTabIconItem() 
 		{
-			return new ItemStack(Items.APPLE);
+			return new ItemStack(RegisterItems.backupTransmitter);
 		}
 	
 	};
