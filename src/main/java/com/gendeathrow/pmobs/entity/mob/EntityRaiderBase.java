@@ -546,24 +546,27 @@ public class EntityRaiderBase extends EntityMob {
     	else
     		addedDifficulty = PMSettings.armorOverrideChance;
 
+   	
     	if (this.rand.nextFloat() < (0.25F * difficulty.getClampedAdditionalDifficulty()) + addedDifficulty)
         {
 	  	
-           
             float f = this.world.getDifficulty() == EnumDifficulty.HARD ? PMSettings.setEquptmentHard : PMSettings.setEquitmentDefault;
 
             boolean armorflag = true;
             boolean handflag = true;
 
             ArmorSetWeigthedItem ArmorSet = EquipmentManager.getRandomArmor();
-            //System.out.println("isEmpty: "+ (ArmorSet == null));
+            
             for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
             {
-            	//System.out.print(entityequipmentslot.getName());
+            	
                 if (entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.ARMOR)
                 {
                     ItemStack armorSlot = this.getItemStackFromSlot(entityequipmentslot);
-    
+
+                    if(ArmorSet.alwaysSpawnFullSet()) 
+                    	armorflag = true;
+                    
                     if (!armorflag && this.rand.nextFloat() > f + this.difficultyManager.calculateProgressionDifficulty(.05))
                     {
                         break;
@@ -581,36 +584,40 @@ public class EntityRaiderBase extends EntityMob {
                         }
                     }
                 }
-                else if(entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.HAND)
-                {
-                    ItemStack itemstack = this.getItemStackFromSlot(entityequipmentslot);
+            }
+            
+            for (EntityEquipmentSlot entityequipmentslot : EntityEquipmentSlot.values())
+            {
+            	if(entityequipmentslot.getSlotType() == EntityEquipmentSlot.Type.HAND)
+            	{
+            		ItemStack itemstack = this.getItemStackFromSlot(entityequipmentslot);
 
-                    if (!handflag && this.rand.nextFloat() > f + this.difficultyManager.calculateProgressionDifficulty(.05))
-                    {
-                        break;
-                    }
+            		if (!handflag && this.rand.nextFloat() > f + this.difficultyManager.calculateProgressionDifficulty(.05))
+            		{
+            			break;
+            		}
 
-                    handflag = false;
+            		handflag = false;
 
-                    if (itemstack == null)
-                    {
-                    	ItemStack stack = null;
-                    	
-                    	if(entityequipmentslot == EntityEquipmentSlot.MAINHAND)
-                    	{
-                    		stack = EquipmentManager.getRandomWeapons().getCopy();
-                    	}
-                    	else if(entityequipmentslot == EntityEquipmentSlot.OFFHAND)
-                    	{
-                    		stack = EquipmentManager.getRandomOffHand().getCopy();
-                    	}
-                        if (stack != null && stack.getItem() != null)
-                        {
-                            this.setItemStackToSlot(entityequipmentslot, stack);
-                        }
-                    }
-                }
-                
+            		if (itemstack.isEmpty())
+            		{
+            			ItemStack stack = ItemStack.EMPTY;
+                	
+            			if(entityequipmentslot == EntityEquipmentSlot.MAINHAND)
+            			{
+            				stack = EquipmentManager.getRandomWeapons().getCopy();
+            			}
+            			else if(entityequipmentslot == EntityEquipmentSlot.OFFHAND)
+            			{
+            				stack = EquipmentManager.getRandomOffHand().getCopy();
+            			}
+            			
+            			if (stack != null && !stack.isEmpty())
+            			{
+            				this.setItemStackToSlot(entityequipmentslot, stack);
+            			}
+            		}
+            	}
             }
         } 
     }

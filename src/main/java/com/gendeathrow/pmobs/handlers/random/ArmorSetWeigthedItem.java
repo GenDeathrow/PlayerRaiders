@@ -29,6 +29,10 @@ public class ArmorSetWeigthedItem extends AbstractEquipmentWeighted
 		this.alwayFullSet = alwaysFullSet;
 	}
 	
+	public boolean alwaysSpawnFullSet() {
+		return this.alwayFullSet;
+	}
+	
 	@Nullable
 	public ItemStack getArmorbyEquipmentSlot(EntityEquipmentSlot slot)
 	{
