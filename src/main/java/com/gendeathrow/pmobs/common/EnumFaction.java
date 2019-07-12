@@ -4,7 +4,6 @@ import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.mob.EntityRaiderBase;
 import com.gendeathrow.pmobs.handlers.DifficultyProgression;
 
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 //Factions Enum Class 

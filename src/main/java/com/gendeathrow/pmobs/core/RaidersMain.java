@@ -1,7 +1,5 @@
 package com.gendeathrow.pmobs.core;
 
-import java.util.function.BiPredicate;
-
 import com.gendeathrow.pmobs.commands.CommonCommands;
 import com.gendeathrow.pmobs.core.configs.ConfigHandler;
 import com.gendeathrow.pmobs.core.init.RegisterEntities;
@@ -9,12 +7,8 @@ import com.gendeathrow.pmobs.core.init.RegisterItems;
 import com.gendeathrow.pmobs.core.proxies.CommonProxy;
 import com.gendeathrow.pmobs.network.RaidNotificationPacket;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
