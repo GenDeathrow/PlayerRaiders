@@ -20,7 +20,7 @@ public class PMSettings
 
 	public static String[] whitelists;
 	
-	public static boolean leapAttackAI = true;
+
 
 	
 	// Raiders Base Stats
@@ -72,7 +72,10 @@ public class PMSettings
 	
 	public static boolean shouldDaylightSpawm = false;
 
+	//AI
 	public static boolean veryHostile;
+	public static boolean mobsAttackCreepers;
+	public static boolean leapAttackAI = true;
 
 //Progresion Difficulty
 	public static int HealthIncrease = 2;
@@ -116,6 +119,8 @@ public class PMSettings
 	public static boolean debugMode = false;
 
 	public static double armorOverrideChance = 0;
+
+
 
 
 	

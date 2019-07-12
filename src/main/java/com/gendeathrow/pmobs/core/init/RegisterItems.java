@@ -39,7 +39,7 @@ public class RegisterItems {
 	
 	
 	public static Item setUpItem(Item item, String name) {
-		return item.setRegistryName(new ResourceLocation(RaidersMain.MODID, name)).setUnlocalizedName(RaidersMain.MODID+"."+ name).setCreativeTab(RaidersMain.RaidersTab);
+		return item.setRegistryName(new ResourceLocation(RaidersMain.MODID, name)).setTranslationKey(RaidersMain.MODID+"."+ name).setCreativeTab(RaidersMain.RaidersTab);
 	}
 	
 	@SubscribeEvent

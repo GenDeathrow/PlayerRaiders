@@ -2,6 +2,7 @@ package com.gendeathrow.pmobs.core.init;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import com.gendeathrow.pmobs.client.renderer.DropPodRenderer;
 import com.gendeathrow.pmobs.client.renderer.EntityBruteRenderer;
@@ -22,13 +23,19 @@ import com.gendeathrow.pmobs.entity.mob.EntityTweaker;
 import com.gendeathrow.pmobs.entity.neutral.EntityDropPod;
 import com.gendeathrow.pmobs.entity.neutral.EntitySignalTransmitter;
 
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLiving.SpawnPlacementType;
+import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.common.DungeonHooks;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -71,7 +78,7 @@ public class RegisterEntities {
 	
 	public static void RegisterSpawners() {
 	  	
-      	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"raiders"), PMSettings.raidersSpawnerWeight); 
+      	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"raider"), PMSettings.raidersSpawnerWeight); 
       	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"brute"), PMSettings.raidersSpawnerWeight);
       	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"twitcher"), PMSettings.raidersSpawnerWeight);
       	DungeonHooks.addDungeonMob(new ResourceLocation(RaidersMain.MODID ,"pyromaniac"), PMSettings.raidersSpawnerWeight);
@@ -112,7 +119,7 @@ public class RegisterEntities {
 	   	}
      	
 	   	RaidersMain.logger.info("Added "+ biomes.size() +" biomes to Raiders spawn list.");
-	   	
+
 	   	if(PMSettings.raiderClass)
 	   		EntityRegistry.addSpawn(EntityRaider.class, PMSettings.raidersSpawnWeight, 1, PMSettings.raidersMaxGroupSpawn, EnumCreatureType.MONSTER, biomes.toArray(new Biome[biomes.size()]));
 	   	

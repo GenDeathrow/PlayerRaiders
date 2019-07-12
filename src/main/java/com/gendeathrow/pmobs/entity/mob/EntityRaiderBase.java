@@ -42,6 +42,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityVillager;
@@ -240,12 +241,13 @@ public class EntityRaiderBase extends EntityMob {
     
 
 	// Raider attacks Target
+    @Override
 	public boolean attackEntityAsMob(Entity entityIn)
 	{
 		boolean hasHitTarget = super.attackEntityAsMob(entityIn);
 
 		if (hasHitTarget){
-			int i = this.world.getDifficulty().getDifficultyId();
+			int i = this.world.getDifficulty().getId();
 			if (this.getHeldItemMainhand() == null && this.isBurning() && this.rand.nextFloat() < (float)i * 0.3F)
 				entityIn.setFire(2 * i);
 		}
@@ -256,19 +258,16 @@ public class EntityRaiderBase extends EntityMob {
 	/**
 	 * Called when the raider gets attacked.
 	 */
+    @Override
     public boolean attackEntityFrom(DamageSource source, float amount){
-		
     	if (super.attackEntityFrom(source, amount)){
+    		
 			EntityLivingBase entitylivingbase = null;
 			
 			if (source.getTrueSource() instanceof EntityLivingBase){
 				entitylivingbase = (EntityLivingBase)source.getTrueSource();
 			}
 
-			int i = MathHelper.floor(this.posX);
-			int j = MathHelper.floor(this.posY);
-			int k = MathHelper.floor(this.posZ);
-			
 			if(entitylivingbase != null && this.getRNG().nextInt(2) == 0){
 				this.setAttackTarget((EntityLivingBase)entitylivingbase);
 			}
@@ -485,7 +484,13 @@ public class EntityRaiderBase extends EntityMob {
     	if(EntityPlayer.class.isAssignableFrom(entity))
     		return true;
     	else if(PMSettings.veryHostile && EntityMob.class.isAssignableFrom(entity))
-    		return true;
+    	{
+    		// If ai is set to avoid or attack creepers
+    		if(PMSettings.mobsAttackCreepers == false && EntityCreeper.class.isAssignableFrom(entity))
+    			return false;
+			else
+				return true;
+    	}
     	else if(EntityRaiderBase.class.isAssignableFrom(entity))
     		return true;
     	else if (EntityAnimal.class.isAssignableFrom(entity))

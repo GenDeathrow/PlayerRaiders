@@ -73,7 +73,6 @@ public class EntityRaider extends EntityRaiderBase{
     		
     		livingdata = super.onInitialSpawn(difficulty, livingdata);
     		
-    		
             if (livingdata instanceof EntityRaiderBase.GroupData)
             {
                	EntityRaiderBase.GroupData entityraider$groupdata = (EntityRaiderBase.GroupData)livingdata;
@@ -149,14 +148,7 @@ public class EntityRaider extends EntityRaiderBase{
         return RegisterEntities.raidersLoot;
     }
 	
-    @Override
-    public boolean isEntityInvulnerable(DamageSource source)
-    {
-    	if(source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE) return true;
-    	
-    	return super.isEntityInvulnerable(source);
-    }
-    
+  
     @Override
     public float getEyeHeight()
     {

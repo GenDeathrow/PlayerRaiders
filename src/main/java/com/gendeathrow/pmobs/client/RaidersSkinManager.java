@@ -36,7 +36,6 @@ public class RaidersSkinManager
 	 * @param raiderInfo
 	 */
 	public static void updateProfile(RaiderData raiderInfo) {
-		System.out.print("");
 		if(raiderInfo == null) return;
 		
 		if(!raidersdata.contains(raiderInfo)) raidersdata.add(raiderInfo);
@@ -51,7 +50,7 @@ public class RaidersSkinManager
 					while (!raidersdata.isEmpty()) 
 					{
 						RaiderData raider = raidersdata.get(0);
-						raider.setProfile(TileEntitySkull.updateGameprofile(raider.getProfile()));
+						raider.setProfile(TileEntitySkull.updateGameProfile(raider.getProfile()));
 						raider.setProfileUpdated();
 						
 						try 

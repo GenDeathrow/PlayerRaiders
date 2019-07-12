@@ -80,7 +80,7 @@ public class ItemHolder
 			if(getItem() != null) {
 				stack = new ItemStack(getItem(), this.getAmount(), this.metaID);
 				
-				if(this.nbtData != null && !this.nbtData.hasNoTags())
+				if(this.nbtData != null && !this.nbtData.isEmpty())
 	                	stack.setTagCompound(this.nbtData);
 			}
 		}
@@ -108,7 +108,7 @@ public class ItemHolder
 		data.addProperty("itemID", itemID);
 		data.addProperty("metaID", metaID);
 		
-		if(nbtData != null && !nbtData.hasNoTags()) {
+		if(nbtData != null && !nbtData. isEmpty()) {
 			JsonElement element = gson.fromJson(nbtData.toString(), JsonElement.class);
 			data.add("nbt", element.getAsJsonObject());
 		}

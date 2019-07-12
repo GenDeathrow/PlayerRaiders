@@ -68,11 +68,12 @@ public class MainConfig
 				 												"DayTime Speed Modifier",
 				 												"Enable Factions"));
 
-	
+
 		
 		// Mob AI stuff
 		PMSettings.leapAttackAI = config.getBoolean("Leap Attack", mobai, true, "Gives some Raiders the ability to leap attack, small chance increases with each raid difficulty");
 		PMSettings.veryHostile = config.getBoolean("Hostile to All", mobai, true, "Raiders will attack any Hostile mob that moves. Raiders will always attack passive mobs regaurdless of settings.");
+		PMSettings.mobsAttackCreepers = config.getBoolean("Attack Creepers", mobai, true, "Set AI to attack creepers");
 		
 		// Progression Difficulty stats
 		

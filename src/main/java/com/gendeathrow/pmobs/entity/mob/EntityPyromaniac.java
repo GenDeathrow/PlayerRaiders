@@ -22,6 +22,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -91,7 +92,7 @@ public class EntityPyromaniac extends EntityRaiderBase{
 
 		if (hasHitTarget)
 		{
-			int i = this.world.getDifficulty().getDifficultyId();
+			int i = this.world.getDifficulty().getId();
 			
 			if(lastBurnTick > 600 && !this.getHeldItemOffhand().isEmpty() && this.getHeldItemOffhand().getItem() == Items.FLINT_AND_STEEL && this.rand.nextFloat() < (float)i * 0.3F )
 			{
@@ -116,6 +117,16 @@ public class EntityPyromaniac extends EntityRaiderBase{
     {
         return RegisterEntities.pyromaniacLoot;
     }
+    
+    @Override
+    public boolean isEntityInvulnerable(DamageSource source)
+    {
+    	if(source == DamageSource.IN_FIRE || source == DamageSource.ON_FIRE) 
+    		return true;
+    	
+    	return super.isEntityInvulnerable(source);
+    }
+    
 	
 	@Override
 	protected SoundEvent getAmbientSound()

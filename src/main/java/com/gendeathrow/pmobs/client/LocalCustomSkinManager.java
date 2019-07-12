@@ -47,8 +47,8 @@ public class LocalCustomSkinManager {
 
 		if(itextureobject != null) return resourcelocation;
 		
-		if(!resourcelocation.getResourceDomain().equalsIgnoreCase(RaidersMain.MODID)) {
-			//RaidersMain.logger.error("Could not file Skin Resource!!! {"+ resourcelocation.toString()+"}");
+		if(!resourcelocation.getNamespace().equalsIgnoreCase(RaidersMain.MODID)) {
+			RaidersMain.logger.error("Could not file Skin Resource!!! {"+ resourcelocation.toString()+"}");
 			return DefaultPlayerSkin.getDefaultSkinLegacy();
 		}
 		
@@ -62,6 +62,17 @@ public class LocalCustomSkinManager {
         	        try {
         	    			InputStream inputstream = new FileInputStream(parseFileLoc(resourcelocation));
            	    			BufferedImage bufferedimage = TextureUtil.readBufferedImage(inputstream);
+           	    			
+           	    			int pxWidth = bufferedimage.getHeight();
+           	    			int pxHeight = bufferedimage.getWidth();
+           	    			RaidersMain.logger.info("px "+ pxWidth +"/"+ pxHeight);
+           	    			// If the image is not the correct size send out an error. 
+           	    			if (pxWidth != 64 || pxHeight != 64)
+           	    			{
+           	    				RaidersMain.logger.error("Resource Error:  \""+parseFileLoc(resourcelocation)+"\" file is an incorrect file size. Must be 64px x 64px skin image");
+           	    				if(Minecraft.getMinecraft().player != null)
+           	    					Minecraft.getMinecraft().player.sendChatMessage("Resource Error:  \""+parseFileLoc(resourcelocation)+"\" file is an incorrect file size. Must be 64px x 64px skin image.");
+           	    			}
         	    			boolean flag = false;
         	    			boolean flag1 = false;
         	    			TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), bufferedimage, flag, flag1);
@@ -81,7 +92,7 @@ public class LocalCustomSkinManager {
 	private static File parseFileLoc(ResourceLocation resourceIn) {
 		
 		//System.out.println("is File"+ new File (assestsDir, resourceIn.getResourcePath()+".png").isFile());
-		return new File (assestsDir, resourceIn.getResourcePath()+".png");
+		return new File (assestsDir, resourceIn.getPath()+".png");
 	}
 
 }
