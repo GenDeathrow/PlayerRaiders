@@ -139,6 +139,7 @@ public class EntityRaider extends EntityRaiderBase{
 	        if(!this.isChild() && PMSettings.leapAttackAI && rand.nextDouble() < .15 + difficultyManager.calculateProgressionDifficulty(.05, .35))
 	        	this.setLeapAttack(true);  
   
+        	this.setHealth(this.getMaxHealth());
     		return livingdata;
     }
 

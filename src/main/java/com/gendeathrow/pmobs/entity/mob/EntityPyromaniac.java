@@ -63,7 +63,7 @@ public class EntityPyromaniac extends EntityRaiderBase{
 	        	this.setLeapAttack(true);  
 	        
     		this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, new ItemStack(Items.FLINT_AND_STEEL));
-    		
+        	this.setHealth(this.getMaxHealth());
     		return livingdata;
     }
     

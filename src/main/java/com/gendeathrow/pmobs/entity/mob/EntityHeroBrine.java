@@ -235,7 +235,7 @@ public class EntityHeroBrine extends EntityRaiderBase
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5.0D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(60.0D);
             //this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(60.0D);
-
+    	this.setHealth(this.getMaxHealth());
 		return livingdata;
     }
 	

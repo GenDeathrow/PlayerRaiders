@@ -68,7 +68,7 @@ public class EntityBrute extends EntityRaiderBase{
         	if(!this.getHeldItem(EnumHand.OFF_HAND).isEmpty()) this.setHeldItem(EnumHand.OFF_HAND, ItemStack.EMPTY);
         	if(this.getHeldItem(EnumHand.MAIN_HAND).isEmpty() || this.getHeldItem(EnumHand.MAIN_HAND).getItem() != Items.IRON_SWORD) this.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 
-        	
+        	this.setHealth(this.getMaxHealth());
     		return livingdata;
     }
     

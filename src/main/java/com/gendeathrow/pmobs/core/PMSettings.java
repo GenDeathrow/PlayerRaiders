@@ -21,8 +21,6 @@ public class PMSettings
 	public static String[] whitelists;
 	
 
-
-	
 	// Raiders Base Stats
 	public static double movementSpeedStat = 0.23D;
 	public static double attackDamageStat = 4.5D;
@@ -38,13 +36,12 @@ public class PMSettings
 	public static boolean screamerClass = true;
 	public static boolean rangerClass = true;
 	
-	public static int pyroWeight = 10;
+	public static int pyroWeight = 8;
 	public static int bruteWeight = 40;
-	public static int tweakerWeight = 18;
-	public static int noneWeight = 50;
+	public static int tweakerWeight = 10;
 	public static int screamerWeight = 4;
-	public static int rangerWeight = 50;
-	public static int raidersSpawnWeight = 100;
+	public static int rangerWeight = 30;
+	public static int raidersSpawnWeight = 80;
 	
 	public static int rangerStartDiff = 1;
 	public static int screamerStartDiff = 0;

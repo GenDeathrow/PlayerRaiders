@@ -67,6 +67,7 @@ public class EntityTweaker extends EntityRaiderBase{
 	        if(!this.isChild() && PMSettings.leapAttackAI && rand.nextDouble() < .07 + difficultyManager.calculateProgressionDifficulty(.05, .10))
 	        	this.setLeapAttack(true);  
         	
+        	this.setHealth(this.getMaxHealth());
     		return livingdata;
     }
     

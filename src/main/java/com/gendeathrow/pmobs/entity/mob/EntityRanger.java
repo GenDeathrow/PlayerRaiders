@@ -98,7 +98,7 @@ public class EntityRanger extends AbstractRangeAttacker{
     			}catch(Exception e){ RaidersMain.logger.error(e); }
     		}
     		
-
+        	this.setHealth(this.getMaxHealth());
     		return livingdata;
     }
     
