@@ -57,6 +57,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigateGround;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -133,6 +134,15 @@ public class EntityRaiderBase extends EntityMob {
 		difficultyManager = new DifficultyProgression(this);
 	}
 	
+	@Override
+    public ITextComponent getDisplayName()
+    {
+        TextComponentString textcomponentstring = new TextComponentString(EnumFaction.formateString(this.getRaiderFaction(), this.getOwner()));
+        textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
+        textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
+        return textcomponentstring;
+    }
+	 
 	@Override
 	protected void entityInit()
 	{
@@ -312,7 +322,7 @@ public class EntityRaiderBase extends EntityMob {
 	        
 	        this.setRandomFeatures(); 
 	        
-	        this.setCustomNameTag(gameprofile.getName());
+	        //this.setCustomNameTag(gameprofile.getName());
 	        
 	        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).applyModifier(new AttributeModifier("Random spawn bonus", this.rand.nextDouble() * 0.05000000074505806D, 0));
 	                
@@ -352,17 +362,6 @@ public class EntityRaiderBase extends EntityMob {
         }
     }
     
-    
-    @Override
-    public ITextComponent getDisplayName()
-    {
-    	TextFormatting color = getRaiderFaction() == EnumFaction.FRIENDLY ? TextFormatting.GREEN : getRaiderFaction() == EnumFaction.HOSTILE ? TextFormatting.RED : TextFormatting.GRAY;
-    	
-        TextComponentString textcomponentstring = new TextComponentString(color + this.getName());
-        textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
-        textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
-        return textcomponentstring;
-    }
     
 	public DifficultyProgression getDifficultyProgession(){
 		return this.difficultyManager;

@@ -4,12 +4,14 @@ package com.gendeathrow.pmobs.client.renderer;
 
 import com.gendeathrow.pmobs.client.model.RaiderModel;
 import com.gendeathrow.pmobs.client.model.renderer.layers.LayerFeatureRenderer;
+import com.gendeathrow.pmobs.common.EnumFaction;
 import com.gendeathrow.pmobs.core.PMSettings;
 import com.gendeathrow.pmobs.entity.mob.EntityRaider;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderBiped;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerArrow;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
@@ -30,7 +32,7 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaider>
 		super(renderManager, new RaiderModel(0F), 0.5F);
 		
 		this.defaultModel = this.getMainModel();
-		this.addLayer(new LayerBipedArmor(this));
+		this.addLayer(new LayerBipedArmor(this));  
 		this.addLayer(new LayerHeldItem(this));
 		this.addLayer(new LayerArrow(this));
 		
@@ -62,16 +64,24 @@ public class EntityRaiderRenderer extends RenderBiped<EntityRaider>
 	@Override
 	public void doRender(EntityRaider entity, double x, double y, double z, float entityYaw, float partialTicks)
 	{
-		if(!PMSettings.renderNameTags)
-		{
-//			if(entity.getRaiderFaction() == EnumFaction.FRIENDLY)
-//				this.NAME_TAG_RANGE = 64F;
-//			else if(entity.getRaiderFaction() == EnumFaction.HOSTILE)
-//				this.NAME_TAG_RANGE = 0;
-		}
+
 
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
 	    		super.doRender(entity, x, y, z, entityYaw, partialTicks);
+	    		
+	    		if(PMSettings.renderNameTags)
+	    		{
+	    			int range = 0;
+	    			if(entity.getRaiderFaction() == EnumFaction.FRIENDLY) {
+	    				range= 32;
+	    			}
+	    			else if(entity.getRaiderFaction() == EnumFaction.HOSTILE) {
+	    				range = 5;
+	    			}
+	    			
+		    		this.renderLivingLabel(entity, entity.getDisplayName().getFormattedText(), x, y, z, range);
+	    		}
+
 	        GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
 	}
 
