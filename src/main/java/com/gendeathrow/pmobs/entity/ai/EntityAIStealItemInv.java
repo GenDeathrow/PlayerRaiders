@@ -206,9 +206,9 @@ public class EntityAIStealItemInv extends EntityAIMoveToBlock
                     if(itemarmor1.isEmpty()) {
                     	flag = true;
                     }
-                    else if (itemarmor.damageReduceAmount == ((ItemArmor)itemarmor1.getItem()).damageReduceAmount)
+                    else if (itemarmor1.getItem() instanceof ItemArmor && itemarmor.damageReduceAmount == ((ItemArmor)itemarmor1.getItem()).damageReduceAmount)
                         flag = itemstack.getMetadata() > mainHandWeapon.getMetadata() || itemstack.hasTagCompound() && !itemarmor1.hasTagCompound();
-                    else
+                    else if (itemarmor1.getItem() instanceof ItemArmor)
                         flag = itemarmor.damageReduceAmount > ((ItemArmor)itemarmor1.getItem()).damageReduceAmount;
                 }else {
                 	return this.raider.world.rand.nextFloat() < 0.3333;
